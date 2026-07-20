@@ -7,11 +7,11 @@ This package records independently derived results for a specifically oriented c
 ## Status and scope
 
 - The classical memo now gives a complete arbitrary-degree classification of the oriented `a2`-square sector `a2 = h^2 != 0` when both entries' ladder supports are contained in `[-2,2]` and the genuine polynomial membership conditions hold. After its stated normalizations, every member has the displayed parameterized normal form (0.1).
-- This classical result is sector-scoped. It is not a full band-2 theorem and does not establish orientation or case coverage beyond the oriented `a2`-square sector.
+- This classical result is sector-scoped by itself and does not establish orientation or case coverage beyond the oriented `a2`-square sector. The later [`../band2-classical-full/`](../band2-classical-full/) package supplies the independent band-1 and orientation bridge and assembles this result with M4 into the full support-contained classical band-2 theorem over `C`.
 - The quantum shifted-square-sector memo remains partial. Its arbitrary-degree constant-`h` branch with nonzero positive and negative homogeneous parameters remains unresolved.
 - The checker audit preserves the supplied checker's sign defects and fatal completeness gaps. The old checker did not prove the classical classification; the new classical proof closes its resistant branch independently, without bounded-degree computational exhaustion.
 - No classification checker has been added, and completeness is not inferred from symbolic checks or computation.
-- The package proves neither JC2 nor DC1. No counterexample to JC2/DC1 or to the unresolved quantum classification was found.
+- This sector memo proves neither JC2 nor DC1. Its use in the later full classical band-2 assembly still does not prove JC2 because that theorem retains the fixed support bound. No counterexample to JC2/DC1 or to the unresolved quantum classification was found.
 
 ## Contents
 
