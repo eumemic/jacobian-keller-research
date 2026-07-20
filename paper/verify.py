@@ -76,10 +76,16 @@ for E, h in members:
     assert jacobian(F) == -2
     assert sp.degree(2*A - nu*C, nu) == sp.degree(E, nu) + 2
 
-# The degree-zero constraints are inconsistent both for a != 0 and a = 0.
-e, aa = sp.symbols("e aa", nonzero=True)
-assert sp.solve([e*aa**2/2 + aa**2, 2*e*aa + 2*aa], [e, aa], dict=True) == []
-assert sp.solve([e/2 + 1, 2*e + 2], [e], dict=True) == []
+# Degree zero, a != 0: after division by a^2 and a, respectively,
+# the two constraints require e = -2 and e = -1.
+e = sp.symbols("e")
+assert sp.solve(sp.Eq(e/2 + 1, 0), e) == [-2]
+assert sp.solve(sp.Eq(2*e + 2, 0), e) == [-1]
+
+# Degree zero, a = 0: along t = 0 the forbidden constant-weight
+# terms are the same two expressions and impose the same contradiction.
+assert sp.solve(sp.Eq(e/2 + 1, 0), e) == [-2]
+assert sp.solve(sp.Eq(2*e + 2, 0), e) == [-1]
 
 # Degree-five map, primitive equation, and rational reconstruction.
 E5 = 4 - 15*nu + 10*nu**3

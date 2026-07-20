@@ -1,28 +1,14 @@
 #!/usr/bin/env python3
 """
-Exact symbolic checks supporting a provisional J3/M4 argument about the
-two-sided non-square sector of band 2, classically and quantumly.
+Thirteen exact symbolic checks supporting the audited J3 band-2 argument,
+classically and quantumly.
 
-PROVISIONAL: INDEPENDENT AUDIT PENDING. Passing these checks is computational
-support only; it is not a proof, peer review, or validation of the argument.
-
-Proof skeleton whose selected identities are checked:
-  top equations (m=+-4,+-3): b2=lam2*a2, b1=lam2*a1 (non-square kills the
-  homogeneous sector), mirror with mu2; m=+-2: b0 = lam2*a0+gamma = mu2*a0+gamma',
-  and a0 constant once lam2 != mu2; then the reduced system has
-    m=+-3,+-2,+-4 components == 0,
-    m=+1 component == (sign)*(lam2-mu2)*U,   U the cross-term,
-    m=-1 component == (sign)*(lam2-mu2)*L,
-    m=0  component == (sign)*(lam2-mu2)*(moment expression),
-  with product invariants
-    classical: a_{-1}*U = (a2*a_{-1}^2)',  a_1*L = (a_{-2}*a_1^2)'
-    quantum:   G(E)-G(E-1) = a_{-1}(E+1)*U_q(E),  G = a2(E)a_{-1}(E+1)a_{-1}(E+2)
-               H(E+1)-H(E) = a_1(E-1)*L_q(E),     H = a_{-2}(E)a_1(E-1)a_1(E-2)
-  so U=0 (resp. L=0) with a_{-1} != 0 forces a2 * (square-ish of a_{-1}) constant,
-  impossible for non-square a2; then the m=0 equation forces the product
-  a2*a_{-2} (suitably shifted) to be LINEAR, impossible with both nonconstant.
-Also verified: 2-periodic polynomials are constant; U=0 has no nonzero
-polynomial solution a2 for a sample nonconstant a_{-1}.
+The checks cover selected reduced ladder components and product identities for
+generic coefficient polynomials of degree at most two, two bounded finite
+examples, and 2-periodicity for polynomials of degree at most four. They do not
+check the full unreduced coefficient systems, the general homogeneous lemmas,
+rational periodicity, arbitrary-degree branches, localization or membership,
+or proof completeness. Passing is computational support only, not peer review.
 
 Expected output: all PASS, then "ALL J3 CHECKS PASSED".
 """
@@ -38,7 +24,7 @@ def check(name, ok):
 
 # ---------------- classical machinery ----------------
 def PB(f, g):
-    return sp.expand(sp.diff(f, x) * sp.diff(g, xi) - sp.diff(f, xi) * sp.diff(g, x))
+    return sp.expand(sp.diff(f, xi) * sp.diff(g, x) - sp.diff(f, x) * sp.diff(g, xi))
 
 def x_components(expr, kmin, kmax):
     comp, e = {}, sp.expand(expr.subs(xi, tau / x))
@@ -66,10 +52,10 @@ L = sp.expand(sp.diff(am2c, tau)*a1c + 2*am2c*sp.diff(a1c, tau))
 moment = sp.expand(sp.diff(2*a2c*am2c + a1c*am1c, tau))
 check("components m=+-2,+-3,+-4 vanish for the reduced pair",
       all(comp.get(m, 0) == 0 for m in (2, 3, 4, -2, -3, -4)))
-check("m=+1 component == (lambda2-mu2)*U", sp.expand(comp.get(1, 0) - (lam2-mu2)*U) == 0)
-check("m=-1 component == (lambda2-mu2)*L", sp.expand(comp.get(-1, 0) - (lam2-mu2)*L) == 0)
-check("m=0 component == (lambda2-mu2)*(2 a2 a_{-2} + a1 a_{-1})'",
-      sp.expand(comp.get(0, 0) - (lam2-mu2)*moment) == 0)
+check("m=+1 component == (mu2-lambda2)*U", sp.expand(comp.get(1, 0) - (mu2-lam2)*U) == 0)
+check("m=-1 component == (mu2-lambda2)*L", sp.expand(comp.get(-1, 0) - (mu2-lam2)*L) == 0)
+check("m=0 component == (mu2-lambda2)*(2 a2 a_{-2} + a1 a_{-1})'",
+      sp.expand(comp.get(0, 0) - (mu2-lam2)*moment) == 0)
 check("invariants: a_{-1}*U == (a2 a_{-1}^2)'  and  a1*L == (a_{-2} a1^2)'",
       sp.expand(am1c*U - sp.diff(a2c*am1c**2, tau)) == 0 and
       sp.expand(a1c*L - sp.diff(am2c*a1c**2, tau)) == 0)

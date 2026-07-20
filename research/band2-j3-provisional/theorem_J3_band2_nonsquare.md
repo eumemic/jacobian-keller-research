@@ -1,127 +1,187 @@
-# Provisional J3/M4 argument: the two-sided non-square sector of band 2
+# Audited J3 statement: the two-sided non-square sector of band 2
 
-> **PROVISIONAL — INDEPENDENT AUDIT PENDING — NOT PEER REVIEWED.** The argument below is preserved as submitted for audit. It is not presented as an established theorem or claimed result. The accompanying computation checks selected symbolic identities only; it is computational support, not a proof, proof review, or independent validation.
+> **INDEPENDENTLY AUDITED — NOT PEER REVIEWED.** The independent audit found the core algebraic argument correct after the statement and proof repairs incorporated below. This is a narrowly scoped obstruction theorem, not a classification of band-2 pairs and not a proof of JC2 or DC1.
 
-The accompanying `verify_J3.py` script reports 13 exact symbolic checks.
-Throughout, "shifted square" means: classically, c·h(τ)² with c ∈ C*, h ∈ C[τ]
-(constants included, h = 1); quantumly, c·h(E)h(E+1). "Non-square" means not of
-this form — in particular nonconstant.
+## Conventions and statement
 
-## Statement
+Classically, work over \(\mathbb C\) in the Laurent Poisson algebra
+\[
+L=\mathbb C[x^{\pm1},\xi]=\bigoplus_{k\in\mathbb Z}x^k\mathbb C[\tau],
+\qquad \tau=x\xi,
+\]
+with \(\{f,g\}=f_\xi g_x-f_xg_\xi\), so \(\{\xi,x\}=1\). Quantumly, work in the Ore localization
+\[
+A_1[x^{-1}]=\bigoplus_{k\in\mathbb Z}x^k\mathbb C[E],
+\qquad [\partial,x]=1,\quad E=x\partial,
+\]
+using \([D,X]=DX-XD\). Thus \(f(E)x^j=x^jf(E+j)\) and
+\[
+(x^if(E))(x^jg(E))=x^{i+j}f(E+j)g(E).
+\]
+All displayed direct sums have finite ladder support. The **ladder support** of \(\sum x^ka_k\) is \(\{k:a_k\ne0\}\). A **common band-2 presentation** means that the supports of both \(X\) and \(D\) are contained in \([-2,2]\), precisely with no other ladder exponents. “Two-sided” below means \(a_2a_{-2}\ne0\), not merely that some positive and negative terms occur.
 
-**Theorem J3 (classical).** Let X = Σ_{k=−2}^{2} x^k a_k(τ), D = Σ x^l b_l(τ)
-(τ = xξ) satisfy {D, X} ∈ C*, with a₂ ≠ 0 and a₋₂ ≠ 0. Then at least one of
-a₂, a₋₂ is a square (c·h²). Equivalently: there is **no** Keller pair — indeed
-no Laurent pair in C[x^{±1}, ξ] — of band width ≤ 2 on both sides whose two
-extreme coefficients are both non-squares.
+A nonzero classical polynomial is in the **square class** if it is \(c h(\tau)^2\); a nonzero quantum polynomial is in the **shifted-square class** if it is \(c h(E)h(E+1)\), where \(c\in\mathbb C^*\) and \(h\) is a polynomial. Nonzero constants belong to both classes.
 
-**Theorem J3q (quantum).** Same statement in A₁[x⁻¹] = ⊕ x^k C[E] for pairs
-with [D, X] = 1: at least one of a₂(E), a₋₂(E) is a shifted square c·h(E)h(E+1).
+**Theorem J3 (classical Laurent form).** Let
+\[
+X=\sum_{k=-2}^{2}x^ka_k(\tau),\qquad D=\sum_{l=-2}^{2}x^lb_l(\tau)
+\]
+with \(a_k,b_l\in\mathbb C[\tau]\), \(a_2a_{-2}\ne0\), and \(\{D,X\}=c_0\in\mathbb C^*\). Then \(a_2\) and \(a_{-2}\) cannot both lie outside the square class.
 
-The theorem needs no membership/divisibility hypothesis: the emptiness already
-holds in the localized algebras, so — unlike band 1 — the non-square sector has
-no polar solutions either.
+**Theorem J3q (quantum localized form).** Let
+\[
+X=\sum_{k=-2}^{2}x^ka_k(E),\qquad D=\sum_{l=-2}^{2}x^lb_l(E)
+\]
+with \(a_k,b_l\in\mathbb C[E]\), \(a_2a_{-2}\ne0\), and \([D,X]=1\). Then \(a_2\) and \(a_{-2}\) cannot both lie outside the shifted-square class.
 
-## Proof (classical)
+The assertions concern only this two-sided common band presentation. They neither address one-sided sectors nor say that each nonzero extreme coefficient is a (shifted) square.
 
-Write the bracket components: for each m, Σ_{k+l=m}(k a_k b_l′ − l a_k′ b_l)
-equals δ_{m,0}·(const). The cascade:
+## Three elementary lemmas
 
-**m = ±4.** 2(a₂b₂′ − a₂′b₂) = 0 and the mirror: Wronskians vanish, so
-b₂ = λ₂a₂, b₋₂ = μ₂a₋₂ with λ₂, μ₂ ∈ C (a₂, a₋₂ ≠ 0).
+**Rational periodicity lemma.** If \(r\in\mathbb C(t)\) and \(r(t+s)=r(t)\) for some \(s\in\mathbb C^*\), then \(r\) is constant.
 
-**m = ±3.** 2a₂b₁′ − a₂′b₁ = λ₂(2a₁′a₂ − a₁a₂′), for which b₁ = λ₂a₁ is a
-particular solution; the homogeneous solutions satisfy h² = c·a₂ (Lemma J2), so
-**non-square a₂ forces b₁ = λ₂a₁ exactly** — with the *same* constant λ₂.
-Mirror: b₋₁ = μ₂a₋₁.
+**Proof.** A pole of \(r\) would give poles at all of its distinct translates by \(ns\), contrary to rationality. Hence \(r\) is a polynomial. If it has positive degree \(d\), then \(r(t+s)-r(t)\) has degree \(d-1\) with nonzero leading coefficient, a contradiction. ∎
 
-**m = ±2.** The (1,1) terms cancel identically once b₁ = λ₂a₁, leaving
-2a₂(b₀′ − λ₂a₀′) = 0 and 2a₋₂(b₀′ − μ₂a₀′) = 0, so b₀′ = λ₂a₀′ = μ₂a₀′.
+**Classical homogeneous lemma.** For nonzero \(a\in\mathbb C[t]\), polynomial solutions of
+\[
+2ah'-a'h=0
+\]
+are either \(h=0\), or \(a=cq^2\) for some \(c\in\mathbb C^*\) and polynomial \(q\) (indeed one may take \(q=h\), after changing the scalar).
 
-**m = ±1.** The four surviving terms collapse (using b₀′ = λ₂a₀′, resp. μ₂a₀′)
-to (λ₂ − μ₂)·U = 0 and (λ₂ − μ₂)·L = 0, where
-U := a₂′a₋₁ + 2a₂a₋₁′ and L := a₋₂′a₁ + 2a₋₂a₁′.
+**Proof.** The zero solution is retained. If \(h\ne0\), direct differentiation gives \((h^2/a)'=0\) in \(\mathbb C(t)\). Thus \(h^2/a\in\mathbb C^*\), proving the assertion. ∎
 
-**m = 0.** The pairs (±2, ∓2) and (±1, ∓1) telescope to
-(λ₂ − μ₂)·d/dτ(2a₂a₋₂ + a₁a₋₁) = const ≠ 0. Hence **λ₂ ≠ μ₂** (which
-retroactively gives a₀, b₀ constant from m = ±2), and the **moment**
-M(τ) := 2a₂a₋₂ + a₁a₋₁ is **linear nonconstant** in τ.
+**Quantum shifted-square lemma.** For nonzero \(a\in\mathbb C[E]\), polynomial solutions of
+\[
+h(E+2)a(E)=a(E+1)h(E)
+\]
+are either \(h=0\), or \(a(E)=c h(E)h(E+1)\) after changing \(h\) by a nonzero scalar, with \(c\in\mathbb C^*\).
 
-**Endgame.** From λ₂ ≠ μ₂: U = L = 0. The product invariants
-a₋₁·U = (a₂a₋₁²)′ and a₁·L = (a₋₂a₁²)′ give a₂a₋₁² = const and a₋₂a₁² = const.
-If a₋₁ ≠ 0, then a₂ = const/a₋₁² is a polynomial only if a₋₁ is constant,
-making a₂ constant — a square, contradiction; so a₋₁ = 0, and likewise a₁ = 0.
-Then M = 2a₂a₋₂ is linear, so deg a₂ + deg a₋₂ = 1, so one factor is constant —
-a square. Contradiction. ∎
+**Proof.** Retain the zero solution. For \(h\ne0\), set
+\[
+r(E)=\frac{a(E)}{h(E)h(E+1)}\in\mathbb C(E).
+\]
+The displayed equation says \(r(E+1)=r(E)\). Rational periodicity makes \(r\) a nonzero constant. ∎
 
-## Proof (quantum)
+The reflected quantum equation gives \(c h(E)h(E-1)\), which is the same shifted-square class after replacing \(h(E)\) by \(h(E-1)\).
 
-Identical skeleton with the difference calculus; every classical object deforms
-by unit shifts:
+## Classical proof
 
-m = ±4: b₂(E+2)a₂(E) = a₂(E+2)b₂(E) makes b₂/a₂ a 2-periodic rational function,
-hence constant: b₂ = λ₂a₂; mirror b₋₂ = μ₂a₋₂.
-m = ±3: particular solution b₁ = λ₂a₁; homogeneous solutions exist iff
-a₂ = c·h(E)h(E+1) (Lemma J2q), so non-shifted-square a₂ forces b₁ = λ₂a₁;
-mirror b₋₁ = μ₂a₋₁.
-m = ±2: a₂(E)·[(b₀ − λ₂a₀)(E+2) − (b₀ − λ₂a₀)(E)] = 0, so b₀ − λ₂a₀ is a
-2-periodic polynomial, hence constant; mirror with μ₂.
-m = ±1: (μ₂ − λ₂)U_q = 0 and (μ₂ − λ₂)L_q = 0 with
-U_q = a₋₁(E+2)a₂(E) − a₂(E−1)a₋₁(E), L_q = a₋₂(E+1)a₁(E) − a₁(E−2)a₋₂(E).
-m = 0: (μ₂ − λ₂)·[W₂(E+2) − W₂(E) + W₁(E+1) − W₁(E)] = 1 with
-W₂ = a₂(E−2)a₋₂(E), W₁ = a₁(E−1)a₋₁(E); hence λ₂ ≠ μ₂, a₀ constant, and the
-telescoped moment is linear: W₂ + (lower shift bookkeeping) forces
-**W₂ linear** once W₁ = 0.
+Assume for contradiction that both extremes are non-squares. For the coefficient \(C_m\) of ladder degree \(m\) in \(\{D,X\}\), direct use of the chosen orientation gives
+\[
+C_m=\sum_{k+l=m}\bigl(k a_kb_l'-l a_k'b_l\bigr),
+\qquad C_m=\delta_{m0}c_0.
+\]
 
-Endgame: the deformed product invariants — machine-verified as exact
-telescopings —
-G(E) := a₂(E)·a₋₁(E+1)·a₋₁(E+2) satisfies G(E) − G(E−1) = a₋₁(E+1)·U_q(E),
-H(E) := a₋₂(E)·a₁(E−1)·a₁(E−2) satisfies H(E+1) − H(E) = a₁(E−1)·L_q(E),
-so U_q = 0 makes G a 1-periodic polynomial, i.e. constant. A nonzero constant
-that is a product of three polynomials makes all three constant (a₂ constant =
-shifted square, contradiction); G = 0 forces a₋₁ = 0 (a₂ ≠ 0). Likewise a₁ = 0.
-Then W₂(E+2) − W₂(E) = 1/(μ₂−λ₂) ≠ 0 makes W₂ = a₂(E−2)a₋₂(E) linear
-nonconstant, so one factor is constant — a shifted square. Contradiction. ∎
+At \(m=4\), \(2(a_2b_2'-a_2'b_2)=0\), so \((b_2/a_2)'=0\) in \(\mathbb C(\tau)\) and \(b_2=\lambda_2a_2\). The reflected equation gives \(b_{-2}=\mu_2a_{-2}\).
 
-Note the dictionary held **verbatim at every step**: Wronskian ↔ periodic
-ratio; h² = c·a₂ ↔ h(E)h(E+1) = c·a₂; (a₂a₋₁²)′ ↔ ΔG with the triple product
-a₂(E)a₋₁(E+1)a₋₁(E+2); the moment (2a₂a₋₂ + a₁a₋₁)′ ↔ the telescoped
-W₂, W₁ sum. Nothing quantum-exotic appeared.
+At \(m=3\), put \(h=b_1-\lambda_2a_1\). The equation is
+\[
+2a_2h'-a_2'h=0.
+\]
+The classical homogeneous lemma and the non-square hypothesis force \(h=0\), hence \(b_1=\lambda_2a_1\). Reflection gives \(b_{-1}=\mu_2a_{-1}\).
 
-## Consequences and the shape of the induction
+At \(m=2\) and \(m=-2\), respectively,
+\[
+b_0'=\lambda_2a_0',\qquad b_0'=\mu_2a_0'.
+\]
+The \(m=1\) and \(m=-1\) equations then reduce to
+\[
+(\mu_2-\lambda_2)U=0,\quad U=a_2'a_{-1}+2a_2a_{-1}',
+\]
+\[
+(\mu_2-\lambda_2)L=0,\quad L=a_{-2}'a_1+2a_{-2}a_1'.
+\]
+The central equation is exactly
+\[
+(\mu_2-\lambda_2)\bigl(2a_2a_{-2}+a_1a_{-1}\bigr)'=c_0.
+\]
+Thus \(\mu_2\ne\lambda_2\), so \(a_0'=b_0'=0\), \(U=L=0\), and
+\(M=2a_2a_{-2}+a_1a_{-1}\) is linear nonconstant.
 
-1. **Band-2 confinement.** With J1/P3 (band 1), every band-2 Dixmier or Keller
-pair has each nonzero extreme coefficient a (shifted) square. All remaining
-band-2 life — including the shears (x, ξ + x²), whose extreme coefficient is
-the square 1 — lives in the square sector. M5 = classify that sector.
+Now
+\[
+a_{-1}U=(a_2a_{-1}^2)',\qquad a_1L=(a_{-2}a_1^2)'.
+\]
+If \(a_{-1}\ne0\), then \(a_2a_{-1}^2\) is constant. It cannot be zero in the domain \(\mathbb C[\tau]\), and a nonzero constant product forces every factor to be a unit. Hence \(a_2\) is constant, contrary to its being a non-square. Therefore \(a_{-1}=0\). The same reasoning gives \(a_1=0\). Consequently \(2a_2a_{-2}=M\) is linear nonconstant. Degree additivity makes one extreme constant, again a square-class element. This contradiction proves J3. ∎
 
-2. **Provisional claimed consequence (audit pending).** The draft argues that JC₂ and DC₁ hold vacuously on the
-two-sided non-square sector of width ≤ 4, at arbitrary polynomial degree —
-orthogonal to every degree bound in the literature (Moh ≤ 100, GGV ≤ 108
-excluding (72,108)).
+## Quantum proof
 
-3. **The emerging inductive mechanism (band-k conjecture).** The proof pattern
-visibly generalizes: top equations should force a single λ on the whole
-positive side and a single μ on the negative side; the cross equations should
-force product invariants a_j·(a_{−j'} powers with shifts) constant; and the
-m = 0 equation always telescopes the **moment** M = Σ_{j≥1} j·a_j a_{−j}
-(suitably shifted, quantumly) to a linear function. In the fully non-square
-regime this is self-contradictory exactly as above. What genuinely needs proof
-for k ≥ 3 is the collapse of the cross equations — the m = ±3 coupling already
-showed collapse is not automatic and is precisely governed by square-type
-degeneracies. So the induction's shape is: *non-degenerate top data is
-impossible at every band; all candidates descend into power/square strata;
-strata descent = the difference analogue of Newton-polygon reduction.* This is
-the precise point of contact with Abhyankar–Moh–GGV: their common-leading-form
-normal forms are the global version of our square sectors.
+Again assume that both extremes are outside the shifted-square class. If \(Q_m\) is the ladder-degree-\(m\) coefficient of \([D,X]\), the multiplication convention gives the exact general formula
+\[
+Q_m(E)=\sum_{k+l=m}\left(b_l(E+k)a_k(E)-a_k(E+l)b_l(E)\right),
+\qquad Q_m=\delta_{m0}.
+\]
 
-## M5 scope (next)
+At \(m=4\),
+\[
+b_2(E+2)a_2(E)=a_2(E+2)b_2(E).
+\]
+Thus \(b_2/a_2\) is 2-periodic in \(\mathbb C(E)\), and rational periodicity gives \(b_2=\lambda_2a_2\). Reflection gives \(b_{-2}=\mu_2a_{-2}\).
 
-Square sector of band 2: substitute a₂ = h² (classically; a₂ = h(E)h(E+1)
-quantumly), allow the homogeneous parameter κ·h in b₁, and push the cascade.
-Sub-cases: two-sided square, one-sided (a₋₂ = 0, includes shears), and the
-h-degree hierarchy. Outcomes: (a) full band-2 classification = tame moves ⇒
-band-2 theorem for JC₂/DC₁ and a template inductive step; (b) a non-tame
-solution variety ⇒ the first candidate counterexample geometry, to be pushed
-through the membership divisibilities (classically τ² | a₋₂-type; quantumly
-E(E−1) | a₋₂-type) exactly as Theorem 1's constraints were satisfied in 3D.
+At \(m=3\), with \(h=b_1-\lambda_2a_1\), the homogeneous equation is
+\[
+h(E+2)a_2(E)=a_2(E+1)h(E).
+\]
+The quantum lemma and the non-shifted-square hypothesis force \(h=0\). Reflection yields \(b_{-1}=\mu_2a_{-1}\).
+
+At \(m=2\), \(b_0-\lambda_2a_0\) is a 2-periodic polynomial and hence a constant \(\gamma\). Independently, the \(m=-2\) equation gives
+\[
+b_0-\mu_2a_0=\gamma'
+\]
+for a possibly different constant \(\gamma'\). The \(m=1\) and \(m=-1\) equations are exactly
+\[
+(\mu_2-\lambda_2)U_q=0,
+\quad U_q(E)=a_{-1}(E+2)a_2(E)-a_2(E-1)a_{-1}(E),
+\]
+\[
+(\mu_2-\lambda_2)L_q=0,
+\quad L_q(E)=a_{-2}(E+1)a_1(E)-a_1(E-2)a_{-2}(E).
+\]
+Define
+\[
+W_2(E)=a_2(E-2)a_{-2}(E),\qquad
+W_1(E)=a_1(E-1)a_{-1}(E).
+\]
+The exact central identity is
+\[
+(\mu_2-\lambda_2)\bigl(W_2(E+2)-W_2(E)+W_1(E+1)-W_1(E)\bigr)=1.
+\]
+It first implies \(\mu_2\ne\lambda_2\). Only now do the two independent constant equations imply that \(a_0\), and then \(b_0\), is constant; and the cross equations imply \(U_q=L_q=0\).
+
+Set
+\[
+G(E)=a_2(E)a_{-1}(E+1)a_{-1}(E+2),
+\]
+\[
+H(E)=a_{-2}(E)a_1(E-1)a_1(E-2).
+\]
+Direct multiplication gives the exact identities
+\[
+G(E)-G(E-1)=a_{-1}(E+1)U_q(E),
+\]
+\[
+H(E+1)-H(E)=a_1(E-1)L_q(E).
+\]
+Hence \(G\) and \(H\) are 1-periodic polynomials and therefore constants. If \(G\ne0\), all three polynomial factors are units, so \(a_2\) is constant, contradicting the hypothesis. If \(G=0\), the domain property and \(a_2\ne0\) force \(a_{-1}=0\). Thus in every allowed branch \(a_{-1}=0\); similarly \(a_1=0\).
+
+Therefore \(W_1=0\), and the central identity becomes the exact formula
+\[
+W_2(E+2)-W_2(E)=\frac{1}{\mu_2-\lambda_2}\ne0.
+\]
+A polynomial with nonzero constant 2-step difference is linear nonconstant. Since \(W_2=a_2(E-2)a_{-2}(E)\), degree additivity makes one extreme constant, hence a shifted-square-class element. This contradiction proves J3q. ∎
+
+## Polynomial-pair corollaries and limits
+
+A genuine polynomial Keller pair in \(\mathbb C[x,\xi]\) that, in the above Laurent coordinates, has **both** entries supported in \([-2,2]\) satisfies J3. Likewise, a genuine Weyl pair \(D,X\in A_1\) with \([D,X]=1\) and the same common localized band presentation satisfies J3q.
+
+These are corollaries of the Laurent/localized theorems, not identifications of all Laurent or localized pairs with Keller or Weyl pairs. In the quantum case, membership in \(A_1\) additionally requires
+\[
+E(E-1)\cdots(E-r+1)\mid a_{-r}(E)
+\]
+for each negative ladder \(-r\), and analogously for \(D\); no membership classification is asserted here.
+
+The result excludes only the sector where both extreme coefficients are present and both are non-(shifted)-squares. It does not cover one-sided support, classify the remaining square sectors or all band-2 pairs, establish invertibility, or prove JC2/DC1.
+
+## Computational support
+
+`verify_J3.py` runs 13 exact checks of selected reduced classical and quantum identities and finite polynomial examples. In particular, it checks reduced ladder components, central and product identities, two bounded sample equations, and periodicity for polynomials of degree at most four. It does not verify the full unreduced coefficient systems, arbitrary-degree lemmas, branch completeness, localization or membership facts, or the completeness of either proof. The proofs above are self-contained independently of those finite checks.

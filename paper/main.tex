@@ -38,9 +38,9 @@ and geometric monodromy $S_5$; hence its generic algebraic inverse is not solvab
 \maketitle
 
 \section{Scope and conventions}
-A \emph{Keller map} is a polynomial map with nonzero constant Jacobian determinant.  Its \emph{geometric degree} is the degree of the induced extension of rational function fields, equivalently the cardinality of a general geometric fiber.  We work over $\C$, although the displayed identities are defined over $\Q$.
+A \emph{Keller map} is a polynomial map with nonzero constant Jacobian determinant, terminology originating with Keller's formulation of the Jacobian problem \cite{Keller39}.  Its \emph{geometric degree} is the degree of the induced extension of rational function fields, equivalently the cardinality of a general geometric fiber.  We work over $\C$, although the displayed identities are defined over $\Q$.
 
-The claims below are deliberately limited to the construction, its degree, and the two explicitly certified monodromy groups.  Same-day public work also reported constructions in every generic fiber degree at least three \cite{Gallagher26}; we record that overlap neutrally and make no claim here about exact priority or novelty.  The accompanying script performs exact symbolic and finite-field checks.
+The claims below are deliberately limited to the construction, its degree, and the two explicitly certified monodromy groups.  Contemporaneous public work also reported constructions in every generic fiber degree at least three \cite{Gallagher26}; we record that overlap neutrally and make no claim here about exact priority or novelty.  The accompanying script performs exact symbolic and finite-field checks.
 
 \section{The telescoping construction}
 Put
@@ -92,7 +92,7 @@ Because $A$ has no terms below degree two and $C$ has no constant term,
 so $H_1,H_2\in\C[s,t]$.  A monomial $s^it^j$ in
 $H_m(x^2z,xy)/x^m$ produces $x^{2i+j-m}z^iy^j$.  Thus polynomiality is equivalent to the absence of weight less than $2$ in $H_1$ and weight less than $1$ in $H_2$.  The only possible offenders are the constant terms of $H_1,H_2$ and the coefficient of $t$ in $H_1$.  At $(s,t)=(0,0)$ these vanish respectively exactly when \eqref{eq:c1}, \eqref{eq:c2}, and, after differentiating $A((1+t)h(t))/h(t)^2+1+t$, \eqref{eq:c3} hold.
 
-Conversely, if \eqref{eq:family} is polynomial, $H_1(0,0)$ and $H_2(0,0)$ must be defined.  If $a=0$, use $g=h(t)-s$ and evaluate along $t=0$.  The quotient $S/g^2=A(g)/g^2+1$ is defined, but $T/g=C(g)/g+2$ is also defined; polynomiality after division by $x^2$ and $x$ forces their constant terms at $s=0$ to vanish.  In terms of $e_0=E(0)$ these are $e_0/2+1=0$ and $2e_0+2=0$, which demand $e_0=-2$ and $e_0=-1$, an impossibility.  Hence $a\ne0$, and the preceding weight argument gives all three conditions.  This also explains the degree-zero case: when $E=e$ is constant and $a\ne0$, \eqref{eq:c1} gives $e=-2$ while \eqref{eq:c2} gives $e=-1$.  The constraints are inconsistent; they do not ``force $a=0$.''
+Conversely, if \eqref{eq:family} is polynomial, the forbidden weight-zero terms of $H_1$ and $H_2$ must vanish.  If $a=0$, use $g=h(t)-s$ and evaluate along $t=0$.  The polynomial quotients are $S/g^2=A(g)/g^2+1$ and $T/g=C(g)/g+2$; polynomiality after division by $x^2$ and $x$ forces their constant terms at $s=0$ to vanish.  In terms of $e_0=E(0)$ these are $e_0/2+1=0$ and $2e_0+2=0$, which demand $e_0=-2$ and $e_0=-1$, an impossibility.  Hence $a\ne0$, and the preceding weight argument gives all three conditions.  This also explains the degree-zero case: when $E=e$ is constant and $a\ne0$, \eqref{eq:c1} gives $e=-2$ while \eqref{eq:c2} gives $e=-1$.  The constraints are inconsistent; they do not ``force $a=0$.''
 
 For the Jacobian, introduce $w=1/u$.  In coordinates $(\nu,w)$,
 \[
@@ -128,7 +128,7 @@ $\nu^{n+2}$ in $2A-\nu C$ is
  2e_n\left(\frac1{n+2}-\frac1{n+1}\right)
  =-\frac{2e_n}{(n+1)(n+2)}\ne0.
 \]
-Hence \eqref{eq:basefiber} has degree exactly $n+2$ and has $n+2$ simple roots generically.  Each root reconstructs a unique $(s,t)$ in the birational chart, and over a target with third coordinate $c\ne0$ one then uniquely recovers
+Hence \eqref{eq:basefiber} has degree exactly $n+2$ and has $n+2$ simple roots generically.  This reconstruction is made on the dense open set where the birational chart and its denominators are defined: in particular $\nu,u,g,c\ne0$.  A root $\nu=0$ would force $\alpha=0$ in \eqref{eq:basefiber}, so it creates no extraneous point over a general target.  Each remaining root reconstructs a unique $(s,t)$, and one then uniquely recovers
 $x=c/g$, $y=t/x$, and $z=s/x^2$.  Therefore the geometric degree is exactly $n+2$.
 \end{proof}
 
@@ -240,7 +240,7 @@ Exact finite-field factorizations include
  Q_1\bmod7&=6(\nu^5+2\nu^3-3\nu^2-3\nu-1), &&\text{irreducible},\\
  Q_1\bmod103&=20(\nu+11)(\nu+18)(\nu+21)(\nu^2-50\nu+40).
 \end{align*}
-The primes are unramified.  Thus the arithmetic group contains a $5$-cycle and a transposition; transitivity and prime degree imply primitivity, and a primitive subgroup of $S_5$ containing a transposition is $S_5$.
+Both primes are good: the specialized discriminant is nonzero modulo each, so the reductions are squarefree and the primes are unramified in the splitting field of $Q_1$.  Their Frobenius cycle types show that $\operatorname{Gal}(Q_1/\Q)$ contains a $5$-cycle and a transposition.  Irreducibility modulo $7$ also makes $Q_1$ irreducible over $\Q$, so this group is transitive; transitivity in prime degree implies primitivity, and a primitive subgroup of $S_5$ containing a transposition is $S_5$.  Since this rational target lies off the discriminant and denominator loci, the specialization theorem embeds its Galois group, up to conjugacy, into the generic arithmetic monodromy group.  The latter is a subgroup of $S_5$ containing $S_5$, hence is $S_5$.
 
 For geometric monodromy, \eqref{eq:quintic} is irreducible over $\C(a,b,c)$.  Indeed, over $K=\C(b,c)$ it is monic and primitive in $K[a][\nu]$, and it has degree one in $a$ with nonzero coefficient $2c^2\in K^*$.  In a factorization, one factor has $a$-degree zero; comparison of the coefficient of $a$ makes that factor divide a unit of $K$, so it is a unit.  Hence the geometric group is transitive and normal in the arithmetic $S_5$, leaving $A_5$ or $S_5$.
 
@@ -273,9 +273,9 @@ At $(a,b,c)=(2/3,-1/5,3/4)$ the primitive polynomial is
 \[
  R=20\nu^4-80\nu^3+60\nu^2+3\nu+15.
 \]
-Its exact unramified factorizations have types $(4)$ modulo $11$, $(1,3)$ modulo $7$, and $(1,1,2)$ modulo $19$.  Thus the arithmetic group is transitive and contains a $4$-cycle, a $3$-cycle, and a transposition; it is $S_4$.
+Its exact factorizations have types $(4)$ modulo $11$, $(1,3)$ modulo $7$, and $(1,1,2)$ modulo $19$; the discriminant is nonzero modulo each prime, so these are good, unramified reductions.  Irreducibility modulo $11$ proves that $R$ is irreducible over $\Q$, hence its Galois group is transitive and contains a $4$-cycle.  The reduction modulo $7$ supplies a $3$-cycle.  The group order is therefore divisible by $12$; among transitive subgroups of $S_4$, a subgroup of order divisible by $12$ is $A_4$ or $S_4$, and the $4$-cycle excludes $A_4$.  Thus $\operatorname{Gal}(R/\Q)=S_4$ (the reduction modulo $19$ additionally supplies a transposition).  The target is off the discriminant and denominator loci, so specialization embeds this group, up to conjugacy, into the generic arithmetic monodromy group; consequently that generic group is also $S_4$.
 
-The geometric group is normal and transitive in $S_4$, so it is $V_4$, $A_4$, or $S_4$.  In the $V_4$ case the degree-four extension would itself be Galois (the transitive $V_4$ action is regular).  The classical Galois case of the Jacobian problem \cite{Campbell73} says that a Keller map whose induced function-field extension is Galois is invertible, contradicting degree four.  To exclude $A_4$, use the three specializations above; their discriminants are
+The generic quartic \eqref{eq:quartic} is irreducible over $\C(a,b,c)$: over $K=\C(b,c)$ it is monic and primitive in $K[a][\nu]$, linear in $a$, and its $a$-coefficient $2c^2$ is a unit of $K$.  In any factorization one factor has $a$-degree zero, and comparison of the $a$-coefficient makes it divide that unit.  Thus the geometric group is transitive; it is also normal in the arithmetic $S_4$, so it is $V_4$, $A_4$, or $S_4$.  In the $V_4$ case the degree-four extension would itself be Galois (the transitive $V_4$ action is regular).  Campbell's Galois case over $\C$ says that a polynomial map with nonzero constant Jacobian and Galois induced function-field extension has a polynomial inverse \cite{Campbell73,Campbell13}, contradicting degree four.  To exclude $A_4$, use the three specializations above; their discriminants are
 \[
  -54873514800,
  \quad -466029671480352,
@@ -296,7 +296,7 @@ For every $N\ge3$, the geometric-degree spectrum of Keller self-maps of $\A^N_\C
 \begin{proof}
 Degree one is realized by automorphisms.  Every degree $d\ge3$ occurs on $\A^3$ by Theorem~\ref{thm:existence}, and adjoining $N-3$ identity coordinates preserves the degree and the Keller property.
 
-For completeness, degree two cannot occur.  A separable extension of degree two is Galois, and the classical Galois case \cite{Campbell73} then makes the Keller map invertible, hence of degree one.  This degree-two exclusion is an already-known corollary of the classical theorem and is not claimed as new.
+For completeness, degree two cannot occur.  A separable extension of degree two is Galois, and the classical Galois case over $\C$ \cite{Campbell73,Campbell13} then makes the Keller map invertible, hence of degree one.  This degree-two exclusion is an already-known corollary of the classical theorem and is not claimed as new.
 \end{proof}
 
 \section{Reproducibility}
@@ -309,10 +309,16 @@ L. Andrew Campbell,
 Math. Ann. \textbf{205} (1973), no.~3, 243--248.
 \url{https://doi.org/10.1007/BF01349234}.
 
+\bibitem{Campbell13}
+L. Andrew Campbell,
+\emph{On the rational real Jacobian conjecture},
+arXiv:1210.0251v4 [math.AG], 2013.
+\url{https://arxiv.org/abs/1210.0251}.
+
 \bibitem{Gallagher26}
 Alexis Gallagher,
 \emph{The Jacobian counterexample, explained},
-updated July 20, 2026.
+updated and accessed July 20, 2026.
 \url{https://jacobianfun.org/jacobian-explained}.
 
 \bibitem{Keller39}
