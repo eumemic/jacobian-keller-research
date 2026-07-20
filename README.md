@@ -1,6 +1,6 @@
 # Jacobian, Keller, and JC2 research materials
 
-This staging repository separates the current conservative manuscript from provisional research notes. Inclusion here is for review and reproducibility; it is not a claim of peer review, publication, priority, or mathematical validation.
+This living repository separates the current conservative manuscript from provisional research notes. Inclusion here is for review and reproducibility; it is not a claim of peer review, priority, or mathematical validation.
 
 ## Status
 
