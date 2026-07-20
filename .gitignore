@@ -1,0 +1,30 @@
+# Python caches and environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# TeX generated files
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+
+# Editor and operating-system debris
+.DS_Store
+*~
+*.swp
+*.swo
+
+# Local secrets and archives
+.env
+.env.*
+*.zip
+*.tar
+*.tar.gz
+*.tgz

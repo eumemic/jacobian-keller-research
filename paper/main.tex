@@ -1,0 +1,325 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\A}{\mathbb A}
+\newcommand{\C}{\mathbb C}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Jac}{\operatorname{Jac}}
+
+\title[Degrees and monodromy of explicit Keller maps]{Telescoping Keller maps of affine three-space:\\ degrees and explicit symmetric monodromy}
+\author{[AUTHOR NAME(S) PLACEHOLDER --- ORDER TO BE CONFIRMED]}
+\address{[AFFILIATION AND POSTAL ADDRESS PLACEHOLDER]}
+\email{[EMAIL PLACEHOLDER]}
+\thanks{[ORCID(S), FUNDING, AND ACKNOWLEDGMENTS PLACEHOLDER]}
+\date{[DATE PLACEHOLDER]}
+
+\begin{document}
+\begin{abstract}
+We give a telescoping construction of polynomial self-maps of affine three-space with Jacobian determinant $-2$.  Its exact polynomiality criterion consists of three scalar identities at $a=h(0)\ne0$, and a member defined by a polynomial $E$ of degree $n\ge1$ has geometric degree exactly $n+2$.  Shifted Legendre polynomials supply members for every $n\ge1$.  An explicit degree-five member has primitive generic-fiber equation
+\[
+ \nu^5-5\nu^3+4\nu^2-bc\nu+2ac^2=0
+\]
+and geometric monodromy $S_5$; hence its generic algebraic inverse is not solvable by radicals.  We also record an $S_4$ member and the resulting degree spectrum $\N\setminus\{2\}$ in every dimension at least three.  The exclusion of degree two is the already-known quadratic corollary of the classical Galois case of the Jacobian problem, not a new result here.
+\end{abstract}
+\maketitle
+
+\section{Scope and conventions}
+A \emph{Keller map} is a polynomial map with nonzero constant Jacobian determinant.  Its \emph{geometric degree} is the degree of the induced extension of rational function fields, equivalently the cardinality of a general geometric fiber.  We work over $\C$, although the displayed identities are defined over $\Q$.
+
+The claims below are deliberately limited to the construction, its degree, and the two explicitly certified monodromy groups.  Same-day public work also reported constructions in every generic fiber degree at least three \cite{Gallagher26}; we record that overlap neutrally and make no claim here about exact priority or novelty.  The accompanying script performs exact symbolic and finite-field checks.
+
+\section{The telescoping construction}
+Put
+\[
+ s=x^2z,\qquad t=xy,\qquad u=1+t.
+\]
+For $E(\nu)\in\C[\nu]$, define primitives with zero constant term
+\[
+ A(\nu)=\int_0^\nu \xi E(\xi)\,d\xi,
+ \qquad C(\nu)=2\int_0^\nu E(\xi)\,d\xi.
+\]
+Given $h(t)\in\C[t]$, set
+\[
+ g=h(t)-s,\qquad \nu=ug,
+ \qquad S=A(ug)+ug^2,\qquad T=C(ug)+2g.
+\]
+Consider the initially rational expression
+\begin{equation}\label{eq:family}
+ F_{E,h}(x,y,z)=
+ \left(\frac{S(x^2z,xy)}{x^2g(x^2z,xy)^2},
+       \frac{T(x^2z,xy)}{xg(x^2z,xy)},
+       xg(x^2z,xy)\right).
+\end{equation}
+
+\begin{theorem}[Telescoping family]\label{thm:family}
+Let $E$ have degree $n\ge1$ and put $a=h(0)$.  The expression \eqref{eq:family} is a polynomial map if and only if $a\ne0$ and
+\begin{align}
+ A(a)&=-a^2, \label{eq:c1}\\
+ C(a)&=-2a, \label{eq:c2}\\
+ 1+E(a)+h'(0)\frac{E(a)+2}{a}&=0. \label{eq:c3}
+\end{align}
+When these conditions hold,
+\[
+ \det\Jac(F_{E,h})=-2,
+ \qquad \deg_{\rm geom}(F_{E,h})=n+2.
+\]
+\end{theorem}
+
+\begin{proof}
+First suppose that $a\ne0$.  Write
+\[
+ H_1=\frac{S}{g^2},\qquad H_2=\frac{T}{g}.
+\]
+Because $A$ has no terms below degree two and $C$ has no constant term,
+\[
+ H_1=\sum_{k\ge2}A_k u^kg^{k-2}+u,
+ \qquad H_2=\sum_{k\ge1}C_k u^kg^{k-1}+2,
+\]
+so $H_1,H_2\in\C[s,t]$.  A monomial $s^it^j$ in
+$H_m(x^2z,xy)/x^m$ produces $x^{2i+j-m}z^iy^j$.  Thus polynomiality is equivalent to the absence of weight less than $2$ in $H_1$ and weight less than $1$ in $H_2$.  The only possible offenders are the constant terms of $H_1,H_2$ and the coefficient of $t$ in $H_1$.  At $(s,t)=(0,0)$ these vanish respectively exactly when \eqref{eq:c1}, \eqref{eq:c2}, and, after differentiating $A((1+t)h(t))/h(t)^2+1+t$, \eqref{eq:c3} hold.
+
+Conversely, if \eqref{eq:family} is polynomial, $H_1(0,0)$ and $H_2(0,0)$ must be defined.  If $a=0$, use $g=h(t)-s$ and evaluate along $t=0$.  The quotient $S/g^2=A(g)/g^2+1$ is defined, but $T/g=C(g)/g+2$ is also defined; polynomiality after division by $x^2$ and $x$ forces their constant terms at $s=0$ to vanish.  In terms of $e_0=E(0)$ these are $e_0/2+1=0$ and $2e_0+2=0$, which demand $e_0=-2$ and $e_0=-1$, an impossibility.  Hence $a\ne0$, and the preceding weight argument gives all three conditions.  This also explains the degree-zero case: when $E=e$ is constant and $a\ne0$, \eqref{eq:c1} gives $e=-2$ while \eqref{eq:c2} gives $e=-1$.  The constraints are inconsistent; they do not ``force $a=0$.''
+
+For the Jacobian, introduce $w=1/u$.  In coordinates $(\nu,w)$,
+\[
+ S=A(\nu)+\nu^2w,
+ \qquad T=C(\nu)+2\nu w.
+\]
+Using $A'=\nu E$ and $C'=2E$ gives
+\[
+ \frac{\partial(S,T)}{\partial(\nu,w)}=2\nu^2w,
+ \qquad
+ \frac{\partial(\nu,w)}{\partial(s,t)}=u^{-1},
+ \qquad
+ \frac{\partial(S,T)}{\partial(s,t)}=2g^2.
+\]
+On $x\ne0$, compare the volume forms in coordinates $(x,s,t)$ and use the third target coordinate $xg$; the $x\,dg$ term disappears when wedged with $ds\wedge dt$.  One obtains
+\[
+ F^*(dw_1\wedge dw_2\wedge dw_3)=-2\,dx\wedge dy\wedge dz.
+\]
+As $F$ is polynomial, the identity holds everywhere.
+
+It remains to determine the degree.  The change
+\[
+ (s,t)\dashrightarrow(\nu,w)=((1+t)(h(t)-s),(1+t)^{-1})
+\]
+is birational, with $t=w^{-1}-1$ and
+$s=h(w^{-1}-1)-\nu w$.  Eliminating $w$ from $S=\alpha$ and $T=\beta$ gives
+\begin{equation}\label{eq:basefiber}
+ A(\nu)-\frac12\nu C(\nu)+\frac{\beta}{2}\nu=\alpha.
+\end{equation}
+If $e_n$ is the leading coefficient of $E$, then the coefficient of
+$\nu^{n+2}$ in $2A-\nu C$ is
+\[
+ 2e_n\left(\frac1{n+2}-\frac1{n+1}\right)
+ =-\frac{2e_n}{(n+1)(n+2)}\ne0.
+\]
+Hence \eqref{eq:basefiber} has degree exactly $n+2$ and has $n+2$ simple roots generically.  Each root reconstructs a unique $(s,t)$ in the birational chart, and over a target with third coordinate $c\ne0$ one then uniquely recovers
+$x=c/g$, $y=t/x$, and $z=s/x^2$.  Therefore the geometric degree is exactly $n+2$.
+\end{proof}
+
+\section{Existence in every degree at least three}
+Let $L_n$ be the Legendre polynomial normalized by $L_n(1)=1$.
+
+\begin{lemma}[Shifted Legendre moments]\label{lem:moments}
+For $n\ge1$,
+\[
+ \int_0^1L_n(2\nu-1)\,d\nu=0,
+\]
+and for $n\ge2$,
+\[
+ \int_0^1\nu L_n(2\nu-1)\,d\nu=0.
+\]
+Moreover $L_n(1)=1$.
+\end{lemma}
+\begin{proof}
+After $r=2\nu-1$, the first integral is one half of
+$\int_{-1}^1L_n(r)\,dr$, which vanishes by orthogonality to the constant polynomial for $n\ge1$.  The second is one quarter of
+$\int_{-1}^1(r+1)L_n(r)\,dr$, which vanishes for $n\ge2$ by orthogonality to every polynomial of degree at most one.  The endpoint normalization is part of the standard definition (and follows immediately from Rodrigues' formula).
+\end{proof}
+
+\begin{theorem}[Universal existence]\label{thm:existence}
+For every $n\ge1$ there are $E$ of degree $n$ and $h$ satisfying Theorem~\ref{thm:family}.  Consequently every integer $d\ge3$ is the geometric degree of a Keller self-map of $\A^3_\C$ with determinant $-2$.
+\end{theorem}
+\begin{proof}
+For $n=1$, take
+\[
+ E(\nu)=2-6\nu,
+ \qquad h(t)=1-\frac32t.
+\]
+Then $A(1)=-1$, $C(1)=-2$, $E(1)=-4$, and
+$1-4+(-3/2)(-2)=0$.
+
+For $n\ge2$, take
+\begin{equation}\label{eq:legendre-family}
+ E(\nu)=2-6\nu+L_n(2\nu-1),
+ \qquad h(t)=1-2t.
+\end{equation}
+The two identities of Lemma~\ref{lem:moments} give
+\[
+ C(1)=2\int_0^1E=-2,
+ \qquad A(1)=\int_0^1\nu E=-1.
+\]
+Also
+\[
+ E(1)=2-6+L_n(1)=-3;
+\]
+hence the third condition is
+$1-3+(-2)(-1)=0$.  In all cases $a=h(0)=1\ne0$, so Theorem~\ref{thm:family} applies and gives degree $n+2$.
+\end{proof}
+
+\section{An explicit quintic with geometric monodromy \texorpdfstring{$S_5$}{S5}}
+Take $E=4-15\nu+10\nu^3$ and $h=1$.  Thus
+\[
+ A(\nu)=2\nu^2-5\nu^3+2\nu^5,
+ \quad C(\nu)=8\nu-15\nu^2+5\nu^4,
+ \quad g=1-x^2z,
+ \quad \nu=(1+xy)g.
+\]
+The map is compactly
+\begin{equation}\label{eq:F5}
+ F_5=\left(
+ \frac{A(\nu)+(1+xy)g^2}{x^2g^2},
+ \frac{C(\nu)+2g}{xg},
+ xg\right).
+\end{equation}
+Theorem~\ref{thm:family} proves polynomiality and gives
+$\det\Jac(F_5)=-2$ and $\deg_{\rm geom}F_5=5$.
+
+Let $(a,b,c)$ denote target coordinates.  Since $c=xg$, the fiber equations imply
+\[
+ ac^2=A(\nu)+\nu g,
+ \qquad bc=C(\nu)+2g.
+\]
+Eliminating $g$ gives the primitive equation
+\begin{equation}\label{eq:quintic}
+ P_{a,b,c}(\nu)=\nu^5-5\nu^3+4\nu^2-bc\nu+2ac^2=0.
+\end{equation}
+Conversely, away from the proper loci where a denominator vanishes, a root reconstructs the source point by
+\begin{equation}\label{eq:reconstruction}
+ g=\frac{bc-C(\nu)}2,
+ \quad x=\frac c g,
+ \quad u=\frac\nu g,
+ \quad y=\frac{u-1}{x},
+ \quad z=\frac{1-g}{x^2}.
+\end{equation}
+These are exact rational identities modulo \eqref{eq:quintic}.
+
+\begin{theorem}\label{thm:S5}
+The arithmetic and geometric monodromy groups of $F_5$ are $S_5$.
+Consequently the generic algebraic inverse is not solvable by radicals over
+$\C(a,b,c)$.
+\end{theorem}
+\begin{proof}
+At the targets
+\[
+ (2/3,-1/5,3/4),\quad(1/2,1/3,-2/7),\quad(-3/5,4/9,1/6),
+\]
+the primitive integral specializations of \eqref{eq:quintic} are
+\begin{align*}
+ Q_1&=20\nu^5-100\nu^3+80\nu^2+3\nu+15,\\
+ Q_2&=147\nu^5-735\nu^3+588\nu^2+14\nu+12,\\
+ Q_3&=270\nu^5-1350\nu^3+1080\nu^2-20\nu-9.
+\end{align*}
+Exact finite-field factorizations include
+\begin{align*}
+ Q_1\bmod7&=6(\nu^5+2\nu^3-3\nu^2-3\nu-1), &&\text{irreducible},\\
+ Q_1\bmod103&=20(\nu+11)(\nu+18)(\nu+21)(\nu^2-50\nu+40).
+\end{align*}
+The primes are unramified.  Thus the arithmetic group contains a $5$-cycle and a transposition; transitivity and prime degree imply primitivity, and a primitive subgroup of $S_5$ containing a transposition is $S_5$.
+
+For geometric monodromy, \eqref{eq:quintic} is irreducible over $\C(a,b,c)$.  Indeed, over $K=\C(b,c)$ it is monic and primitive in $K[a][\nu]$, and it has degree one in $a$ with nonzero coefficient $2c^2\in K^*$.  In a factorization, one factor has $a$-degree zero; comparison of the coefficient of $a$ makes that factor divide a unit of $K$, so it is a unit.  Hence the geometric group is transitive and normal in the arithmetic $S_5$, leaving $A_5$ or $S_5$.
+
+The three exact specialized discriminants are
+\begin{align*}
+ \Delta_1&=797038565664000,\\
+ \Delta_2&=-244036829099277031104,\\
+ \Delta_3&=17125713993062891250000.
+\end{align*}
+Neither $\Delta_1\Delta_2$ nor $\Delta_1\Delta_3$ is a rational square.  If the geometric group lay in $A_5$, the generic discriminant over $\Q(a,b,c)$ would be a constant times a rational square, forcing every product of two good rational specializations to be a rational square.  This contradiction gives geometric group $S_5$.
+
+Finally, a radical expression for the generic algebraic inverse would put the extension generated through \eqref{eq:reconstruction} inside a radical tower.  Its Galois closure would then have solvable group, contrary to $S_5$.
+\end{proof}
+
+\begin{remark}
+The last conclusion concerns the generic algebraic inverse.  It does not deny local holomorphic inverses: since $\det\Jac(F_5)=-2$, the holomorphic inverse function theorem supplies a holomorphic inverse germ at every point.
+\end{remark}
+
+\section{The degree-four member}
+For $E=3-12\nu+6\nu^2$ and $h=1-2t$, Theorem~\ref{thm:family} gives a degree-four Keller map $F_4$.  Its primitive generic-fiber equation is
+\begin{equation}\label{eq:quartic}
+ \nu^4-4\nu^3+3\nu^2-bc\nu+2ac^2=0.
+\end{equation}
+
+\begin{proposition}\label{prop:S4}
+The arithmetic and geometric monodromy groups of $F_4$ are $S_4$.
+\end{proposition}
+\begin{proof}
+At $(a,b,c)=(2/3,-1/5,3/4)$ the primitive polynomial is
+\[
+ R=20\nu^4-80\nu^3+60\nu^2+3\nu+15.
+\]
+Its exact unramified factorizations have types $(4)$ modulo $11$, $(1,3)$ modulo $7$, and $(1,1,2)$ modulo $19$.  Thus the arithmetic group is transitive and contains a $4$-cycle, a $3$-cycle, and a transposition; it is $S_4$.
+
+The geometric group is normal and transitive in $S_4$, so it is $V_4$, $A_4$, or $S_4$.  In the $V_4$ case the degree-four extension would itself be Galois (the transitive $V_4$ action is regular).  The classical Galois case of the Jacobian problem \cite{Campbell73} says that a Keller map whose induced function-field extension is Galois is invertible, contradicting degree four.  To exclude $A_4$, use the three specializations above; their discriminants are
+\[
+ -54873514800,
+ \quad -466029671480352,
+ \quad 4549902124608000.
+\]
+The product of the first and third is negative and hence not a rational square.  The same constant-times-square specialization argument used for $S_5$ excludes $A_4$.  Therefore the geometric group is $S_4$.
+\end{proof}
+
+\section{Degree spectrum}
+We take $\N=\{1,2,3,\ldots\}$.
+
+\begin{corollary}\label{cor:spectrum}
+For every $N\ge3$, the geometric-degree spectrum of Keller self-maps of $\A^N_\C$ is
+\[
+ \N\setminus\{2\}=\{1,3,4,5,\ldots\}.
+\]
+\end{corollary}
+\begin{proof}
+Degree one is realized by automorphisms.  Every degree $d\ge3$ occurs on $\A^3$ by Theorem~\ref{thm:existence}, and adjoining $N-3$ identity coordinates preserves the degree and the Keller property.
+
+For completeness, degree two cannot occur.  A separable extension of degree two is Galois, and the classical Galois case \cite{Campbell73} then makes the Keller map invertible, hence of degree one.  This degree-two exclusion is an already-known corollary of the classical theorem and is not claimed as new.
+\end{proof}
+
+\section{Reproducibility}
+The file \texttt{verify.py} uses Python 3 and SymPy exact arithmetic.  It verifies the shifted-Legendre constraints for a range of indices, the polynomiality and Jacobian identities for representative family members, the quintic and quartic primitive equations and rational reconstruction, all stated finite-field certificates, and all specialized discriminants.  A successful run ends with \texttt{ALL CHECKS PASSED}.  No numerical root counts are used.
+
+\begin{thebibliography}{9}
+\bibitem{Campbell73}
+L. Andrew Campbell,
+\emph{A condition for a polynomial map to be invertible},
+Math. Ann. \textbf{205} (1973), no.~3, 243--248.
+\url{https://doi.org/10.1007/BF01349234}.
+
+\bibitem{Gallagher26}
+Alexis Gallagher,
+\emph{The Jacobian counterexample, explained},
+updated July 20, 2026.
+\url{https://jacobianfun.org/jacobian-explained}.
+
+\bibitem{Keller39}
+Ott-Heinrich Keller,
+\emph{Ganze Cremona-Transformationen},
+Monatsh. Math. Phys. \textbf{47} (1939), no.~1, 299--306.
+\url{https://doi.org/10.1007/BF01695502}.
+\end{thebibliography}
+
+\end{document}
