@@ -10,7 +10,8 @@ This living repository separates the current conservative manuscript from provis
 | Direct JC2 attack memo | `research/jc2-attack-memo.md` | Provisional, non-peer-reviewed research directions; no claimed result. |
 | JC2 frontier source audit | `research/jc2-frontier-audit.md` | Time-bounded literature audit with qualifications and primary-source links. |
 | Classical band-2 non-square theorem | `research/band2-classical-proved/` | Proved for polynomial Keller pairs over an algebraically closed characteristic-zero field; independent derivation and exact identity checker included. The square sector remains open. |
-| Audited classical/quantum band-2 obstruction (J3) | `research/band2-j3-provisional/` | Core Laurent/localized theorem independently audited and repaired; not peer reviewed. It excludes only the two-sided double-non-(shifted)-square sector under a common `[-2,2]` support bound; it does not classify band 2 or prove JC2/DC1. |
+| Audited classical/quantum band-2 obstruction (J3) | [`research/band2-j3-provisional/`](research/band2-j3-provisional/) | Core Laurent/localized theorem independently audited and repaired; not peer reviewed. It excludes only the two-sided double-non-(shifted)-square sector under a common `[-2,2]` support bound; it does not classify band 2 or prove JC2/DC1. |
+| Classical/quantum band-2 M5 partial cascades | [`research/band2-m5-partial/`](research/band2-m5-partial/) | Independently derived and audited, not peer reviewed. Partial cascade results only: the classical and quantum resistant arbitrary-degree branches remain unresolved. No full band-2 classification, no proof of JC2/DC1, and no counterexample found; the flawed supplied checker is not a classification certificate. |
 | Imported session artifacts | `archive-import/` | Deduplicated historical/provisional materials with a disposition manifest; not current results. |
 
 ## Verification
@@ -41,7 +42,7 @@ python3 research/band2-j3-provisional/verify_J3.py
 
 A successful run ends with `ALL J3 CHECKS PASSED`.
 
-These scripts use exact symbolic arithmetic for the identities they test. Passing them provides computational support only; it is not by itself a proof, proof review, peer review, or completeness verification. The J3 written argument has undergone an independent theorem audit, while remaining non-peer-reviewed.
+These scripts use exact symbolic arithmetic for the identities they test. Passing them provides computational support only; it is not by itself a proof, proof review, peer review, or completeness verification. The J3 written argument has undergone an independent theorem audit, while remaining non-peer-reviewed. The M5 partial package deliberately includes no classification checker: its checker audit explains why the supplied script cannot certify arbitrary-degree exhaustion.
 
 To rebuild the manuscript PDF (with a TeX installation providing the packages used by `main.tex`):
 
