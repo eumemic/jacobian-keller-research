@@ -7,7 +7,7 @@
 - **Proved:** over an algebraically closed field of characteristic zero, a polynomial Keller pair in band 2 cannot have nonzero nonsquare `a_2`. Thus the proposed `a_2`-nonsquare sector is empty, so the rigidity statement there holds vacuously rather than by an affine classification.
 - **Conditional:** over a non-algebraically-closed field, the same proof covers nonsquare `a_2` of positive degree once the degree-3 homogeneous deviation vanishes. A nonsquare constant has an additional residual branch and is not covered by that reduction.
 - **Computational evidence only:** the exact verifier checks all signs, all nine equations, the degree-3 reduction, and representative square/nonsquare/localized/affine examples. It is not used as a completeness argument.
-- **Open:** the square sector, the nonsquare-constant residual system over nonclosed fields, and the quantum band-2 analogue. No JC2 theorem beyond the explicitly stated band-sector result is claimed.
+- **Status at the time of this memo:** the square sector was open here. A later companion result classifies the oriented \(a_2\)-square sector \(a_2=h^2\ne0\) over \(\mathbb C\) when both entries' ladder supports are contained in \([-2,2]\) and genuine polynomial membership holds. Other orientations, the \(a_2=0\) edge, the nonsquare-constant residual system over nonclosed fields, and the quantum analogue remain outside that theorem. No JC2 theorem beyond the explicitly stated band-sector results is claimed.
 
 ## 1. Scope, package inventory, and checker audit
 
@@ -185,9 +185,9 @@ followed by `C_1,...,C_-4` from Section 3 with these substitutions and the divis
 
 This edge disappears over `C`, the intended classical coefficient field.
 
-### Square sector (open)
+### Square sector (historical next step; subsequently resolved in the companion M5 memo under its stated orientation)
 
-Write `a_2=h^2` and, after subtracting `lambda F`, write `b_2=0`, `b_1=c h`. Substitute this parametrization into `C_2,...,C_-4` together with `tau|a_-1,b_-1` and `tau^2|a_-2,b_-2`. This seven-equation differential-polynomial system is the smallest unresolved classical band-2 system produced by the present descent. The next exact calculation should split `c=0` and `c!=0`, derive divisibility consequences before imposing degree bounds, and search bounded degrees only afterward for counterexamples to those consequences.
+At the time of this memo, the remaining calculation was to write `a_2=h^2` and, after subtracting `lambda F`, write `b_2=0`, `b_1=c h`, then substitute this parametrization into `C_2,...,C_-4` together with `tau|a_-1,b_-1` and `tau^2|a_-2,b_-2`. The later companion M5 memo carries out that arbitrary-degree calculation for the oriented `a_2=h^2!=0` sector over `C`, with both entries' ladder supports contained in `[-2,2]`, and classifies its genuine polynomial members. This historical reduction did not itself establish that later result or supply the remaining orientation/case bridge to a full band-2 theorem.
 
 ## 7. Verifier
 

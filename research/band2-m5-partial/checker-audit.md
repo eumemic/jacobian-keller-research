@@ -16,11 +16,13 @@ The strongest defensible conclusions are:
 4. S5 proves neither arbitrary-degree exhaustion nor even a sound, certified algebraic exhaustion of all branches at its advertised degree budgets;
 5. S6 consists of two exact quantum examples and one very small generic-parameter divisibility instance, not a quantum classification or meaningful spot check of the resistant tail.
 
-The classification therefore remains blocked at least by the arbitrary-degree branch
+At the time of this audit, the checker-based classification was therefore blocked at least by the arbitrary-degree branch
 \[
 h=1,\qquad \widetilde\mu\ne0,\qquad a_{-2}\ne0,\qquad c\ne0,
 \]
-and by the missing logical bridge from the J3 statement (“at least one extreme in a two-sided pair is square”) to the exhaustive case split assumed by this checker.
+and by the missing logical bridge from J3's statement that, for the designated member \(X\) in the two-sided case \(a_2a_{-2}\ne0\), at least one of \(a_2,a_{-2}\) lies in the square class (equivalently over \(\mathbb C\), is a literal square after absorbing a nonzero scalar) to the exhaustive oriented case split assumed by this checker.
+
+**Current status note.** The companion classical memo now closes this resistant branch, and all of its zero subbranches, by a later independent arbitrary-degree proof. That result does not rehabilitate the supplied checker: the bounded ansatz, sign defects, silent skip, and absent orientation/case bridge documented here remain exactly as audited. The new theorem is scoped only to the oriented classical \(a_2\)-square sector under the companion memo's exact support and membership hypotheses; the quantum resistant branch and broader band-2 case coverage remain unresolved.
 
 ## 1. Independent Poisson derivation and orientation
 
@@ -161,8 +163,8 @@ a_{-1}=\frac{2\widetilde\mu v}{\kappa}
 the remaining three equations contain terms such as
 \(v v'\), \(p q v'\), \(p v q'\), and \(qv p'\). Nothing in S5 bounds their polynomial degrees. The absence of a returned low-degree solution is therefore not evidence that an arbitrary-degree branch is empty.
 
-I did not obtain an explicit high-degree counterexample with
-\(\widetilde\mu a_{-2}c\ne0\). That is not needed to invalidate the proof: the checker bears the burden of proving exhaustion, and it has no degree theorem. The resistant branch remains unresolved rather than disproved.
+In this historical checker audit, I did not obtain an explicit high-degree counterexample with
+\(\widetilde\mu a_{-2}c\ne0\). That was not needed to invalidate the checker-based proof: the checker bore the burden of proving exhaustion, and it had no degree theorem. At that stage the resistant branch was unresolved rather than disproved; the companion classical memo now excludes it by a separate arbitrary-degree argument.
 
 ### 6.2 The advertised “degree budgets” are inconsistent
 
@@ -219,7 +221,7 @@ External timeout or process termination is not caught, but ordinary SymPy except
 
 ## 7. Completeness relative to J3
 
-The supplied context says J3 establishes only that, in a two-sided pair, at least one extreme is square. That is weaker than an exhaustive oriented classification. The checker assumes specific positive-square parametrizations and then splits according to a negative proportionality branch, but it does not prove:
+The supplied context says J3 establishes only that, for the designated member \(X\) in the two-sided case \(a_2a_{-2}\ne0\), at least one of \(a_2,a_{-2}\) lies in the square class (equivalently over \(\mathbb C\), is a literal square after absorbing a nonzero scalar). That is weaker than an exhaustive oriented classification. The checker assumes specific positive-square parametrizations and then splits according to a negative proportionality branch, but it does not prove:
 
 1. that the square extreme can always be placed at the positive side without changing membership, bracket orientation, or the case equations;
 2. that every possible zero branch in the reductions has been retained;
@@ -281,15 +283,17 @@ Even a general ladder-2 divisibility theorem would only be an early cascade lemm
 - **S4 identities:** verified reduced-system identities, not exhaustion.
 - **S5 bounded degree 1:** at most an uncertified report about returned SymPy dictionaries.
 - **S5 bounded degree 2:** expensive/unstable, inconsistently truncated, and allowed to skip without failure.
-- **S5 arbitrary-degree resistant branch:** not addressed.
+- **S5 arbitrary-degree resistant branch:** not addressed by the supplied checker; subsequently closed in the companion classical memo by an independent arbitrary-degree proof.
 - **S6 two quantum examples:** exact example checks only.
 - **S6 deformed divisibility:** one linear-\(h\), degree-2, generic-\(\kappa\) instance only.
-- **Overall classical classification:** not established.
-- **Overall quantum classification:** not remotely established by these spot checks.
+- **Overall classical classification by the supplied checker:** not established.
+- **Overall quantum classification by the supplied checker:** not remotely established by these spot checks.
 
-## 11. Required proof blockers before a classification claim is defensible
+## 11. Historical blockers to a checker-based classification claim
 
-1. Supply a rigorous exhaustive case split from J3’s one-square conclusion, preserving orientation and membership.
+The following were required before the supplied checker could support such a claim. The later companion proof addresses the classical oriented \(a_2\)-square mathematics independently; it does not repair these checker defects.
+
+1. Supply a rigorous exhaustive case split from J3’s square-class disjunction, preserving orientation and membership.
 2. Prove all reductions without losing zero branches or state the necessary branch hypotheses explicitly.
 3. Prove an arbitrary-degree bound for the resistant \(h=1\), \(\widetilde\mu a_{-2}c\ne0\) branch, or solve it at arbitrary degree.
 4. If bounded algebra is retained, use a reproducible algebraic certificate: appropriate saturation, elimination/Gröbner data, explicit side conditions, and branch verification.
@@ -301,4 +305,4 @@ Even a general ladder-2 divisibility theorem would only be an early cascade lemm
 
 ## Final assessment
 
-This is a useful symbolic identity checker embedded in an invalid classification certificate. Its core S1/S4 component algebra is valuable, and its quantum examples are legitimate. But the central completeness claim fails for both mathematical and computational reasons. The resistant arbitrary-degree branch remains a decisive proof blocker, the low-degree solver is not a complete algebraic decision procedure, its degree budgets are misaligned with membership, and degree 2 can be silently omitted. The current classical sign assertions in S2/S3 are also directly false under the checker’s own bracket definition.
+This is a useful symbolic identity checker embedded in an invalid classification certificate. Its core S1/S4 component algebra is valuable, and its quantum examples are legitimate. But the checker's central completeness claim fails for both mathematical and computational reasons. At the time supplied, its resistant arbitrary-degree branch was a decisive proof blocker; the low-degree solver is not a complete algebraic decision procedure, its degree budgets are misaligned with membership, and degree 2 can be silently omitted. The classical sign assertions in S2/S3 are also directly false under the checker’s own bracket definition. The companion classical memo's later independent proof supersedes only the branch's mathematical open status within its stated oriented \(a_2\)-square sector; it does not alter any historical finding about this checker.
