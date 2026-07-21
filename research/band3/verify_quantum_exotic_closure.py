@@ -2,11 +2,13 @@
 """
 verify_quantum_exotic_closure.py
 ================================
-Exact SymPy verification backing `quantum-exotic-closure.md`: the DEGREE-FREE
-closure of the QUANTUM band-3 exotic (non-shifted-cube) `b_2 != 0` sub-case --
-the one residual gap left by `quantum-exotic-branch.md` (commit ebfc64d), and the
-load-bearing input the quantum band-3 floor routes through (`astar-band3.md` sends
-quantum A* into the exotic non-cube question).
+Exact SymPy verification backing `quantum-exotic-closure.md`.  This script
+checks degree-free telescoping/membership identities, corroborates displayed
+arbitrary-degree leading-coefficient expansions at selected degree pairs, proves
+a generic-r result for the degree-3 arithmetic-progression family at free-data
+degree d=1, and verifies selected exact instances: W1/W2 at d=2, W1 at d=3,4, and step-2 AP
+tops of degrees 3,6,9 at d=1.  It does NOT prove uniform closure in free degree
+or closure of all higher-degree non-AP exotic tops.
 
 Conventions (frozen, identical to every sibling quantum memo, commit ebfc64d):
     A_1[x^{-1}] = (+)_k x^k C[E],  (x^a f(E))(x^b g(E)) = x^{a+b} f(E+b) g(E),
@@ -17,9 +19,9 @@ Conventions (frozen, identical to every sibling quantum memo, commit ebfc64d):
     b_2^[3] a_3 = a_3^[2] b_2 with b_2 != 0 and a_3 NOT a shifted cube.
 
 WHAT THIS SCRIPT ESTABLISHES (see the memo for the argument):
-  0. engine: Q_m == direct commutator; Q_0 = (T-1)G telescoping; G(0)=0 under
-     membership; hence Q_0 = 1 <=> G = E, and the "moment unit" is the SLOPE of G,
-     slope = G(1) = constant coefficient of Q_0.
+  0. identities from the stipulated Q_m convention: Q_0 = (T-1)G telescoping;
+     G(0)=0 under membership; hence Q_0 = 1 <=> G = E, and the "moment unit" is
+     the SLOPE of G, slope = G(1) = constant coefficient of Q_0.
   1. STRUCTURAL: at deg a_3 = 3 the realizable exotic tops are EXACTLY the step-2
      arithmetic-progression class {r,r+2,r+4} (every other Phi_3-divisible non-cube
      multiset {0,a,b} fails b_2-effectivity, i.e. is not in the b_2!=0 branch at
@@ -27,16 +29,17 @@ WHAT THIS SCRIPT ESTABLISHES (see the memo for the argument):
      richer: non-AP realizable exotic tops exist -- flagged as residual.]
   2. MEMBERSHIP PROTECTION: the level-3 (bottom) contribution to the slope is
      mu_3 * a_3(0) * a_{-3}(3); vanishes identically when 0 is a root of a_3.
-  3. TROPICAL SKELETON: the k=3 and k=2 block leading coefficients (Lemma-R
-     staggered identities, symbolic in degree) force the top filler coefficients
-     to vanish -- the top of the annihilation cascade.
-  4. MAIN THEOREM (moment carries no unit): for the AP class {r,r+2,r+4} with r
-     SYMBOLIC and d=1 free data, the slope of G is forced to 0 -- hence Q_0 = 1 is
-     impossible.  This closes the ENTIRE degree-3 exotic branch at d=1.  The
-     explicit W1 triangular filler-annihilation is walked through.
+  3. TROPICAL SKELETON: selected degree pairs corroborate the k=3 and k=2 block
+     leading coefficients derived from the memo's displayed leading-term expansion.
+  4. MAIN THEOREM (generic moment obstruction): for the AP class {r,r+2,r+4}
+     with symbolic r and d=1 free data, rational elimination forces slope 0 for
+     generic r. Six values are checked separately; other exceptional r loci remain
+     open. The explicit W1 triangular filler-annihilation is walked through.
   5. VERIFICATION across the class: W1, W2, AP r in {1,-1,2,3} at d=1 (Q_0=1
-     Groebner-infeasible, Q_0=0 feasible); W1,W2 at d=2 with the exact
-     {slope forced 0} certificate; arbitrary top-degree AP g=1,2,3 (deg a_3=3,6,9).
+     Groebner-infeasible, Q_0=0 feasible); W1/W2 at d=2 with Q_0=1
+     infeasibility, and W1 additionally with an exact slope-zero certificate;
+     selected top-degree AP g=1,2,3 (deg a_3=3,6,9), where only Q_0=1
+     infeasibility is asserted.
   6. positive control: the pipeline reproduces a genuine b_2=0 pair, no spurious
      conditions -- the infeasibility above is a real kill, not an artifact.
 
@@ -173,20 +176,11 @@ def ap_top(roots):
 
 
 # =====================================================================
-# 0. Engine: Q_m == commutator; Q_0 = (T-1)G; G(0)=0; slope = G(1).
+# 0. Identities from stipulated Q_m: Q_0=(T-1)G; G(0)=0; slope=G(1).
 # =====================================================================
-print("--- 0. engine: Q_m == commutator; Q_0=(T-1)G; G(0)=0; slope = G(1) ---")
+print("--- 0. stipulated-Q_m identities: Q_0=(T-1)G; G(0)=0; slope = G(1) ---")
 A0 = {k: poly(f'A{k+3}', 2)[0] for k in range(-3, 4)}
 B0 = {k: poly(f'B{k+3}', 2)[0] for k in range(-3, 4)}
-
-
-def direct_commutator(m, K=3):
-    return sp.expand(sum(sh(B0[l], k) * A0[k] - sh(A0[k], l) * B0[l]
-                         for k in range(-K, K + 1) for l in range(-K, K + 1) if k + l == m))
-
-
-for m in range(-6, 7):
-    az(direct_commutator(m) - Qm(A0, B0, m), f"Q_{m} = direct commutator ladder coeff")
 
 # Telescoping potential G (band-agnostic form, K=3), gauge b_3=0 not yet imposed:
 def potential_G(A, B, K=3):
@@ -234,8 +228,9 @@ for extra in combinations(range(1, 15), 5):
     if phi and eff and nc and not all(roots[i + 1] - roots[i] == 2 for i in range(len(roots) - 1)):
         nonap6.append(roots)
 istrue(len(nonap6) > 0,
+       f"bounded normalized-root search (0 included, remaining roots in 1..14; max root <=14): "
        f"deg-6 has {len(nonap6)} realizable NON-AP exotic tops (e.g. {nonap6[0]}) -- residual class")
-print("   => at deg a_3 = 3 the exotic b_2!=0 branch IS the AP class; closing AP closes it.")
+print("   => at degree 3, any future complete AP analysis would cover the realizable exotic b_2!=0 class.")
 
 
 # =====================================================================
@@ -255,13 +250,13 @@ az(P3.subs(E, 1) - mu3 * a3g.subs(E, 0) * am3.subs(E, 3),
 # for an AP top with 0 a root, a3(0)=0, so the whole bottom drops out of the slope:
 a3_r0 = sp.expand(E * (E - 2) * (E - 4))
 az((sp.expand(sum(sh(a3_r0, j - 3) * sh(bm3, j) for j in range(3)))).subs(E, 1),
-   "a3(0)=0 (roots ni 0): bottom contribution to slope vanishes identically")
+   "a3(0)=0 (roots include 0): bottom contribution to slope vanishes identically")
 
 
 # =====================================================================
-# 3. TROPICAL SKELETON: block leading coefficients (Lemma-R), symbolic in degree.
+# 3. TROPICAL SKELETON: finite-degree corroboration of displayed leading formulas.
 # =====================================================================
-print("\n--- 3. tropical skeleton: block leading coefficients force filler tops to vanish ---")
+print("\n--- 3. tropical skeleton: leading formulas corroborated at selected degrees ---")
 # k=3 block operator K3[c] = a3^[-3] c + a3^[-2] c^[1] + a3^[-1] c^[2]; deg = deg a3 + deg c,
 # leading coeff = 3*lc(a3)*lc(c) != 0.  (T-1) keeps it top-order-1 nonzero => top of a_-3 forced 0.
 for (pp, nn) in [(3, 5), (3, 6), (6, 8), (3, 7)]:
@@ -269,15 +264,15 @@ for (pp, nn) in [(3, 5), (3, 6), (6, 8), (3, 7)]:
     K3 = sp.expand(sh(a3v, -3) * cv + sh(a3v, -2) * sh(cv, 1) + sh(a3v, -1) * sh(cv, 2))
     la3 = sp.Poly(a3v, E).nth(pp); lc = sp.Poly(cv, E).nth(nn)
     istrue(sp.Poly(K3, E).degree() == pp + nn and sp.expand(sp.Poly(K3, E).all_coeffs()[0] - 3 * la3 * lc) == 0,
-           f"k=3 block: deg a3={pp}, deg c={nn} -> K3 deg={pp+nn}, lead = 3*lc(a3)*lc(c) != 0")
+           f"[CORROBORATED AT SELECTED DEGREES] k=3 block: deg a3={pp}, deg c={nn} -> K3 deg={pp+nn}, lead = 3*lc(a3)*lc(c) != 0")
 # k=2 block filler term  -b2^[-2] a_-2 - b2^[-1] a_-2^[1] : leading coeff = -2*lc(b2)*lc(a_-2) != 0
 for (qq, mm) in [(2, 4), (2, 5), (4, 6)]:
     b2v, _ = poly('kB2', qq); av, _ = poly('kAm2', mm)
     K2 = sp.expand(-sh(b2v, -2) * av - sh(b2v, -1) * sh(av, 1))
     lb = sp.Poly(b2v, E).nth(qq); la = sp.Poly(av, E).nth(mm)
     istrue(sp.Poly(K2, E).degree() == qq + mm and sp.expand(sp.Poly(K2, E).all_coeffs()[0] + 2 * lb * la) == 0,
-           f"k=2 filler: deg b2={qq}, deg a_-2={mm} -> deg={qq+mm}, lead = -2*lc(b2)*lc(a_-2) != 0")
-print("   => the top Q_0-coefficients triangularly annihilate the filler top coefficients.")
+           f"[CORROBORATED AT SELECTED DEGREES] k=2 filler: deg b2={qq}, deg a_-2={mm} -> deg={qq+mm}, lead = -2*lc(b2)*lc(a_-2) != 0")
+print("   => selected degree-pair checks corroborate the memo's written triangular filler-annihilation leading formulas.")
 
 
 # =====================================================================
@@ -346,9 +341,9 @@ b2r = sp.expand((E - r - 1) * (E - r - 4))
 az(sh(b2r, 3) * a3r - sh(a3r, 2) * b2r, "AP top {r,r+2,r+4}: b2 solves the wall for ALL r (symbolic)")
 resid_r, c = slope_residuals(a3r, b2r, 1, rsym=r)
 istrue(all(r not in sp.sympify(cc).free_symbols for cc in SEQ_PIVOTS) and len(SEQ_PIVOTS) >= 6,
-       "d=1, r SYMBOLIC: the positive cascade solves through r-INDEPENDENT pivots (uniform in r)")
-istrue(resid_r == [c], "d=1, r SYMBOLIC: sole residual = c  =>  moment slope FORCED to 0 for generic r")
-print("   => Q_0=1 (slope=1) impossible for the whole degree-3 exotic (=AP) branch at d=1.  [PROVED]")
+       "d=1, r SYMBOLIC: selected rational-elimination pivots are r-independent; exceptional rank/denominator loci not classified")
+istrue(resid_r == [c], "d=1, r SYMBOLIC: rational generic-r elimination leaves residual c  => slope 0 where pivots/denominators are valid")
+print("   => Q_0=1 is impossible for generic r; unchecked exceptional rank/denominator loci remain open.")
 
 # Explicit W1 triangular annihilation walk-through (the mechanism, spelled out):
 print("\n--- 4b. explicit W1 (r=0) triangular filler-annihilation at d=1 ---")
@@ -371,13 +366,13 @@ az((pw.nth(5) - 9 * (2 * p0 - 15 * p1)), "W1 d=1: [E^5] = 9*(2 p0 - 15 p1)  => p
 az((pw.nth(4) + 5 * (2 * u1 + 27 * p0 - 57 * p1)), "W1 d=1: [E^4] = -5*(2 u1 + 27 p0 - 57 p1) => u1 = 0")
 az((pw.nth(3) + 8 * u0 - 40 * u1 - 336 * p0 + 441 * p1), "W1 d=1: [E^3] = -8 u0 +40 u1 +336 p0 -441 p1 => u0 = 0")
 az(pw.nth(0).subs({u0: 0, u1: 0, p0: 0, p1: 0}),
-   "W1 d=1: with fillers = 0 the SLOPE [E^0] = 0 -- but the unit needs 1.  KILLED.")
+   "W1 d=1: with fillers = 0, Q_0=1 INFEASIBLE in this checked slice")
 
 
 # =====================================================================
 # 5. VERIFICATION across the exotic (AP) class and top-degrees.
 # =====================================================================
-print("\n--- 5. verification: Q_0=1 infeasible (=[1]), Q_0=0 feasible; exact d=2 certificate ---")
+print("\n--- 5. verification: slice-specific Q_0 checks; exact W1 d=2 slope certificate ---")
 W2 = (sp.expand(E * (E + 2) * (E + 4)), sp.expand(E * (E + 3)))
 
 
@@ -393,7 +388,7 @@ for (tag, top) in [('W1 r=0', W1), ('W2 r=-4', W2), ('r=1', ap(1)), ('r=-1', ap(
     Gu = list(sp.groebner(pos + q0_conditions(A, B, sp.Integer(1)), *allvars, order='grevlex'))
     Gh = list(sp.groebner(pos + q0_conditions(A, B, sp.Integer(0)), *allvars, order='grevlex'))
     istrue(Gu == [sp.Integer(1)] and Gh != [sp.Integer(1)],
-           f"{tag} d=1: {{cascade}}∪{{Q_0=1}} INFEASIBLE, {{Q_0=0}} feasible  => unit is the killer")
+           f"{tag} d=1: Q_0=1 INFEASIBLE in this checked slice; Q_0=0 feasible in this checked slice")
 
 # W1, W2 at d=2 (Q_0=1 infeasible) -- the free-degree beyond the d=1 proof:
 for (tag, top) in [('W1', W1), ('W2', W2)]:
@@ -428,14 +423,14 @@ istrue(sp.simplify(csol.subs({a2_0: 4 * a2_2})) == 0 or sp.simplify(sp.cancel(cs
        "W1 d=2: with w=0 the slope c is forced to 0  =>  Q_0=1 impossible (exact certificate)")
 
 # Arbitrary TOP-degree AP: deg a_3 = 3, 6, 9 (g = 1,2,3), d=1:
-print("\n--- 5b. arbitrary top-degree AP: deg a_3 = 3,6,9 ---")
+print("\n--- 5b. selected top-degree AP: deg a_3 = 3,6,9 ---")
 for g in [1, 2, 3]:
     roots = list(range(0, 2 * (3 * g), 2))          # {0,2,...,2(3g-1)}, 3g roots, step 2
     a3, b2, br = ap_top(roots)
     az(sh(b2, 3) * a3 - sh(a3, 2) * b2, f"g={g}: step-2 AP top deg {3*g} (roots {roots}) solves the wall")
     A, B, pos, allvars, cs = build_cascade(a3, b2, 1)
     Gu = list(sp.groebner(pos + q0_conditions(A, B, sp.Integer(1)), *allvars, order='grevlex'))
-    istrue(Gu == [sp.Integer(1)], f"g={g}: {{cascade}}∪{{Q_0=1}} INFEASIBLE  => AP killed at deg a_3={3*g}")
+    istrue(Gu == [sp.Integer(1)], f"g={g}: Q_0=1 INFEASIBLE in this checked AP slice at deg a_3={3*g}")
 
 
 # =====================================================================

@@ -11,36 +11,26 @@ pinned the W3 obstruction to the single residue (4e/3) a_-3 a_2', concluding tha
 only ONE clean first integral (the moment M = tau) was available and that the
 band-3 analogue of band-2's SECOND integral I_2 was the precise missing step.
 
-This script MACHINE-CHECKS that missing ingredient and its consequences:
+This script separates exact symbolic verification from bounded exploration:
 
-  SECTION 0  the 13 C_m vs the direct 2-variable Poisson bracket (self-contained).
-  SECTION 1  the e != 0 reduction: b_0,b_-1 solve C_3,C_2; b_-2 is EXPLICIT
-             (C_1 RHS a total derivative); b_-3 from the moment; C_0 = 1.
-  SECTION 2  Phi:  Phi' = C_-1 exactly, nonlocal generator Q1 = int a_2.
-             Phi|_{e=0} equals cube-closure's Phi_1 (commit ebfc64d) EXACTLY,
-             so Phi is the honest e != 0 generalisation.
-  SECTION 3  THE SECOND INTEGRAL.  With the multiplier (2/3) a_2,
-                 I_2' = C_-2 - (2/3) a_2' Phi     (nonlocals Q1, Q2=int a_2^2, P1=int a_1).
-             The multiplier is FORCED by the W3 residue: Euler_sig(C_-2) =
-             -(4e/3) a_2'  (the obstruction), while Euler_sig(C_-2 - (2/3)a_2' Phi)
-             = 0 -- the (2/3)a_2 exactly absorbs the residue.  Also
-             Euler_s(...) = 0 (the a_-2 residue is absorbed too).
-  SECTION 4  the two conserved quantities on a solution: Phi = const and
-             J := I_2 + (2/3) Phi_0 a_2 = const.
-  SECTION 5  the TROPICAL degree gap.  Phi, I_2 are LINEAR in (a_-2, a_-3); solving
-             the 2x2 gives, for deg a_2 = Q >= 1,  deg a_-3 = 6Q  with leading
-             coefficient -13 lc(a_2)^6/2187 != 0, and deg b_-3 = 5Q with leading
-             coefficient -25 e lc(a_2)^5/243 != 0, so  deg b_-3 < deg a_-3.  The
-             bottom Wronskian C_-6 forces b_-3 = mu3 a_-3, IMPOSSIBLE at unequal
-             degrees => A*-band3 (mu3 != 0) EMPTY for deg a_2 >= 1; and b_-3 = 0
-             is impossible too (nonzero lead), so the whole e != 0 sector is empty
-             off the finite lc(b_-3)=0 loci.  Verified over a degree box.
-  SECTION 6  the a_2 = const (Q = 0) residual stratum: finite surviving loci
-             (bounded), and consistency with the B3-2 Groebner box.
+  EXACT SECTIONS 0-4 check the 13 C_m formula, the e != 0 reduction, Phi' = C_-1,
+             and I_2' = C_-2 - (2/3) a_2' Phi, together with the Euler residues.
+             The multiplier is unique only up to an additive constant:
+             m'=(2/3)a_2', hence m=(2/3)a_2+constant. They also check the two
+             conserved quantities.
+  EXACT PART OF SECTION 5 checks the trailing 2x2 determinant and the exact
+             leading coefficients in one a_2-dominant specialization. The solve
+             is conditional on det != 0; this script does not prove denominator
+             cancellation, polynomiality, or coefficient membership.
+  BOUNDED PART OF SECTION 5 explores generic leading monomials only for
+             Q=1..3, P,R=0..3, L=1..3. It sets conserved constants CP=CI=0 and
+             does not resolve cancellation/tie loci. It is corroboration, not an
+             arbitrary-degree proof and not a sector-emptiness theorem.
+  SECTION 6 checks the a_2-constant residue switch-off, one bounded survivor, and
+             one exact bounded Groebner emptiness box.
 
-A successful run prints 'ALL CLASSICAL E CLOSURE CHECKS PASSED'.  Every displayed
-IDENTITY is machine-checked here; the ARBITRARY-degree gap statement of Section 5
-is the termwise-domination written argument in the memo, corroborated by the box.
+A successful run prints 'ALL CLASSICAL E CLOSURE CHECKS PASSED'. Exact checks and
+bounded exploration are labelled separately in the output.
 """
 import sympy as sp
 
@@ -211,10 +201,12 @@ zero(euler(target, sig),
 zero(euler(target, s),
      "and Euler_a-2(C_-2 - (2/3)a_2' Phi) = 0 (the a_-2 residue is absorbed too)")
 # the multiplier value m is FORCED: Euler_a-3(C_-2 - (m)' Phi) = -(4e/3)a_2' + 2e*m'
-# vanishes iff m' = (2/3)a_2', i.e. m = (2/3)a_2.  (Phi's a_-3 coefficient is -2e.)
+# vanishes iff m'=(2/3)a_2', i.e. m=(2/3)a_2+constant.
+# (Phi's a_-3 coefficient is -2e.)
 mgen = sp.Function("m")(t)
 zero(euler(sp.expand(Cm2 - D(mgen)*Phi), sig) - (-sp.Rational(4, 3)*e*D(q) + 2*e*D(mgen)),
-     "for ANY multiplier m: Euler_a-3(C_-2 - m' Phi) = -(4e/3)a_2' + 2e m'; =0 forces m=(2/3)a_2")
+     "for ANY multiplier m: Euler_a-3(C_-2 - m' Phi) = -(4e/3)a_2' + 2e m'; "
+     "=0 forces m=(2/3)a_2 + constant")
 
 # I_2 carries a_-2, a_-3 linearly too:
 zero(I2.coeff(sig, 1) + (k1 + sp.Rational(2, 3)*e*q),
@@ -236,8 +228,10 @@ zero(sp.expand(Dqq(I2 + sp.Rational(2, 3)*Phi0*q)
 print(f"\n--- Section 4 (two conserved quantities) done ({PASS} checks) ---\n")
 
 # =====================================================================
-# SECTION 5.  The tropical degree gap (deg a_2 = Q >= 1 => A* EMPTY).
-#   Phi, I_2 are LINEAR in (a_-2, a_-3): solve the 2x2 for the trailing pair.
+# SECTION 5. Conditional trailing solve and bounded degree exploration.
+#   Exact: Phi and I_2 are linear in (a_-2,a_-3), with the determinant below.
+#   The rational solve applies only when det != 0; polynomiality/membership are
+#   not checked here. The later scan is bounded generic-leading-monomial evidence.
 # =====================================================================
 CP, CI = sp.symbols("CP CI")
 Ps, PS = Phi.coeff(sig, 1), Phi.coeff(s, 1)
@@ -253,7 +247,11 @@ bm3_num = sp.expand(det*t - 2*(det*q*bm2 - e*(-Is*(CP - P0) + Ps*(CI - I0)))
 
 
 def leaddata(expr, Q, P, R, L):
-    """Return (degree, leading coeff) of expr under generic leading monomials."""
+    """Return degree data after a bounded generic-leading-monomial substitution.
+
+    CP and CI are set to zero. This substitution does not classify coefficient
+    cancellation/tie loci and does not test divisibility by the determinant.
+    """
     lcq, lcp, lcr, lcl = sp.symbols("lcq lcp lcr lcl")
     sub = {q: lcq*t**Q, p: lcp*t**P, r: lcr*t**R, al: lcl*t**L,
            Q1: lcq*t**(Q + 1)/(Q + 1), Q2: lcq**2*t**(2*Q + 1)/(2*Q + 1),
@@ -265,19 +263,23 @@ def leaddata(expr, Q, P, R, L):
     return (pol.degree(), pol.LC())
 
 
-# q-dominant certificates:  deg a_-3 = 6Q (lc -13 lc(q)^6/2187),  deg b_-3 = 5Q.
+# Exact q-dominant specialization certificates: deg a_-3=6Q and deg b_-3=5Q.
+# These are regime-specific and conditional on the nonzero determinant.
 dd, lcdet = leaddata(det, 2, 1, 1, 1)
 ds, lcsig = leaddata(sig_num, 2, 1, 1, 1)
 db, lcbm3 = leaddata(bm3_num, 2, 1, 1, 1)
 lcq = sp.symbols("lcq")
-check(ds - dd == 12, "q-dominant (Q=2): deg a_-3 = 6Q = 12")
-check(db - dd == 10, "q-dominant (Q=2): deg b_-3 = 5Q = 10 < deg a_-3")
+rep_scope = ("[REPRESENTATIVE (Q,P,R,L)=(2,1,1,1); CP=CI=0; "
+             "generic leading monomials; ties/cancellation omitted] ")
+check(ds - dd == 12, rep_scope + "deg a_-3 = 12")
+check(db - dd == 10, rep_scope + "deg b_-3 = 10 < deg a_-3")
 zero(sp.simplify(lcsig/lcdet) + sp.Rational(13, 2187)*lcq**6,
-     "leading coeff of a_-3 is -13 lc(a_2)^6/2187 != 0 (the 6:5 gap is genuine)")
+     rep_scope + "leading coeff of a_-3 is -13 lc(a_2)^6/2187 != 0")
 zero(sp.simplify(lcbm3/lcdet) + sp.Rational(25, 243)*e*lcq**5,
-     "leading coeff of b_-3 is -25 e lc(a_2)^5/243 != 0 (b_-3 not identically 0)")
+     rep_scope + "leading coeff of b_-3 is -25 e lc(a_2)^5/243 != 0")
 
-# General Q >= 1: deg a_-3 = 6Q, gap holds, over a box (machine-checked).
+# BOUNDED EXPLORATION ONLY: Q=1..3, P,R=0..3, L=1..3.
+# Generic leading monomials, CP=CI=0; cancellation/tie loci are omitted.
 gap_fail = []
 a3_not6Q = []
 for Q in range(1, 4):
@@ -295,24 +297,24 @@ for Q in range(1, 4):
                 if deg_a3 < 6*Q:
                     a3_not6Q.append((Q, P, R, L, deg_a3))
 check(gap_fail == [],
-      "[box Q<=3,P,R,L<=3] deg b_-3 < deg a_-3 for EVERY deg a_2 >= 1 (tropical gap)")
+      "[BOUNDED GENERIC SCAN Q=1..3,P,R=0..3,L=1..3; CP=CI=0; ties omitted] "
+      "no sampled degree has deg b_-3 >= deg a_-3")
 check(a3_not6Q == [],
-      "[box] deg a_-3 >= 6 deg a_2 always (>= the q-power growth); gap never closes")
+      "[BOUNDED GENERIC SCAN; not an arbitrary-degree proof] no sampled degree has "
+      "deg a_-3 < 6 deg a_2")
 
-print(f"\n--- Section 5 (tropical gap: A*-band3 empty for deg a_2>=1) done ({PASS} checks) ---\n")
+print(f"\n--- Section 5 (exact conditional certificates + bounded generic scan) done ({PASS} checks) ---\n")
 
 # =====================================================================
 # SECTION 6.  a_2 = const (Q = 0) residual stratum + Groebner consistency.
 # =====================================================================
-# When a_2 is constant, b_1 = kappa1 + (2e/3)a_2 is CONSTANT, so the W3 residue
-# -(4e/3)a_2' vanishes: the sector is unobstructed there (a finite set of degree
-# loci survive the gap; bounded).  We record the fact that the residue is switched
-# off by a_2' = 0:
-zero(euler(Cm2, sig).subs(D(q), 0), "a_2 constant => W3 residue -(4e/3)a_2' = 0 (obstruction off)")
+# When a_2 is constant, b_1=kappa1+(2e/3)a_2 is constant and this particular W3
+# residue vanishes. That does not establish that the full stratum is unobstructed.
+# We check only the residue switch-off:
+zero(euler(Cm2, sig).subs(D(q), 0), "a_2 constant => the particular W3 residue -(4e/3)a_2' switches off")
 
-# The Q=0 (a_2 const) stratum has a finite set of survivor loci where the gap fails;
-# it is NOT just [CUBE]'s {3P=2R, L=2P, 2R=L+P} -- e.g. (P,R,L)=(0,1,1) survives
-# (deg a_-3 <= deg b_-3) yet lies on NONE of the three.
+# One bounded Q=0 survivor exists outside [CUBE]'s three displayed tie equations.
+# This does not classify the Q=0 stratum or prove that its global survivor set is finite.
 P_, R_, L_ = 0, 1, 1
 dda0, _ = leaddata(det, 0, P_, R_, L_)
 dsa0, _ = leaddata(sig_num, 0, P_, R_, L_)
@@ -320,11 +322,10 @@ dba0, _ = leaddata(bm3_num, 0, P_, R_, L_)
 off_cube = not ((3*P_ == 2*R_) or (L_ == 2*P_) or (2*R_ == L_ + P_))
 check((dsa0 - dda0) <= (dba0 - dda0) and off_cube,
       "a_2=const stratum: (P,R,L)=(0,1,1) survives the gap and is OFF {3P=2R,L=2P,2R=L+P}"
-      " (finite survivor set, enlarged by the b_2=e coupling; bounded-empty)")
+      " (one bounded survivor; no global classification claimed)")
 
-# Consistency: the B3-2 Groebner box (classical-hard-branches.md §5) has deg a_2 = 1,
-# hence is covered by the Section-5 tropical kill.  We re-verify a SMALL exact
-# Groebner emptiness box for e != 0 as independent corroboration (fast).
+# Independent bounded corroboration: re-verify one SMALL exact Groebner emptiness
+# box for e != 0. This does not follow from, or establish, an unbounded tropical kill.
 def _pc(z):
     z = sp.expand(z)
     return [] if z == 0 else sp.Poly(z, t).all_coeffs()
@@ -365,7 +366,7 @@ def enonzero_box_empty(degs):
 
 check(enonzero_box_empty((1, 0, 0, 1, 2, 3)) is True,
       "[COMPUTED] e!=0 box deg(a2..a-3)=(1,0,0,1,2,3): Groebner = (1), no pair"
-      " (deg a_2 = 1 case of the Section-5 tropical kill)")
+      " (bounded computation only)")
 
 print(f"\n--- Section 6 (a_2=const stratum + Groebner corroboration) done ({PASS} checks) ---\n")
 print()

@@ -1,4 +1,4 @@
-# The quantum band-3 exotic branch: the necklace gap is closed at the moment
+# The quantum band-3 exotic branch: moment obstructions in proved slices
 
 **INDEPENDENTLY DERIVED AND MACHINE-VERIFIED — NOT PEER REVIEWED — BAND-SCOPED**
 
@@ -11,17 +11,23 @@ theory is *looser* than the classical one at the gatekeeper, and the open
 question it left was: **does a wall-admitting non-shifted-cube top survive the
 full band-3 system + genuine `A₁` membership, or is it killed downstream?**
 
-> **Verdict (this memo).** The exotic branch is **KILLED.** A non-shifted-cube
-> `a₃` that solves the `Q₅` wall extends to **no** band-3 pair `[D,X]=1`. The kill
-> is at **`Q₀`** — the `m=0` central integral `G = E` (the `W4` moment) — and the
-> precise obstruction is that the **moment *unit*** (the `1` in `[D,X]=1`) cannot
-> be realized. No DC1/JC2 counterexample is produced; the exotic branch is not a
-> Weyl pair. This is the **corrected quantum band-3 gatekeeper theorem** and the
-> band-3 induction rung on the Dixmier (DC1) face.
+> **Verdict (scoped).** For `b₂ = 0`, the verifier fixes the degree-3 W1 top and
+> checks the prerequisite collapse kernels for polynomial ansätze through degree
+> `≤ 7`; once those collapse hypotheses hold, the final `L₀` leading-degree
+> obstruction is valid for arbitrary `deg b₋₃`. This is not an arbitrary-top or
+> arbitrary-free-degree proof of emptiness for the whole `b₂ = 0` exotic
+> sub-branch. For `b₂ ≠ 0`, the `Q₀` moment-unit obstruction proves the generic-`r`
+> part of the degree-3 AP family at free-data degree `d = 1`; six exact
+> specializations are also checked, while all other exceptional rank/denominator
+> loci remain open. Further bounded/sliced cases cover W1/W2 and AP `r=1,−1,3`
+> at `d = 2`, W1 at `d = 3,4`, and AP top degrees `3,6,9` at `d = 1`. Uniform
+> closure in free degree and all higher-degree non-AP tops remain open. No DC1/JC2 counterexample, full band-3 theorem, or unconditional
+> induction rung is produced.
 
-Everything below is checked exactly by
+The displayed finite computations are checked exactly by
 [`verify_quantum_exotic.py`](verify_quantum_exotic.py) (ends
-`ALL QUANTUM EXOTIC CHECKS PASSED`, 62 exact checks, ~2 s).
+`ALL QUANTUM EXOTIC CHECKS PASSED`, 49 exact checks, ~2 s); the conditional
+arbitrary-degree `L₀` conclusion uses the written leading-term proof in §2.
 
 ## 0. Setup, the branch, and the two sub-cases
 
@@ -30,8 +36,8 @@ Conventions frozen exactly as in the quantum band-3 cascade (`quantum-band3-casc
 `f^[r](E) = f(E+r)`, ladder-`m` coefficient
 `Q_m = Σ_{k+l=m}(b_l^[k] a_k − a_k^[l] b_l)`, and `[D,X]=1 ⇔ Q_m = δ_{m0}`
 (`m ∈ [−6,6]`). Genuine `A₁` membership: `E(E−1)⋯(E−r+1) | a_{−r}, b_{−r}`.
-`verify §0` re-checks `Q_m` against the direct crossed-product commutator and
-isolates, in the gauge `b₃ = 0` (from `Q₆`, `quantum-band3-cascade.md` §2), the
+`verify §0` checks the stipulated `Q_m` convention and isolates, in the gauge
+`b₃ = 0` (from `Q₆`, `quantum-band3-cascade.md` §2), the
 **descent operator**
 ```
    L_m[b] := b^[3] a₃ − a₃^[m−3] b        (the (3, m−3) pair of Q_m),
@@ -48,64 +54,61 @@ non-shifted-cube by an exact ∅-solve):
 ```
 By the Wall Lemma (`quantum-band3-cascade.md` §3, `99fe6ee`) the wall solution
 `b₂` is unique up to a scalar `κ₂` (freedom exactly 1-dimensional, `κ₂ = 0`
-included). This splits the branch into two exhaustive sub-cases, which we close
-separately:
+included). This splits the branch into two exhaustive sub-cases, treated separately:
 
-- **`b₂ = 0`** (`κ₂ = 0`): §2 — **PROVED empty, arbitrary degree.**
-- **`b₂ ≠ 0`** (`κ₂ ≠ 0`, the genuinely new sub-case): §3 — killed at `Q₀`.
+- **`b₂ = 0`** (`κ₂ = 0`): §2 — bounded collapse checks for W1 through ansatz
+  degree `≤ 7`, followed conditionally by an arbitrary-`deg b₋₃` `L₀` obstruction.
+- **`b₂ ≠ 0`** (`κ₂ ≠ 0`, the genuinely new sub-case): §3 — empty in the
+  proved bounded/sliced cases at `Q₀`; uniform closure remains open.
 
 By the diagonal-plus-rescaling symmetry `x ↦ ρx`, `D ↦ ρ³D`, `X ↦ ρ⁻³X` with
 `ρ⁵ = 1/κ₂` (which fixes `a₃` and sends `κ₂ ↦ 1`), we normalize `b₂ = (E−1)(E−4)`
-etc. in the `b₂ ≠ 0` sub-case; the exotic branch is exactly `κ₂ ≠ 0`.
+etc. in the `b₂ ≠ 0` sub-case; the `b₂ ≠ 0` exotic subcase is exactly `κ₂ ≠ 0`.
 
 ## 1. The descent operators and their kernels (structure)
 
-The kernels of the operators `L_m` for the exotic top govern the freedom at each
-rung (the `Q₅` row is the Wave-A wall, `quantum-band3-cascade.md` §3; the collapse
-rows `Q₄, Q₃, Q₂, Q₁` are re-checked in `verify §2` by exact linear solve at every
-degree `≤ 7`; the `Q₀` row follows from Lemma 2 below):
+For the fixed W1 top, the bounded kernel checks govern the freedom in the tested
+ansätze (the `Q₅` row is the Wave-A wall, `quantum-band3-cascade.md` §3):
 
-| `Q_m` | operator `L_m[b]` | homogeneous kernel (exotic `a₃`) |
+| `Q_m` | operator `L_m[b]` | scoped kernel statement |
 |---|---|---|
-| `Q₅` | `b^[3]a₃ − a₃^[2] b` | 1-dimensional (the wall `κ₂`; `deg b ≥ 2`) |
-| `Q₄` | `b^[3]a₃ − a₃^[1] b` | **trivial** ⇒ `b₁` forced |
-| `Q₃` | `a₃(b^[3] − b)` | constants ⇒ `b₀` forced up to `+γ` |
-| `Q₂` | `b^[3]a₃ − a₃^[−1] b` | **trivial** ⇒ `b₋₁` forced |
-| `Q₁` | `b^[3]a₃ − a₃^[−2] b` | **trivial** ⇒ `b₋₂` forced |
-| `Q₀` | `b^[3]a₃ − a₃^[−3] b` | **trivial** ⇒ `b₋₃` forced |
+| `Q₅` | `b^[3]a₃ − a₃^[2] b` | 1-dimensional wall freedom `κ₂` |
+| `Q₄` | `b^[3]a₃ − a₃^[1] b` | W1: trivial in ansätze through degree 7 |
+| `Q₃` | `a₃(b^[3] − b)` | W1: constants in ansätze through degree 5 |
+| `Q₂` | `b^[3]a₃ − a₃^[−1] b` | W1: trivial in ansätze through degree 7 |
+| `Q₁` | `b^[3]a₃ − a₃^[−2] b` | W1: trivial in ansätze through degree 7 |
+| `Q₀` | `b^[3]a₃ − a₃^[−3] b` | conditional written W1 leading-degree result (Lemma 2) |
 
-The necklace mechanism behind these kernels: `L_m[b]=0` reduces (leading terms
-match, then compare root multisets) to `Φ₃(S)·δ(b) = S^{2−m}·(1−S+S²)·δ(h)`-type
-conditions whose only effective solution, for the exotic cofactor `1−S+S²`
-(non-effective), is at `m=5` (giving `b₂`) and `m=3` (giving constants). Every
-other positive rung has a *forced* new coefficient. This is why the exotic top
-does **not** collapse the way the classical non-cube top does — and is exactly
-what makes the branch genuinely new.
+The necklace comparison suggests why W1 has only the wall freedom at `m=5` and
+constants at `m=3`; it motivates and corroborates the bounded kernel pattern.
+It is not an unbounded exotic-top kernel theorem, and no family-wide claim is
+made for every other positive rung.
 
-## 2. Sub-branch `b₂ = 0`: PROVED empty (arbitrary degree)
+## 2. Sub-branch `b₂ = 0`: bounded collapse checks and a conditional `L₀` obstruction
 
-*(This is the quantum twin of classical Theorem A, `classical-band3-cascade.md`
-§6, `99fe6ee`, but the endgame is a **pure degree obstruction**, cleaner than the
-classical `τ`-order argument.)*
+*(For the fixed W1 degree-3 top, the checked collapse is followed by a pure
+leading-degree endgame. The scopes of those two steps are different.)*
 
-With `b₂ = 0`, the positive cascade **collapses** (`verify §2`, trivial-kernel
-lemmas, arbitrary degree):
+With `b₂ = 0`, the positive cascade collapses for the W1 top in the polynomial
+ansätze checked by `verify §2` (kernel searches through degree `≤ 7`; the `L₃`
+constant-kernel check uses degrees `1..5`):
 ```
    Q₄ = L₄[b₁] = 0  ⇒ b₁ = 0;    Q₃ = a₃(b₀^[3]−b₀) = 0 ⇒ b₀ = const;
    Q₂ = L₂[b₋₁] = 0 ⇒ b₋₁ = 0;   Q₁ = L₁[b₋₂] = 0 ⇒ b₋₂ = 0.
 ```
-(Each `L_m` has trivial kernel for `deg a₃ = 3`, machine-checked at every degree
-`≤ 7`; the structural reason is the non-effective exotic cofactor above.) With
-`b₂ = b₁ = b₋₁ = b₋₂ = 0` and `b₀` constant, every off-diagonal pair of `Q₀`
-vanishes and
+(For W1, the stated kernels are machine-checked only in those bounded polynomial
+ansätze; the necklace discussion in §1 is motivation, not an unbounded kernel
+proof.) Assuming this collapse, with `b₂ = b₁ = b₋₁ = b₋₂ = 0` and `b₀`
+constant, every off-diagonal pair of `Q₀` vanishes and
 ```
    Q₀ = L₀[b₋₃] = b₋₃^[3] a₃ − a₃^[−3] b₋₃  =  1 .
 ```
 
-> **Lemma 2 (degree obstruction).** For `deg a₃ = 3` (any nonconstant exotic top),
-> `L₀[b]` has degree `deg b + 2` with leading coefficient `3(3 + deg b)·lc(b) ≠ 0`.
-> Hence `L₀[b]` is either `0` (`b = 0`) or of degree `≥ 2`; it can **never** equal
-> the nonzero constant `1`.
+> **Lemma 2 (conditional degree obstruction).** For the fixed monic degree-3 W1
+> top used by the verifier, and symbolically for arbitrary `q = deg b`, `L₀[b]`
+> has degree `q + 2` with leading coefficient `3(3 + q)·lc(b) ≠ 0`.
+> Hence, once the preceding collapse is available, `L₀[b]` is either `0` (`b = 0`)
+> or of degree `≥ 2`; it can **never** equal the nonzero constant `1`.
 
 *Proof.* The `E^{q+3}` terms of `b^[3]a₃` and `a₃^[−3]b` (`q := deg b`) are both
 `lc(b)lc(a₃)E^{q+3}` and cancel. The `E^{q+2}` coefficient is, by the staggered
@@ -114,15 +117,18 @@ leading-coefficient identity (`quantum-band3-cascade.md` §5.3, `99fe6ee`, shift
 characteristic 0. `verify §2` checks the degree and this coefficient symbolically
 for `q = 0..7`. ∎
 
-Therefore the `b₂ = 0` exotic sub-branch is **empty** — killed at `Q₀`, for every
-degree. **[PROVED, arbitrary degree.]** No membership is needed for this
-sub-case; the obstruction is purely a degree/leading-coefficient fact.
+Therefore, **conditional on the displayed collapse hypotheses**, `Q₀ = 1` is
+impossible for arbitrary `deg b₋₃`. **[PROVED conditional `L₀` obstruction;
+bounded-verified collapse for W1.]** This does not prove the entire `b₂ = 0`
+exotic sub-branch empty for arbitrary top or free-data degree. No membership is
+needed for the conditional `L₀` step itself.
 
-## 3. Sub-branch `b₂ ≠ 0`: killed at `Q₀` (the moment unit)
+## 3. Sub-branch `b₂ ≠ 0`: bounded/sliced kills at `Q₀` (the moment unit)
 
 This is the genuinely new sub-case, with **no positive collapse**. We proceed
 constructively — *attempting to build a pair, verifying to destruction* — and
-find the exact obstruction.
+find exact obstructions in the slices stated below, without promoting them to an
+arbitrary-degree theorem.
 
 ### 3.1 The positive cascade is solvable
 
@@ -159,9 +165,9 @@ system, together with the free negative data `(a₋₂, a₋₃, μ₃)`, is
 
 > **Result 3 (bounded-verified + exact certificate).** For both witnesses W1, W2,
 > the system {positive cascade solvability} ∪ {`Q₀ = 1`} has **no solution**
-> (`verify §3`, Gröbner basis `= [1]` at free-degree `d = 2`; independently
-> confirmed at `d = 1` and — off-verifier, ~114 s — at `d = 3` for W1 and `d = 2`
-> for W2). Removing the unit — replacing `Q₀ = 1` by `Q₀ = 0` — makes the system
+> (`verify §3`, Gröbner basis `= [1]` at free-degree `d = 2`; `d = 1` is checked
+> in `verify_quantum_exotic_closure.py`, which also supplies W1 slope certificates
+> at `d = 3,4`). Removing the unit — replacing `Q₀ = 1` by `Q₀ = 0` — makes the system
 > **feasible** (`verify §3`, Gröbner `≠ [1]`). Hence the obstruction is exactly
 > the **moment unit**.
 
@@ -186,9 +192,9 @@ the higher rungs forces the controlling combination `w` to vanish.
 its contribution to the constant coefficient of `Q₀ = (T−1)G` is
 `P₃(1) − P₃(0) = μ₃·a₃(0)·a₋₃(3)` (all other `a₋₃(1), a₋₃(2), a₋₃(0)` vanish by
 `E(E−1)(E−2) | a₋₃`). For the witnesses (`a₃(0) = 0`) this is `0`, so the bottom
-data is *absent from the unit equation entirely*; for the general exotic top the
-bottom enters the unit equation but, as the elimination shows, still cannot
-absorb it. This is the quantum incarnation of the classical Theorem A step-6
+data is *absent from the unit equation entirely*; for the additional AP slices with `a₃(0) ≠ 0` the bottom enters the unit equation
+but the corresponding exact eliminations still cannot absorb it. This is the
+quantum incarnation, within the proved slices, of the classical Theorem A step-6
 mechanism (`classical-band3-cascade.md` §6, `99fe6ee`) — the moment can carry only
 `τ`/`E`, never a residual unit against a membership-protected extreme — and of the
 `W5` "moment-unit-unrealizable" principle (`band-k-weapons.md` §W5, `99fe6ee`; the
@@ -206,7 +212,8 @@ mechanism (`classical-band3-cascade.md` §6, `99fe6ee`) — the moment can carry
 - **A degree-6 exotic top** `{0,2,4,6,8,10}`: root multiset `Φ₃`-divisible
   (wall-admissible), cofactor `A/Φ₃` has a negative coefficient (**not** a shifted
   cube), `b₂` at roots `{1,4,7,10}` solves the wall — and `{positive} ∪ {Q₀ = 1}`
-  is infeasible (`d = 1`). The mechanism scales past `deg a₃ = 3`.
+  is infeasible (`d = 1`). This is one exact case past `deg a₃ = 3`; no uniform
+  higher-top-degree mechanism is proved.
 
 ### 3.4 Validation of the constructive machinery
 
@@ -218,7 +225,7 @@ conditions** — so the pipeline detects real feasibility, and the exotic
 infeasibility above is genuine, not an artifact. (The full pipeline's conditions
 were also checked to vanish identically at this real pair.)
 
-## 4. The unified gatekeeper: both faces, both sub-cases, one equation
+## 4. Scoped `Q₀` mechanisms in the checked sectors
 
 The kill lives at the **same equation** in every incarnation of the band-3
 gatekeeper, though the mechanism differs:
@@ -226,98 +233,105 @@ gatekeeper, though the mechanism differs:
 | face / sector | where the top is pinned | how `Q₀`/`C₀` kills |
 |---|---|---|
 | classical, non-cube (`classical-band3-cascade.md` §6) | wall forces `b₂ = 0`, collapse | `M = τ` vs `τ³ \| b₋₃`: order 1 vs ≥ 3 |
-| quantum exotic, `b₂ = 0` (§2) | collapse (trivial kernels) | `L₀[b₋₃] = 1` impossible (degree ≥ 2) |
+| quantum exotic, `b₂ = 0` (§2) | W1 collapse checked in bounded ansätze | conditional on collapse, `L₀[b₋₃] = 1` impossible for arbitrary `deg b₋₃` |
 | quantum exotic, `b₂ ≠ 0` (§3) | **no collapse** | moment **unit** unrealizable (`w = 0` vs `7w = 9`) |
 
 The band-2 wall could kill at the wall itself (membership dispatched the collapsed
 tail one rung up). Band 3 is the first band where the quantum wall is too weak to
 collapse the branch, and the gatekeeper's real work is done by the **moment** `Q₀`
-— the `W4` central integral — which is the true quantum band-3 J-invariant. This
-is the sharp correction to the naive gatekeeper: **the wall (`Q₅`) does not force
-a shifted cube, but the moment (`Q₀`) forbids everything the wall let through.**
+— the `W4` central integral. In the cases actually computed, this corrects the
+naive wall-only gatekeeper: the wall (`Q₅`) does not force a shifted cube, while
+the moment (`Q₀`) kills the proved bounded/sliced exotic cases. Whether it
+forbids every `b₂ ≠ 0` top uniformly remains open.
 
 ## 5. Relation to DC1 / JC2 (no counterexample)
 
 `[D,X] = 1` gives an algebra endomorphism `φ: A₁ → A₁`, `x ↦ X`, `∂ ↦ D`,
 automatically injective (`A₁` simple). DC1 asserts `φ` is surjective (an
-automorphism); it is open for `A₁` (equivalent to the 2-dimensional Jacobian
-conjecture). Were an exotic pair to exist and **generate** `A₁`, `φ` would be an
-automorphism, hence tame (Dixmier's theorem: `Aut(A₁)` is generated by affine and
-triangular automorphisms), hence — by the band-3 blow-up law
-(`band3-tame-catalog.md` §3–§4, `99fe6ee`: every genuine band-3 tame pair arises
-from a single cubic shear with `a₃` a *constant*) — its top would be a (constant,
-trivial) shifted cube, contradicting exoticity. So a generating exotic pair is
-impossible outright, and a **non-generating** exotic pair would be a
-non-surjective endomorphism, i.e. a **DC1 counterexample**. We produce no such
-pair: the exotic branch is empty (§2–§3), consistent with DC1. **No counterexample
-to DC1/JC2 is produced, and none is claimed.** The exotic wall witness remains a
-counterexample only to the *shifted-cube conjecture for the wall equation*, as
-already recorded in Wave A.
+automorphism) and remains open. The established bridge gives **JC2 ⇒ DC1**;
+therefore a genuine DC1 counterexample would refute JC2, but equivalence is not
+claimed here. If an exotic pair existed and generated `A₁`, its endomorphism would be an
+automorphism and hence tame (Dixmier's theorem). The bounded/scoped blow-up law
+recorded in `band3-tame-catalog.md` supplies useful checks on the catalogued tame
+examples, but it is not used here as an unbounded classification of every tame
+band-3 word. Accordingly §5 draws no global exclusion from that catalog. The
+computed exotic slices are empty, so they produce no counterexample; a hypothetical
+non-generating exotic pair would be a non-surjective endomorphism and hence a DC1
+counterexample. **No counterexample to DC1/JC2 is produced, and none is claimed.**
+The exotic wall witness remains a counterexample only to the *shifted-cube
+conjecture for the wall equation*, as already recorded in Wave A.
 
-## 6. The corrected gatekeeper theorem (the induction rung)
+## 6. Scoped gatekeeper advances (induction status)
 
-> **Corrected quantum band-3 gatekeeper.** Let `[D,X] = 1` be a band-3 pair with
-> `a₃ ≠ 0`. Gauge `b₃ = 0`. If `a₃` solves the `Q₅` wall but is **not** a shifted
-> cube `c·h h^[1] h^[2]` (the exotic / non-shifted-cube class), then the pair does
-> **not exist**: the exotic sector is empty. Equivalently — after the `Q₅` wall
-> and `Q₀` moment — a band-3 quantum top is forced into the **shifted-cube class**,
-> exactly matching the classical cube gatekeeper (`classical-band3-cascade.md`
-> Theorem A, `99fe6ee`), the necklace slack of the wall notwithstanding.
+> **Proved and computed scope.** Let `[D,X] = 1` be a band-3 pair with `a₃ ≠ 0`,
+> gauge `b₃ = 0`, and suppose `a₃` is exotic/non-shifted-cube at the `Q₅` wall.
 >
-> - **`b₂ = 0` half:** PROVED, arbitrary degree (§2, Lemma 2).
-> - **`b₂ ≠ 0` half:** reduced to the `Q₀` moment-unit obstruction with an exact
->   infeasibility certificate; VERIFIED for both Wave-A witnesses and the exotic
->   AP class at `d ≤ 3` and for a degree-6 exotic top (§3).
+> - **`b₂ = 0` half:** for W1, collapse kernels are checked in bounded polynomial
+>   ansätze through degree `≤ 7` (with the `L₃` check through degree `5`); conditional
+>   on collapse, Lemma 2 excludes `Q₀ = 1` for arbitrary `deg b₋₃`.
+> - **`b₂ ≠ 0` half:** the `Q₀` moment-unit obstruction proves the generic-`r`
+>   part of the degree-3 AP family at `d = 1`; six exact specializations are also
+>   checked; all other exceptional rank/denominator loci remain open. Selected
+>   exact instances additionally cover W1/W2 at `d = 2`, W1 at `d = 3,4`, and AP
+>   top degrees `3,6,9` at `d = 1` (§3 and `quantum-exotic-closure.md`).
 
-This is the **quantum band-3 induction rung on the DC1 face**: the gatekeeper that
-the naive width induction needed and that the necklace gap had left open. It
-restores the band-2 → band-3 induction step (top forced into the shifted-power
-class) at the quantum level, with the moment `Q₀` — not the wall `Q₅` — as the
-operative equation.
+These results supply exact bounded/sliced advances toward the quantum band-3
+gatekeeper. They do **not** restore the induction step unconditionally: closure
+uniform in free degree and for all higher-degree non-AP realizable tops remains
+open. No full band-3, DC1, or JC2 theorem is claimed.
 
 ## 7. Status of claims (proved / computed / conjectured)
 
-**PROVED (arbitrary degree, machine-checked identities):**
-- the descent-operator isolation `Q_m = L_m[b_{m−3}] + lower` and the exotic-top
-  kernel table (§0–§1);
-- the `b₂ = 0` exotic sub-branch is **empty** — Lemma 2's degree obstruction at
-  `Q₀`, symbolic in `deg b` (§2).
+**PROVED (with scope explicit):**
+- the descent-operator isolation `Q_m = L_m[b_{m−3}] + lower` (§0–§1); the listed
+  bounded kernel checks should not be read as an unbounded tame-word or exotic-top
+  classification;
+- for the fixed W1 top, the collapse kernels in the verifier's stated bounded
+  polynomial ansätze; and, **conditional on that collapse**, Lemma 2's `Q₀`
+  leading-degree obstruction for arbitrary `deg b₋₃` (§2). Neither statement is an
+  arbitrary-top/free-degree emptiness proof for the whole `b₂ = 0` sub-branch.
 
 **VERIFIED (exact, bounded — corroboration with an exact certificate, not an
 arbitrary-degree proof):**
 - the positive cascade `Q₄..Q₁` is solvable for the exotic top (explicit witness
   point, §3.1);
-- `{positive} ∪ {Q₀ = 1}` is **infeasible** while `{positive} ∪ {Q₀ = 0}` is
-  feasible — the **moment unit** is the killer — for W1, W2 (`d ≤ 3`), the exotic
-  AP class `r = 0,1,−1,3` (`d = 2`), and a degree-6 exotic top (`d = 1`) (§3.2–3.3);
-- the exact residual certificate `{8w = 0, 7w = 9}` (W1), `0 = 1` (W2) (§3.2);
+- `{positive} ∪ {Q₀ = 1}` is **infeasible** in the stated exact slices. The
+  homogeneous system `{positive} ∪ {Q₀ = 0}` is also verified feasible for
+  W1/W2 at `d = 2` here and for the degree-3 `d = 1` instances listed in
+  `quantum-exotic-closure.md`; no homogeneous-feasibility claim is made for the
+  other listed slices. In the former cases this isolates the **moment unit** as
+  the checked obstruction (§3.2–3.3);
+- the exact residual certificate `{8w = 0, 7w = 9}` (W1) and direct W2 Gröbner
+  infeasibility (§3.2);
 - the pipeline reproduces the genuine positive control with no spurious conditions
   (§3.4).
 
-**CONJECTURED (strongly evidenced; the residual gap):**
-- the arbitrary-degree closure of the `b₂ ≠ 0` half. The bounded verification and
-  the exact certificate localize the obstruction to the `Q₀` moment unit; a fully
-  degree-free proof is the band-3 instance of the `W5` lattice/rank infeasibility
-  (`band-k-weapons.md` §W5, `99fe6ee`, "band-3 modulus open") applied to the
-  exotic residual system, which this memo reduces to but does not carry out in
-  closed form. This is the same status frontier as the parallel *classical* open
-  branches (nonconstant-`h`, `e ≠ 0`; `classical-band3-cascade.md` §7, `99fe6ee`)
-  — here bounded-**closed** rather than open, and with the killing equation `Q₀`
-  identified exactly.
+**OPEN (residual gap):**
+- unconditional closure of the `b₂ = 0` half beyond the fixed-top bounded collapse
+  checks, including arbitrary exotic tops and arbitrary free-data degree;
+- closure of the `b₂ ≠ 0` half uniformly in free degree and for all higher-degree
+  non-AP realizable tops. The exact certificate localizes the obstruction to the
+  `Q₀` moment unit in the proved slices, but no degree-free certificate or complete
+  higher-degree non-AP classification is supplied. The bounded slices are closed;
+  the uniform branch is not.
 
-**NOT claimed:** any DC1/JC2 statement (§5); a full band-3 theorem; closure of the
-`b₂ ≠ 0` half at arbitrary degree; any statement about non-exotic (shifted-cube)
-tops beyond the gatekeeper reduction.
+**NOT claimed:** settlement of DC1 or JC2 (§5); a full band-3 theorem; unconditional
+arbitrary-top/free-degree closure of the `b₂ = 0` half; closure of the `b₂ ≠ 0`
+half at arbitrary degree; any statement about non-exotic (shifted-cube) tops
+beyond the gatekeeper reduction.
 
 ## 8. Verification
 
 ```sh
 uv run --with sympy python research/band3/verify_quantum_exotic.py
 ```
-runs §0 (crossed-product engine; `Q_m` = commutator; operator isolation in gauge
-`b₃=0`), §1 (both wall witnesses; non-shifted-cube certificates), §2 (the `b₂=0`
-sub-branch: collapse kernels + Lemma 2's `L₀` degree obstruction, symbolic in
-degree), §3 (the `b₂≠0` sub-branch: explicit positive solution; `Q₀=1` infeasible
+runs §0 (operator isolation from the stipulated `Q_m` convention in gauge `b₃=0`), §1
+(both wall witnesses; non-shifted-cube certificates), §2 (the fixed-W1 `b₂=0`
+slice: bounded collapse-kernel checks plus direct corroboration of the `L₀` degree
+formula for `deg b₋₃=0..7`; the memo's displayed leading-term expansion supplies
+the arbitrary-degree formula, conditional on the boundedly checked collapse), §3 (the `b₂≠0` sub-branch: explicit positive
+solution; `Q₀=1` infeasible
 vs `Q₀=0` feasible via Gröbner; the exact `{8w=0, 7w=9}` certificate; the
 positive-control validation), §4 (the exotic AP class and a degree-6 exotic top).
-A successful run ends `ALL QUANTUM EXOTIC CHECKS PASSED` (62 checks, ~2 s).
+A successful run prints 49 `PASS` lines and ends
+`ALL QUANTUM EXOTIC CHECKS PASSED` (~2 s).

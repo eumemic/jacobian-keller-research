@@ -6,10 +6,12 @@ Exact SymPy verification backing the memo `quantum-exotic-branch.md`:
 the FATE of the QUANTUM band-3 exotic (non-shifted-cube) top branch that passes
 the Q_5 cyclotomic wall (`quantum-band3-cascade.md`, commit 99fe6ee).
 
-VERDICT (established here): the exotic branch is KILLED. A non-shifted-cube a_3
-solving the wall admits NO band-3 pair [D,X]=1. The kill is at Q_0 (the m=0
-central integral G=E) -- the W4 moment UNIT (the "1" in [D,X]=1) cannot be
-realized. No DC1/JC2 counterexample is produced.
+VERDICT (established here, with scope): for the fixed degree-3 W1 top in the
+b_2=0 slice, collapse kernels are checked only in bounded polynomial ansatz
+degrees, and this verifier corroborates the L_0 degree formula for deg b=0..7.
+The memo supplies the arbitrary-degree leading-term proof conditional on that
+boundedly checked collapse. For b_2!=0, selected exact slices are obstructed at Q_0.  This does not
+prove the full exotic branch empty.  No DC1/JC2 counterexample is produced.
 
 Conventions (frozen, matching every sibling quantum memo, commit 99fe6ee):
     A_1[x^{-1}] = (+)_k x^k C[E],  (x^a f(E))(x^b g(E)) = x^{a+b} f(E+b) g(E),
@@ -18,16 +20,18 @@ Conventions (frozen, matching every sibling quantum memo, commit 99fe6ee):
     Genuine A_1 membership:  E(E-1)...(E-r+1) | a_{-r}, b_{-r}.
 
 Sections:
-  0. crossed-product engine; Q_m == direct commutator (band 3); gauge b_3=0 recap.
+  0. stipulated crossed-product coefficient convention and gauge b_3=0 operator
+     isolation (no tautological duplicate commutator check).
   1. wall recap: the two Wave-A witnesses solve Q_5, both non-shifted-cube.
-  2. b_2 = 0 sub-branch: PROVED KILL at Q_0, arbitrary degree (degree obstruction).
+  2. b_2 = 0 slice: bounded W1 collapse-kernel checks, followed conditionally by
+     the arbitrary-deg-b L_0 degree obstruction.
   3. b_2 != 0 sub-branch: positive cascade solvable; Q_0=1 obstruction:
        - explicit positive-cascade solution (Q_4..Q_1 = 0);
        - Q_0 = 1 INFEASIBLE (Groebner = [1]) for both witnesses;
        - Q_0 = 0 FEASIBLE  => the moment UNIT is exactly the killer;
        - exact infeasibility certificate {8w = 0, 7w = 9}, w = a1_2^2 (a2_0-4 a2_2).
-  4. robustness across the exotic class: step-2 arithmetic progressions and a
-       degree-6 exotic top -- all killed at Q_0.
+  4. robustness across selected exotic slices: step-2 arithmetic progressions
+       and a degree-6 exotic top -- Q_0=1 is infeasible in each checked slice.
   5. cross-validation: the pipeline reproduces the genuine positive control
        (b_2 = 0 tame pair) with NO spurious conditions.
 
@@ -121,24 +125,12 @@ def gauged_dict():
 
 
 # =====================================================================
-# 0. Crossed-product engine; Q_m == direct commutator (band 3); gauge recap.
+# 0. Stipulated Q_m convention; operator isolation in gauge b_3=0.
 # =====================================================================
-print("--- 0. engine: Q_m == direct commutator (band 3); gauge b_3 = 0 ---")
+print("--- 0. stipulated Q_m convention; operator isolation in gauge b_3 = 0 ---")
 A0 = {k: poly(f'A{k+3}', 2)[0] for k in range(-3, 4)}
 B0 = {k: poly(f'B{k+3}', 2)[0] for k in range(-3, 4)}
 
-
-def direct_commutator(m, K=3):
-    tot = 0
-    for k in range(-K, K + 1):
-        for l in range(-K, K + 1):
-            if k + l == m:
-                tot += sh(B0[l], k) * A0[k] - sh(A0[k], l) * B0[l]
-    return sp.expand(tot)
-
-
-for m in range(-6, 7):
-    az(direct_commutator(m) - Qm(A0, B0, m), f"Q_{m} = direct commutator ladder coeff")
 # In gauge b_3 = 0 the "new coefficient" of Q_m (m<=5) is b_{m-3}, via the pair (3,m-3);
 # isolate that operator L_m[b] = b^[3] a3 - a3^[m-3] b from the rest of Q_m:
 Bg = dict(B0); Bg[3] = sp.Integer(0)
@@ -168,11 +160,11 @@ for (a3, b2, nm) in [(*W1, 'W1 a3=E(E-2)(E-4)'), (*W2, 'W2 a3=E(E+2)(E+4)')]:
 
 
 # =====================================================================
-# 2. b_2 = 0 sub-branch: PROVED KILL at Q_0, arbitrary degree.
+# 2. b_2 = 0 slice: bounded W1 collapse and deg-b=0..7 L_0 corroboration.
 # =====================================================================
-print("\n--- 2. exotic b_2 = 0 sub-branch: KILL at Q_0 (arbitrary degree) ---")
+print("\n--- 2. exotic b_2 = 0: bounded W1 collapse; L_0 degree formula checked for deg b=0..7 ---")
 a3 = W1[0]
-# 2a. Positive collapse: L_m for m in {4,2,1} has TRIVIAL kernel; L_3 kernel = constants.
+# 2a. Positive collapse: bounded W1 kernel checks for L_m, m in {4,3,2,1}.
 for (m, j, name) in [(4, 1, 'b1'), (2, -1, 'b-1'), (1, -2, 'b-2')]:
     trivial = True
     for q in range(0, 8):
@@ -181,12 +173,12 @@ for (m, j, name) in [(4, 1, 'b1'), (2, -1, 'b-1'), (1, -2, 'b-2')]:
         sol = list(sp.linsolve(sp.Poly(Lm, E).all_coeffs(), bc))
         if sol and len({s for x in sol[0] for s in x.free_symbols}) > 0:
             trivial = False
-    istrue(trivial, f"b2=0: L_{m} (a3-shift[{j}]) has trivial kernel  => {name} = 0")
-# L_3[b0] = a3 (b0^[3]-b0): kernel = constants
+    istrue(trivial, f"[BOUNDED q=0..7, W1] L_{m} has no nonzero kernel vector in checked polynomial ansätze  => {name} = 0")
+# L_3[b0] = a3 (b0^[3]-b0): bounded checked kernel consists of constants
 istrue(all((lambda q: (lambda sol: sol and len({s for x in sol[0] for s in x.free_symbols}) == 1)(
         list(sp.linsolve(sp.Poly(sp.expand(a3 * (sh(poly('b', q)[0], 3) - poly('b', q)[0])), E).all_coeffs(),
                          poly('b', q)[1]))))(q) for q in range(1, 6)),
-        "b2=0: L_3 = a3(b0^[3]-b0) kernel = constants  => b0 = const")
+        "[BOUNDED q=1..5, W1] the checked L_3 kernel consists of constants  => b0 = const")
 # 2b. Then Q_0 = 1 becomes L_0[b_{-3}] = b_{-3}^[3] a3 - a3^[-3] b_{-3} = 1.
 #     For a NONCONSTANT a3 (deg 3), symbolic-degree check: deg L_0[b] = deg b + 2,
 #     leading coeff 3*(3 + deg b) != 0  =>  L_0[b] can NEVER be a nonzero constant.
@@ -198,14 +190,14 @@ for qd in range(0, 8):
     lead = sp.Poly(L0, E).nth(qd + 2) if L0 != 0 else 0
     istrue(deg == qd + 2 and sp.expand(lead - 3 * (3 + qd) * bc[qd]) == 0,
            f"b2=0: L_0[b], deg b={qd}: deg={qd+2}>=2, lead coeff = 3(3+{qd})*lc != 0")
-print("   => L_0[b_-3] = 1 is IMPOSSIBLE (LHS deg>=2 or 0, never a nonzero const):")
-print("      the b_2=0 exotic sub-branch is KILLED at Q_0.  [PROVED, arbitrary degree]")
+print("   => within checked W1 collapse ansätze, using the memo's separate arbitrary-degree")
+print("      leading proof for L_0, Q_0=1 is conditionally impossible.")
 
 
 # =====================================================================
 # 3. b_2 != 0 sub-branch: positive cascade solvable; Q_0=1 obstruction.
 # =====================================================================
-print("\n--- 3. exotic b_2 != 0 sub-branch: positive cascade solvable, Q_0=1 KILLS ---")
+print("\n--- 3. selected exotic b_2 != 0 slices: positive cascade solvable, Q_0=1 infeasible ---")
 
 
 def build_cascade(a3, b2, d):
@@ -256,8 +248,8 @@ for (a3, b2, nm) in [(*W1, 'W1'), (*W2, 'W2')]:
     q0_0 = q0_conditions(A, B, sp.Integer(0))
     G_unit = list(sp.groebner(pos + q0_1, *allvars, order='grevlex'))
     G_hom = list(sp.groebner(pos + q0_0, *allvars, order='grevlex'))
-    istrue(G_unit == [sp.Integer(1)], f"{nm}: pos-cascade + (Q_0 = 1) is INFEASIBLE  => exotic top KILLED")
-    istrue(G_hom != [sp.Integer(1)], f"{nm}: pos-cascade + (Q_0 = 0) is FEASIBLE  => the UNIT is the killer")
+    istrue(G_unit == [sp.Integer(1)], f"{nm} d=2 slice: pos-cascade + (Q_0 = 1) is INFEASIBLE")
+    istrue(G_hom != [sp.Integer(1)], f"{nm} d=2 slice: pos-cascade + (Q_0 = 0) is FEASIBLE  => the UNIT causes the checked obstruction")
 
 # 3c. EXACT infeasibility certificate (W1): after eliminating ALL free negative data
 #     (a_-2, a_-3, mu3) the system Q_0=1 collapses to two contradictory conditions
@@ -293,7 +285,7 @@ istrue(any(sp.expand(9 * r + (7 * w - 9)) == 0 or sp.expand(9 * r - (7 * w - 9))
        "certificate: other residual is (7 w - 9)/9  [moment unit forces 7 w = 9]")
 istrue(list(sp.groebner(resid, ca2[0], ca2[2], ca1[2], order='grevlex')) == [sp.Integer(1)],
        "certificate: {w = 0} AND {7 w = 9} are CONTRADICTORY  => Q_0=1 impossible")
-print("   => exotic b_2!=0 branch KILLED at Q_0: the W4 moment UNIT cannot be realized.")
+print("   => W1 d=2 certificate: the W4 moment UNIT cannot be realized in this checked slice.")
 
 
 # =====================================================================
@@ -311,7 +303,7 @@ for r in (0, 1, -1, 3):
     az(sh(b2, 3) * a3 - sh(a3, 2) * b2, f"AP r={r}: a3={{{r},{r+2},{r+4}}} solves the wall")
     A, B, pos, allvars = build_cascade(a3, b2, 2)
     G = list(sp.groebner(pos + q0_conditions(A, B, sp.Integer(1)), *allvars, order='grevlex'))
-    istrue(G == [sp.Integer(1)], f"AP r={r}: pos-cascade + Q_0=1 INFEASIBLE  => exotic top KILLED")
+    istrue(G == [sp.Integer(1)], f"AP r={r}, d=2: pos-cascade + Q_0=1 INFEASIBLE in this checked slice")
 
 # degree-6 exotic {0,2,4,6,8,10}: Phi3-divisible, non-effective cofactor (exotic), wall-admissible.
 S = sp.symbols('S')
@@ -327,7 +319,7 @@ b2_6 = sp.expand(sp.prod([E - i for i in range(Bp6.degree() + 1) if Bp6.nth(i) !
 az(sh(b2_6, 3) * a3_6 - sh(a3_6, 2) * b2_6, "deg-6 exotic: b2 (roots {1,4,7,10}) solves the wall")
 A6, B6, pos6, av6 = build_cascade(a3_6, b2_6, 1)
 istrue(list(sp.groebner(pos6 + q0_conditions(A6, B6, sp.Integer(1)), *av6, order='grevlex')) == [sp.Integer(1)],
-       "deg-6 exotic {0,2,..,10}: pos-cascade + Q_0=1 INFEASIBLE  => KILLED")
+       "deg-6 exotic {0,2,..,10}, d=1: pos-cascade + Q_0=1 INFEASIBLE in this checked slice")
 
 
 # =====================================================================

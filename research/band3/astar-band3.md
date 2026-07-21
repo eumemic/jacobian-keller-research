@@ -1,19 +1,20 @@
-# Closing the A\*-band3 resistant branch (μ ≠ λ), both faces
+# A\*-band3: reflection closes A\*-I; the cube/cube and quantum residuals remain
 
 **INDEPENDENTLY DERIVED — MACHINE-CHECKED IDENTITIES — NOT PEER REVIEWED — BAND-SCOPED**
 
 This memo attacks the `μ ≠ λ` resistant branch **A\*-band3** — the band-3 analogue
 of the band-2 square-sector A\* branch — on both the classical (Jacobian, JC2)
 and quantum (Weyl/Dixmier, DC1) faces. The catalog established A\*-band3 as
-**counterexample-or-nothing** (`band3-tame-catalog.md`, commit `99fe6ee`: the
-single-cubic-shear normal form forces `μ = λ`, and decoupled `±3` sources need
-band ≥ 9, so no tame word reaches it). The task is to close it from the
-coefficient equations, upgrading the band-2 A\* playbook
-(`research/band2-square-sector/classical-Astar.md`, `84978b9`).
+**counterexample-or-nothing** (`band3-tame-catalog.md`, commit `99fe6ee`): the
+single-shear normal form forces `μ = λ`, and no word in the catalog's stated
+bounded enumeration reaches A\*-band3. This does not classify unbounded tame
+words. The task is to close it from the coefficient equations, upgrading the
+band-2 A\* playbook (`research/band2-square-sector/classical-Astar.md`, `84978b9`).
 
-Everything displayed is machine-verified by `verify_astar_band3.py` (same
-directory); a successful run ends `ALL ASTAR BAND3 CHECKS PASSED` (48 checks,
-~6 s). Conventions are frozen exactly as in the Wave-A band-3 memos (commit
+The displayed algebraic identities are machine-checked by
+`verify_astar_band3.py` (same directory), while theorem conclusions also use the
+cited written results; a successful run ends `ALL ASTAR BAND3 CHECKS PASSED` (48
+checks, ~6 s). Conventions are frozen exactly as in the Wave-A band-3 memos (commit
 `99fe6ee`): classical `{G,F}=G_ξF_x−G_xF_ξ`, `τ=xξ`,
 `F=Σ_{k=-3}^{3}x^k a_k(τ)`, `G=Σ x^k b_k(τ)`,
 `C_m=Σ_{k+l=m}(k a_k b_l' − l a_k' b_l)=δ_{m0}`, membership `τ^j∣a_{-j},b_{-j}`;
@@ -25,11 +26,14 @@ quantum `A_1[x^{-1}]=⊕_k x^k C[E]`, `(x^a f)(x^b g)=x^{a+b}f(E+b)g(E)`,
 
 > **The band-2 A\* playbook does not transfer verbatim — and the reason is
 > instructive.** Band-2 A\* died of a `mod 3` congruence (`3V=3P+1`) read off two
-> clean first integrals `Φ, I₂` of the negative cascade. At band 3 **those first
-> integrals do not exist**: no constant-coefficient combination of `C_{-1..-5}`
-> is an exact `τ`-derivative (the W3-obstruction of `classical-band3-cascade.md`
-> §8, here made quantitative), so there is no band-3 `L·d=β` lattice of the
-> band-2 shape and no "band-3 modulus" in that sense.
+> clean first integrals `Φ, I₂` of the negative cascade. At band 3 the **raw,
+> gauge-free, constant-coefficient Band-2-shaped total-derivative ansatz is
+> obstructed**: no constant-coefficient combination found in the stated search
+> basis is an exact `τ`-derivative. Wave C subsequently found a sector-specific
+> compensated integral in the classical `e≠0`, constant-`h` sector after adjoining
+> `Φ`, with
+> `Φ'=C_{-1}` and `I₂'=C_{-2}−(2/3)a_2'Φ`. No Band-2-shaped congruence lattice has
+> been derived.
 >
 > **A different, stronger weapon closes half of A\*: reflection.** The geometric
 > reflection `R:(x,ξ)↦(ξ,x)` sends a genuine A\* pair to a genuine *gauged*
@@ -39,14 +43,16 @@ quantum `A_1[x^{-1}]=⊕_k x^k C[E]`, `(x^a f)(x^b g)=x^{a+b}f(E+b)g(E)`,
 >
 > **Theorem (classical A\*-I empty).** In branch A\*-band3, if `a_{-3}` is **not**
 > a scalar cube then no pair exists. Consequently every classical A\*-band3 pair
-> has **both** extremes scalar cubes and is reflection-symmetric.
+> has **both** extremes scalar cubes, and the residual cube/cube class is stable
+> under reflection.
 >
 > This is a genuine theorem (machine-checked identities + Theorem A). The
 > residual **A\*-II** (both extremes cubes) is reduced to a coupled two-sided
 > cube cascade; its `nonconstant-ĥ` part coincides with the still-open
 > nonconstant-`h` sector (§7.1 there), and its minimal (doubly-constant) sub-case
-> is empty on exact bounded sweeps. **No counterexample survives** (the one
-> pole-free candidate the solver emits fails `C_0` for `μ≠0`). On the **quantum**
+> has no hits on the stated exact bounded sweeps. **Within those sweeps**, the one
+> pole-free candidate emitted by the solver fails `C_0` for `μ≠0`; this is not an
+> unbounded nonexistence result. On the **quantum**
 > face the reflection needs a falling-factorial twist and — because the quantum
 > "Theorem A" is itself open (the `Q_5` wall does not force a shifted cube,
 > `E(E−2)(E−4)`) — the classical route does **not** transcribe; quantum A\*-I is
@@ -156,10 +162,10 @@ cube cascade gives the mirror mixed-coupling relation, coupling the top data
   `classical-band3-cascade.md` §7.1. So this part of A\*-II is **routed** to that
   open sector, not closed.
 
-**No counterexample.** The only pole-free profile the linear solver emits with
+**Bounded candidate check.** The only pole-free profile the stated linear sweep emits with
 `μ̃` symbolic (`a_2=a_{-2}=b_{-2}=0`, `a_1` constant) is spurious: its moment
 gives `C_0 = 1 + 9 μ̃ τ²`, which fails `C_0=1` for every `μ̃≠0` (`verify §5`).
-Verified to destruction: it is a `μ̃=0` (B0) datum, not an A\* pair.
+Within this bounded profile it is a `μ̃=0` (B0) datum, not an A\* pair.
 
 ## 5. Why the band-2 W5 lattice does not transfer (and the redundancy that does)
 
@@ -168,20 +174,19 @@ Band-2 A\* was killed by two exact first integrals — `Φ` of `C_{-1}` and `I�
 infeasible `mod 3` (`classical-Astar.md` §3; W5 framework
 `band-k-weapons.md`). At band 3 this mechanism **fails at the source**:
 
-- **No first integral exists.** A machine search over a rich basis (algebraic
-  monomials to degree 3 in the surviving coefficients, plus all relevant
-  antiderivatives `∫a_1,∫a_2,∫a_2²,∫a_1a_2,∫a_0,∫a_2³,…` and `τ`-weightings)
-  finds **no** exact `τ`-derivative among `C_{-1}`, `C_{-2}`, nor any
-  constant-coefficient combination of `C_{-1..-5}` — every candidate multiplier
-  is forced to `0`. (The same search **does** reproduce band-2's `Φ`.) This is
-  the W3-obstruction of `classical-band3-cascade.md` §8 made quantitative: the
-  residual `Σ_k a_k' b_{-1-k}` is not a total derivative of the raw coefficients.
-  Consequently there is **no band-3 `L·d=β` of the band-2 shape**, and the
-  "determine the band-3 modulus" sub-goal resolves negatively: the clean
-  congruence lattice is obstructed, and the closure runs through **reflection +
-  Theorem A** instead. (Machine evidence for the search lives in the development
-  scripts; the *positive* structural facts it certifies — the reflection lemma,
-  the reduced rungs — are in `verify`.)
+- **The raw Band-2-shaped ansatz is obstructed.** A bounded machine search over
+  algebraic monomials to degree 3 in the surviving coefficients, selected
+  antiderivatives `∫a_1,∫a_2,∫a_2²,∫a_1a_2,∫a_0,∫a_2³,…`, and `τ`-weightings finds
+  no exact derivative for `C_{-1}`, `C_{-2}`, or a constant-coefficient combination
+  of `C_{-1..-5}` within that basis. This is evidence for obstruction of the raw,
+  gauge-free, constant-coefficient construction, not nonexistence of all first
+  integrals. Indeed Wave C later found, in the sector-specific classical `e≠0`,
+  constant-`h` reduction and after adjoining `Φ`, the compensated identities
+  `Φ'=C_{-1}` and `I₂'=C_{-2}−(2/3)a_2'Φ`. These do not supply a Band-2-shaped
+  congruence lattice, and **no such lattice has been derived**. Reflection plus
+  Theorem A remains the argument used in this memo. (The bounded negative search
+  lives in development scripts; the positive reflection and rung identities are
+  in `verify`.)
 - **The redundancy that *does* transfer.** Band-2's A\* proof "never used `C_{-3}`."
   The band-3 doubly-minimal A\* system stays empty on the sweep **after dropping
   `C_{-3}`** — and even after dropping `C_1` (`verify §5`). So the load-bearing
@@ -269,15 +274,17 @@ QUANTUM A*-band3  (gauge b3=0; b_-3=μ₃ a_-3, μ₃≠0; INHOMOGENEOUS μ₃-t
 - no genuine A\* pair on classical doubly-minimal sweeps (84 configs) or quantum
   sweeps (24 configs); the redundancy of `C_{-3}` and `C_1`; the destruction of
   the single spurious pole-free candidate (`C_0=1+9μ̃τ²`);
-- the non-existence of a band-2-style first integral / `L·d=β` lattice at band 3
-  (basis search; the W3-obstruction made quantitative).
+- obstruction, within the searched bounded basis, of raw gauge-free
+  constant-coefficient Band-2-shaped total derivatives; this is not nonexistence
+  of all sector-specific compensated integrals and derives no `L·d=β` lattice.
 
 **Open (precisely delimited — A\* is NOT fully closed):**
 - **A\*-II nonconstant-`ĥ`** (classical): coincides with the open nonconstant-`h`
   cube sector (`classical-band3-cascade.md` §7.1);
-- **A\*-II doubly-minimal** (classical): believed empty (sweeps), but lacks a
-  degree/first-integral proof — the band-3 first-integral obstruction blocks the
-  band-2 argument;
+- **A\*-II doubly-minimal** (classical): believed empty (sweeps), but lacks an
+  unbounded proof; the raw Band-2-shaped first-integral route is obstructed, while
+  Wave C's compensated integral is sector-specific and does not derive the needed
+  congruence lattice here;
 - **Quantum A\*-I**: reduced to the open quantum non-shifted-cube question
   (`quantum-band3-cascade.md` §3.5); the whole quantum A\* is counterexample-or-
   nothing with bounded emptiness evidence only.

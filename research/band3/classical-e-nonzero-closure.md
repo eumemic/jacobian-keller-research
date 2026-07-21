@@ -1,4 +1,4 @@
-# The classical band-3 e ≠ 0 mixed sector: the second first integral, and closure of A\*
+# The classical band-3 e ≠ 0 mixed sector: the second first integral and conditional tropical certificates
 
 **INDEPENDENTLY DERIVED — MACHINE-CHECKED IDENTITIES — NOT PEER REVIEWED — BAND-SCOPED**
 
@@ -9,8 +9,11 @@ It **produces the missing second first integral** that
 `research/band3/classical-hard-branches.md` (commit `ebfc64d`, cited [HARD]) pinned
 as *"the precise missing step"* — the band-3 analogue of band-2's `I₂`
 (`research/band2-square-sector/classical-Astar.md`, commit `84978b9`, cited [B2A]).
-It then uses it to **close the resistant branch A\*-band3 for `deg a_2 ≥ 1`** by a
-tropical degree gap, and delimits sharply what remains.
+It then derives a **conditional trailing solve off an explicit determinant locus** and
+records an `a_2`-dominant tropical degree gap. A bounded generic-leading-monomial
+scan corroborates that gap in a small range but does not close the arbitrary-degree
+sector. The determinant, cancellation/tie, polynomiality, membership, and constant-
+`a_2` loci remain explicit.
 
 Conventions are frozen and identical to Wave A/B: over `C`, `τ = xξ`,
 `{G,F} = G_ξ F_x − G_x F_ξ`, `F = Σ_{k=-3}^{3} x^k a_k(τ)`, `G = Σ x^k b_k(τ)`,
@@ -18,9 +21,11 @@ membership `τ^j | a_{-j}, b_{-j}`, ladder `C_m = Σ_{k+l=m}(k a_k b_l' − l a_
 primes `d/dτ`. Diagonal scaling normalizes `c = 1` (genuine, [HARD] §3;
 `classical-cube-closure.md` §0, cited [CUBE]) and `h = 1`. Every displayed algebraic
 identity is machine-checked by `verify_classical_e_closure.py` (same directory,
-31 checks); a successful run ends `ALL CLASSICAL E CLOSURE CHECKS PASSED`. Degree /
-membership statements are **written arguments**; the bounded box and Gröbner sweeps
-are **regression corroboration only**, labelled as such. Framework verifiers (cascade,
+31 checks); a successful run ends `ALL CLASSICAL E CLOSURE CHECKS PASSED`. The
+stated leading data are checked only at the representative
+`(Q,P,R,L)=(2,1,1,1)`, with conserved constants zero and no tie or cancellation;
+the wider bounded leading-monomial and Gröbner sweeps are **corroboration only** and do not prove
+polynomiality, membership, cancellation/tie cases, or arbitrary-degree emptiness. Framework verifiers (cascade,
 weapons) are green at commit `b9f9cf3`.
 
 ---
@@ -33,28 +38,30 @@ weapons) are green at commit `b9f9cf3`.
 >   Φ' = C_{-1}            (nonlocal Q₁ = ∫a_2),
 >   I₂' = C_{-2} − (2/3) a_2' Φ   (nonlocals Q₁, Q₂ = ∫a_2², P₁ = ∫a_1),
 > ```
-> the multiplier **`(2/3) a_2`** is *forced by, and exactly absorbs*, the W3
-> obstruction residue `(4e/3) a_{-3} a_2'` that [HARD] §5 proved blocks the naive
+> the multiplier **`m=(2/3) a_2 + constant`** is forced up to its additive constant,
+> and its derivative exactly absorbs the W3 obstruction residue
+> `(4e/3) a_{-3} a_2'` that [HARD] §5 proved blocks the naive
 > trailing integral: `Euler_{a_{-3}}(C_{-2}) = −(4e/3) a_2' ≠ 0`, but
 > `Euler_{a_{-3}}(C_{-2} − (2/3)a_2' Φ) = 0` (and the `a_{-2}` residue vanishes too).
 > `Φ|_{e=0}` is **exactly** [CUBE]'s `Φ₁`, so `Φ` is the honest `e ≠ 0` generalization.
 > *(PROVED, machine-checked, §2–§3.)*
 >
-> **Consequence — A\*-band3 (`e ≠ 0`) is empty for `deg a_2 ≥ 1`.** `Φ` and `I₂` are
-> **linear** in the trailing pair `(a_{-2}, a_{-3})`; the `2×2` solve (invertible off
-> the locus `det = 0`) **determines `a_{-3}`** — the determination the W3 obstruction
-> denied `C_{-2}` alone. Its leading coefficient is a **nonzero** multiple of the data
-> (`−13 lc(a_2)⁶/2187` when `a_2` dominates), giving `deg a_{-3} = 6·deg a_2`, whereas
-> the moment-determined `b_{-3}` has `deg b_{-3} = 5·deg a_2` (leading coefficient
-> `−25 e lc(a_2)⁵/243 ≠ 0`). So **`deg b_{-3} < deg a_{-3}`**: the bottom Wronskian
-> `C_{-6}` (which forces `b_{-3} = μ_3 a_{-3}`) is unsatisfiable for `μ_3 ≠ 0`. The
-> resistant branch **A\*-band3 is empty at arbitrary degree whenever `deg a_2 ≥ 1`**.
-> *(PROVED modulo the termwise-domination degree argument, §5; box-corroborated.)*
+> **Conditional consequence and bounded corroboration.** `Φ` and `I₂` are **linear**
+> in the trailing pair `(a_{-2}, a_{-3})`. They determine that pair only where
+> `det = −(4/3)e²a_1+(4/9)e²a_2²−κ₁²` is nonzero, and the resulting rational
+> expressions still require denominator cancellation, polynomiality, and relevant
+> membership checks. At the representative `(Q,P,R,L)=(2,1,1,1)`, with conserved
+> constants zero and under the stated no-tie/no-cancellation assumptions, the checked
+> leading data are `deg a_{-3}=12`, `deg b_{-3}=10`, with respective leading
+> coefficients `−13 lc(a_2)⁶/2187` and `−25e lc(a_2)⁵/243`. A generic-leading-
+> monomial scan over `Q=1..3`, `P,R=0..3`, `L=1..3`, with conserved constants set
+> to zero and cancellation ties omitted, finds the same strict gap throughout that
+> bounded box. This is evidence, not an arbitrary-degree emptiness theorem.
 >
-> **Modulus verdict: `other` (tropical), and steeper than `e = 0`.** As in [CUBE]
-> the band-3 obstruction is a **max-degree gap**, not a linear congruence — but the
-> `e ≠ 0` gap is **`6 : 5`** (from the `e`-wall's `a_2`-power growth) versus the
-> `e = 0` gap `3 : 2` ([CUBE] §7). No residue-class modulus exists.
+> **Shape verdict: tropical evidence, not a derived modulus.** The `a_2`-dominant
+> certificate has a `6 : 5` degree signature, versus the `e=0` `3 : 2` signature
+> ([CUBE] §7). No Band-2-shaped congruence lattice is derived here; wider regimes,
+> cancellation/tie loci, and the determinant locus remain open.
 
 ---
 
@@ -96,8 +103,9 @@ generalization of [CUBE] Lemma 3.1 / [B2A] Lemma 2.1's `Φ`.
 ## 3. `I₂` : the second first integral (the missing step)
 
 [HARD] §5 pinned the obstruction: `a_{-3}` enters `C_{-2}` with the residue
-`(4e/3) a_{-3} a_2'` — non-exact for `e ≠ 0` — so no gauge-free trailing integral of
-`C_{-2}` exists, and *"with a single balance there is no congruence to close on;
+`(4e/3) a_{-3} a_2'` — non-exact for `e≠0` — obstructing the raw, gauge-free
+Band-2-shaped total derivative of `C_{-2}`; *"with a single balance there is no
+congruence to close on;
 producing the second integral is the precise missing step."* The resolution mirrors
 [B2A]'s `I₂' = κ C_{-2} − p'Φ`:
 
@@ -110,12 +118,13 @@ producing the second integral is the precise missing step."* The resolution mirr
 > verifier. `I₂` is linear in the trailing pair: coefficient of `a_{-3}` is
 > `−b_1 = −(κ₁ + (2e/3)a_2)`, coefficient of `a_{-2}` is `(2e/3)a_1`.
 
-**Why the multiplier is `(2/3) a_2`, and why it works.** For *any* multiplier `m`,
+**Why the multiplier is `(2/3) a_2` up to a constant, and why it works.** For *any* multiplier `m`,
 ```
    Euler_{a_{-3}}(C_{-2} − m' Φ) = −(4e/3) a_2'  +  2e·m'
 ```
 (verifier §3; the `2e` is `Φ`'s `a_{-3}`-coefficient `−2e` with sign). This vanishes
-**iff `m' = (2/3) a_2'`, i.e. `m = (2/3) a_2`** — the multiplier is *forced*, and it
+**iff `m' = (2/3) a_2'`, i.e. `m = (2/3) a_2 + constant`** — the multiplier is
+*forced only up to an additive constant*, and its derivative
 absorbs the W3 residue **exactly**. The same combination kills the `a_{-2}` residue:
 `Euler_{a_{-2}}(C_{-2} − (2/3)a_2' Φ) = 0` (verifier §3). Both deep trailing
 coefficients then sit inside exact derivatives, so `I₂` exists (with the three
@@ -128,89 +137,83 @@ cube's extra free level, exactly as [CUBE]'s `Q₁ = ∫a_2` was one level up fr
 ```
    J := I₂ + (2/3) Φ_0 a_2 = const                 (verifier §4).
 ```
-Unlike [B2A], where memberships forced `Φ_0 = 0`, here `Φ_0 = Φ(0)` is a genuine
-nonzero constant in `a_2(0), a_1(0), a_0(0)`; the degree argument uses only that
-`Φ, J` are **constant**, i.e. their positive-degree parts vanish.
+Unlike [B2A], where memberships forced `Φ_0=0`, the identities here retain
+`Φ_0=Φ(0)` as an unrestricted conserved scalar (it may vanish). Any later degree
+analysis may use only that `Φ` and `J` are constant.
 
-## 4. `Φ, I₂` determine the trailing pair — the W3 lever restored
+## 4. `Φ, I₂` conditionally determine the trailing pair off `det=0`
 
 `Φ = Φ_0` and `I₂ = J − (2/3)Φ_0 a_2` are **linear in `(a_{-2}, a_{-3})`**; the `2×2`
 coefficient matrix has determinant (verifier §5)
 ```
    det = −(4/3) e² a_1 + (4/9) e² a_2² − κ₁².
 ```
-Off the locus `det ≡ 0`, the two integrals **determine `a_{-2}` and `a_{-3}`** from
-the upper data `(a_2, a_1, a_0, a_{-1})` and the scalars. This is exactly the
-determination the W3 obstruction denied `C_{-2}` alone: **`I₂` is what makes the
-trailing coefficient `a_{-3}` solvable in the `e ≠ 0` sector.** (For `e = 0` the
-determinant degenerates to `−κ₁²` and this reduces to [CUBE] §2's `κ ≠ 0` lever.)
+Where this polynomial determinant is **nonzero**, Cramer's rule determines
+`a_{-2}` and `a_{-3}` as rational expressions in the upper data
+`(a_2,a_1,a_0,a_{-1})` and the scalars. This is the determination the W3 obstruction
+denied `C_{-2}` alone, but it is conditional: the `det=0` locus requires separate
+analysis, and away from it one must still prove denominator cancellation,
+polynomiality, and the relevant membership analogues before treating the rational
+solve as a genuine trailing polynomial pair. (For `e=0` the determinant becomes
+`−κ₁²` and reduces to [CUBE] §2's `κ≠0` lever.)
 
-## 5. The tropical gap: A\*-band3 (`e ≠ 0`, `deg a_2 ≥ 1`) is empty
+## 5. Conditional tropical certificates and bounded exploration
 
-Write `Q = deg a_2, P = deg a_1, R = deg a_0, L = deg a_{-1}`. Solving the `2×2` for
-the leading behaviour (verifier §5):
+Write `Q=deg a_2`, `P=deg a_1`, `R=deg a_0`, `L=deg a_{-1}`. The following two
+claims must be kept separate.
 
-> **Leading-coefficient certificates (`a_2` dominant, PROVED — machine-checked).**
-> `deg a_{-3} = 6Q` with leading coefficient `−13 lc(a_2)⁶/2187 ≠ 0`; and the
-> moment-determined `deg b_{-3} = 5Q` with leading coefficient `−25 e lc(a_2)⁵/243 ≠ 0`.
+> **Exact leading-coefficient certificates at a representative `a_2`-dominant
+> specialization (machine-checked).** At `(Q,P,R,L)=(2,1,1,1)`, provided the
+> determinant has the expected nonzero leading term and no competing term ties or
+> cancels it, the Cramer solve gives `deg a_{-3}=6Q` with leading coefficient
+> `−13 lc(a_2)⁶/2187≠0`; the moment then gives `deg b_{-3}=5Q` with leading
+> coefficient `−25e lc(a_2)⁵/243≠0`.
 
-So `a_{-3}` grows **one `a_2`-power faster than `b_{-3}`** — the cube's `6 : 5`
-signature (from `Φ`'s `a_2⁶` and `I₂`'s `a_2⁷` versus the moment's `a_2⁵`). Across all
-regimes the general behaviour is `deg a_{-3} = max(6Q, 2R, …)` with a nonzero leading
-coefficient, and **`deg b_{-3} < deg a_{-3}` for every `deg a_2 ≥ 1`** (verifier §5:
-zero failures over the box `Q ≤ 3, P,R,L ≤ 3`; the arbitrary-degree statement is the
-termwise-domination written argument, exactly as [CUBE] §7).
+Thus, in this regime and subject to the conditional solve and polynomiality, the
+bottom Wronskian proportionality `b_{-3}=μ_3a_{-3}` is incompatible with the strict
+`6Q:5Q` degree gap. This is a regime-specific obstruction, not a theorem covering
+all degree orderings.
 
-> **Theorem 5.1 (A\*-band3, `e ≠ 0`, `deg a_2 ≥ 1`: EMPTY).** The bottom Wronskian
-> `C_{-6} = 0` with `a_{-3} ≠ 0` forces `b_{-3} = μ_3 a_{-3}` for a **constant** `μ_3`
-> ([HARD] §1). With `μ_3 ≠ 0` this requires `deg b_{-3} = deg a_{-3}` and proportional
-> polynomials — impossible since `deg b_{-3} < deg a_{-3}`. Hence **no A\*-band3 pair
-> has `deg a_2 ≥ 1`**.
+> **Bounded generic-leading-monomial exploration (corroboration only).** The verifier
+> substitutes one generic leading monomial for each upper coefficient and scans
+> exactly `Q=1..3`, `P,R=0..3`, `L=1..3`. It sets the conserved constants `CP,CI`
+> to zero. Within those substitutions it reports no case with
+> `deg b_{-3}≥deg a_{-3}` and no case with `deg a_{-3}<6Q`.
 
-*Proof.* `a_{-3}` is determined (§4, `det ≠ 0`) with nonzero leading coefficient, and
-`deg b_{-3} < deg a_{-3}` for every `deg a_2 ≥ 1` (verifier §5 box; termwise argument).
-Two polynomials of different degree are not proportional, so `b_{-3} = μ_3 a_{-3}`
-fails for `μ_3 ≠ 0`. ∎
+This scan is not an arbitrary-degree proof. It does not enumerate cancellation/tie
+loci, does not prove that division by `det` yields polynomials, and does not impose
+all coefficient memberships after the rational solve. In particular, it cannot
+establish emptiness of the full `e≠0`, `deg a_2≥1` sector.
 
-> **Corollary 5.2 (`deg a_2 ≥ 1`, `a_{-3} ≠ 0`: EMPTY off `lc(b_{-3}) = 0`).** The gap
-> also forces the `μ_3 = 0` (B0) alternative `b_{-3} ≡ 0`; but the moment-determined
-> `b_{-3}` has **nonzero** leading coefficient `−25 e lc(a_2)⁵/243` (a nonzero multiple
-> of `e`, since `e ≠ 0`), so `b_{-3} ≢ 0`. Contradiction. Hence the **entire** `e ≠ 0`
-> sector with `deg a_2 ≥ 1` and `a_{-3} ≠ 0` is empty **off the finite union of
-> leading-coefficient loci where `lc(b_{-3})` vanishes** (where `b_{-3}` drops degree
-> and the argument descends).
+**Bounded consistency only.** [HARD] found the degree box
+`(deg a_2,a_1,a_0,a_{-1},a_{-2},a_{-3})=(1,1,1,2,2,3)` empty by Gröbner
+computation. The verifier independently finds the smaller box `(1,0,0,1,2,3)`
+empty. These are exact bounded computations, not consequences of an unbounded
+emptiness theorem.
 
-Theorem 5.1 is unconditional on those loci (the gap only widens when `lc(b_{-3})`
-vanishes, since `a_{-3}`'s leading coefficient is robustly nonzero); Corollary 5.2's
-descent is the residual coefficient problem, exactly the shape [CUBE] §7 met at `e = 0`.
+## 6. Open loci and limitations
 
-**Consistency.** The [HARD] §5 Gröbner box `deg(a_2,a_1,a_0,a_{-1},a_{-2},a_{-3}) =
-(1,1,1,2,2,3)` has `deg a_2 = 1`, so it is covered by Theorem 5.1; [HARD] found it
-`Gröbner = (1)` (empty), and the verifier re-derives a small `e ≠ 0` box
-`(1,0,0,1,2,3)` as `(1)` independently (§6). The theorem **explains** the bounded
-emptiness as an arbitrary-degree phenomenon for `deg a_2 ≥ 1`.
-
-## 6. What remains (sharp delimitation)
-
-The tropical gap closes A\*-band3 for `deg a_2 ≥ 1`. Precisely delimited residue:
-
-- **`a_2 = const` (`Q = 0`) stratum.** With `a_2` constant `b_1 = κ₁ + (2e/3)a_2` is
-  **constant**, so the W3 residue `−(4e/3)a_2'` **switches off** (verifier §6) and the
-  sector is unobstructed there — the `e ≠ 0` analogue of [CUBE]'s `e = 0` slice, with
-  shifted constant `κ₁' = κ₁ + (2e/3)a_2`. A **finite** set of degree loci survives the
-  gap (the `Q = 0` survivors — related to [CUBE]'s `{3P=2R, L=2P, 2R=L+P}` but enlarged
-  by the `b_2 = e` coupling; verifier §6 exhibits survivors off those three, e.g.
-  `(P,R,L) = (0,1,1)`). Bounded-empty ([HARD] §5 Gröbner). **Not closed at arbitrary
-  degree here.**
-- **Leading-coefficient cancellation loci** (`deg a_2 ≥ 1`): the finite union where
-  `lc(b_{-3}) = 0` (Corollary 5.2) — a coefficient problem, not a congruence.
-- **`det ≡ 0` locus** `a_1 = (a_2² )/3 − 3κ₁²/(4e²)` (a_1 tied to a_2): the `2×2` lever
-  degenerates; separate handling required.
-- **onesided-top (`a_{-3} = 0`)**: `C_{-6}` is vacuous; routes toward band `≤ 2`
+- **`det=0` locus.** For `e≠0`,
+  `a_1=a_2²/3−3κ₁²/(4e²)` makes the trailing matrix singular; the two-integral
+  Cramer lever does not apply.
+- **Denominator cancellation and polynomiality.** When `det` is nonconstant and
+  nonzero, divisibility of the Cramer numerators by `det` is not proved. Nor are
+  the classical membership conditions (and their Weyl-side analogues, if used)
+  proved for the resulting expressions.
+- **Cancellation and degree-tie loci.** Competing leading monomials can tie or
+  cancel in `det`, the Cramer numerators, or `b_{-3}`. The bounded generic scan
+  intentionally does not resolve these coefficient loci.
+- **`a_2=const` (`Q=0`).** Then `b_1=κ₁+(2e/3)a_2` is constant and the W3 residue
+  `−(4e/3)a_2'` vanishes. The verifier only exhibits the bounded survivor
+  `(P,R,L)=(0,1,1)`, which lies off the three `e=0` tie equations; it does not
+  classify the constant-`a_2` stratum or prove a finite global survivor list.
+- **Leading-coefficient vanishing.** Any locus on which the displayed
+  `a_2`-dominant coefficients cease to control the top degree requires a separate
+  descent and remains open.
+- **onesided-top (`a_{-3}=0`).** `C_{-6}` is vacuous and routes toward band `≤2`
   (classical-band3-cascade §9).
-- **Nonconstant-`h`, `e ≠ 0` cross-branch**: out of scope by mandate ([HARD] §6 open
-  item); the divisibility engine bites there (`h | a_2`, `rad(h) | a_2/h`) but the
-  `τ`-order kill is not carried through.
+- **Nonconstant-`h`, `e≠0` cross-branch.** Out of scope ([HARD] §6); the available
+  divisibility observations do not close it.
 
 ## 7. Claim disposition
 
@@ -218,46 +221,53 @@ The tropical gap closes A\*-band3 for `deg a_2 ≥ 1`. Precisely delimited resid
 - the `e ≠ 0` reduction: `b_0, b_{-1}` solve `C_3, C_2`; `b_{-2}` explicit (`C_1` RHS a
   total derivative), now `a_{-1}`-dependent; `b_{-3}` from the moment; `C_0 = 1` (§1).
 - **`Φ' = C_{-1}`** (nonlocal `Q₁ = ∫a_2`); `Φ|_{e=0} = ` [CUBE]'s `Φ₁` exactly (§2).
-- **`I₂' = C_{-2} − (2/3) a_2' Φ`** — the missing second first integral — with the
-  multiplier `(2/3)a_2` forced by and absorbing the W3 residue
+- **`I₂' = C_{-2} − (2/3) a_2' Φ`** — the missing second first integral — with
+  `m=(2/3)a_2+constant` uniquely forced up to its additive constant and `m'`
+  absorbing the W3 residue
   (`Euler_{a_{-3}}(C_{-2}) = −(4e/3)a_2'`, `Euler_{a_{-3}}(C_{-2} − (2/3)a_2'Φ) = 0`,
   `Euler_{a_{-2}}(⋯) = 0`); nonlocals `Q₁, Q₂ = ∫a_2², P₁ = ∫a_1` (§3).
 - the two conserved quantities `Φ = const`, `J = I₂ + (2/3)Φ_0 a_2 = const` (§4); the
   `2×2` determinant and the trailing-pair determination off `det = 0` (§4–§5).
 
-**Proved modulo the termwise-domination degree argument (leading coefficients
-machine-checked, gap box-verified):**
-- `deg a_{-3} = 6·deg a_2` (lc `−13 lc(a_2)⁶/2187`), `deg b_{-3} = 5·deg a_2`
-  (lc `−25 e lc(a_2)⁵/243`), hence `deg b_{-3} < deg a_{-3}` for `deg a_2 ≥ 1` (§5).
-- **Theorem 5.1: A\*-band3 (`e ≠ 0`, `deg a_2 ≥ 1`) is EMPTY**, and **Corollary 5.2**:
-  the full sector with `deg a_2 ≥ 1`, `a_{-3} ≠ 0` is empty off the finite
-  `lc(b_{-3}) = 0` loci (§5).
-- **Modulus verdict = `other` (tropical `6 : 5`)**, steeper than the `e = 0` gap
-  `3 : 2` — no residue-class modulus in the `e ≠ 0` sector (§0, §5).
+**Proved conditionally / in a specified regime:**
+- off the zero locus of `det`, the two linear identities give a rational Cramer
+  determination of `(a_{-2},a_{-3})`; polynomiality and membership are additional
+  unresolved conditions (§4);
+- at the representative `a_2`-dominant specialization `(Q,P,R,L)=(2,1,1,1)`,
+  under the no-tie/no-cancellation assumptions, the exact leading data are
+  `deg a_{-3}=6Q` (lc `−13lc(a_2)⁶/2187`) and `deg b_{-3}=5Q`
+  (lc `−25e lc(a_2)⁵/243`), yielding a specialization-specific proportionality
+  obstruction.
 
 **Computed (bounded, corroboration only):**
-- `e ≠ 0` Gröbner box `(1,0,0,1,2,3)` is `(1)` (§6); consistency with [HARD]'s
-  `(1,1,1,2,2,3)` box (both are `deg a_2 = 1`, covered by Theorem 5.1).
+- the generic-leading-monomial scan covers exactly `Q=1..3`, `P,R=0..3`,
+  `L=1..3`, sets `CP=CI=0`, and omits cancellation/tie analysis (§5);
+- the `e≠0` Gröbner box `(1,0,0,1,2,3)` is `(1)`; [HARD]'s separate
+  `(1,1,1,2,2,3)` box is also bounded evidence.
 
 **Open (precisely delimited):**
-- the `a_2 = const` (`Q = 0`) stratum's finite surviving degree loci (bounded-empty);
-- the `deg a_2 ≥ 1` leading-coefficient loci `lc(b_{-3}) = 0` and the `det ≡ 0` locus;
-- onesided-top (`a_{-3} = 0`, routes to band `≤ 2`);
-- the nonconstant-`h`, `e ≠ 0` cross-branch ([HARD] §6, out of scope).
+- `det=0`; denominator cancellation and polynomiality; classical membership and
+  any relevant membership analogues used in a later transfer; cancellation and degree-tie loci;
+- `a_2=const` (`Q=0`) and all wider degree regimes not covered by the
+  `a_2`-dominant certificate;
+- onesided-top (`a_{-3}=0`) and nonconstant-`h`, `e≠0`.
 
-**Not claimed:** a full band-3 theorem, the whole `e ≠ 0` sector at `deg a_2 = 0`,
-the `A*`-band3 quantum mirror, JC2, DC1, or any statement beyond §1–§6.
+**Not claimed:** emptiness of the full `e≠0`, `deg a_2≥1` sector; a full band-3
+or A\*-band3 theorem; a Band-2-shaped congruence lattice; the quantum mirror; JC2;
+DC1; or any unbounded completeness from the bounded scan.
 
 ## 8. Verification
 
 ```
 uv run --with sympy python research/band3/verify_classical_e_closure.py
 ```
-Exact SymPy, 31 checks; ends `ALL CLASSICAL E CLOSURE CHECKS PASSED`. It certifies:
-the 13 `C_m` vs the direct Poisson bracket; the `e ≠ 0` reduction and moment; `Φ' =
-C_{-1}` and `Φ|_{e=0} = Φ₁`; **`I₂' = C_{-2} − (2/3)a_2' Φ`** with the forced-multiplier
-Euler-residue identities; the two conserved quantities; the `2×2` determinant and the
-leading-coefficient certificates `deg a_{-3} = 6·deg a_2`, `deg b_{-3} = 5·deg a_2`
-with their exact leading coefficients; the gap over the box; the `a_2`-constant
-residue switch-off; and a small `e ≠ 0` Gröbner emptiness box. The degree/membership
-arguments of §5–§6 are the proofs; the box and Gröbner sweeps are corroboration.
+Exact SymPy; a successful run ends `ALL CLASSICAL E CLOSURE CHECKS PASSED`. Its
+exact symbolic checks certify the 13 `C_m` formula, reduction and moment, `Φ'=C_{-1}`,
+`Φ|_{e=0}=Φ₁`, **`I₂'=C_{-2}−(2/3)a_2'Φ`**, the multiplier derivative condition
+(`m=(2/3)a_2+constant`), the conserved quantities, determinant, and the leading
+coefficients only at representative `(Q,P,R,L)=(2,1,1,1)`, with `CP=CI=0` and
+ties/cancellation omitted. Separately, it performs a bounded generic-
+leading-monomial exploration over `Q=1..3`, `P,R=0..3`, `L=1..3`, with conserved
+constants zero and cancellation ties omitted, plus one small Gröbner box. Those
+computations are corroboration only and do not certify arbitrary-degree emptiness,
+denominator cancellation, polynomiality, or membership.
