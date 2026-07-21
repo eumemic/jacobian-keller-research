@@ -25,7 +25,7 @@ All conventions are frozen exactly as in the band-2 corpus:
   b_l] = δ_{m0}`.
 
 Everything below is checked exactly by
-[`verify_bandk_weapons.py`](verify_bandk_weapons.py) at `k = 2, 3, 4` (81 `PASS`
+[`verify_bandk_weapons.py`](verify_bandk_weapons.py) at `k = 2, 3, 4` (94 `PASS`
 lines, ends `ALL BAND-K WEAPON CHECKS PASSED`). Citations to the band-2 corpus
 are pinned to commits: band-2 assembly `84978b9`, full classical `f637b1a`,
 partial cascades `91a053a`, classical A\* closure and quantum mirror in the
@@ -57,8 +57,9 @@ it is a band-3 phenomenon (absent at band 2).
 
 - Classical: `C_{2k} = k(a_k b_k′ − a_k′ b_k)`. Hence if `a_k ≠ 0`, then
   `(b_k/a_k)′ = 0`, so `b_k = λ a_k`, `λ ∈ C`.
-- Quantum: `Q_{2k} = b_k^{[k]} a_k − a_k^{[k]} b_k`. Hence `b_k/a_k` is
-  `k`-periodic as a rational function, so (char 0) constant: `b_k = λ a_k`.
+- Quantum: `Q_{2k} = b_k^{[k]} a_k − a_k^{[k]} b_k`. Hence, if `a_k ≠ 0`,
+  `b_k/a_k` is `k`-periodic as a rational function, so (char 0) constant:
+  `b_k = λ a_k`.
 
 *Proof.* Only the term `(i,l) = (k,k)` has `i+l = 2k` with both indices in
 `[−k,k]`; the displayed one-term brackets give the formulas directly. Vanishing
@@ -67,8 +68,10 @@ exactly the statement that `b_k/a_k` has zero derivative / is `k`-periodic; a
 rational function with an additive period has no poles it cannot repeat
 infinitely, hence is constant. ∎
 
-This is the mirror-symmetric bottom fact too: `C_{−2k} = −k(a_{−k}b_{−k}′ −
-a_{−k}′b_{−k})` and `Q_{−2k}` likewise give `b_{−k} = μ a_{−k}` (used in W6).
+This is the mirror-symmetric bottom fact too: if `a_{−k}≠0`, then
+`C_{−2k} = −k(a_{−k}b_{−k}′ − a_{−k}′b_{−k})` and `Q_{−2k}` likewise give
+`b_{−k} = μ a_{−k}` (used in W6). If `a_{−k}=0`, the extreme bottom equation is
+vacuous and belongs to a separate vanishing branch.
 The band-2 case is W1 as used in `M4_proof_memo.md` (`f637b1a`) `C_4`, and
 `quantum-M4.md` (`84978b9`) `Q_4`. **Verified k = 2, 3, 4** (`verify §1`).
 
@@ -96,8 +99,9 @@ a_k^{k−1}`. In the UFD `C[τ]`, comparing the exponent `e` of any irreducible 
 This is exactly the M4/J2 square lemma at `k = 2` (`a_2 = c h^2`, `2 a_2 u′ − a_2′
 u = 0`; `M4_proof_memo.md` `f637b1a` §4). The generalization is the **`k`-th
 power classification**; the negative direction (a non-`k`-th-power `a_k` kills
-`u`, hence forces `b_{k−1} = 0` and the whole cascade) is what makes it a
-gatekeeper. **Verified k = 2, 3, 4**, including a machine witness that `a_k = τ`
+`u`, hence forces `b_{k−1} = 0`) is what makes it a gatekeeper. This one
+homogeneous equation does **not** by itself force the lower coefficients to
+vanish; any further descent must be proved rung by rung. **Verified k = 2, 3, 4**, including a machine witness that `a_k = τ`
 (not a `k`-th power) admits no nonzero `u` (`verify §2`).
 
 ### W2 quantum (the break: THEOREM at k=2, FALSE naive lift at k≥3)
@@ -138,9 +142,21 @@ exists **iff** both `S_{k−1} g` and `S_k g` are effective (non-negative). For
 `k = 2`, `S_{k−1} = S_1 = 1`, so `g = δ(u)` is forced effective, forcing `a_2 =
 S_2 g`-shape, i.e. `a_2 = c h(E)h(E+1)` a shifted square (this **is** Lemma J2q,
 `quantum-M4.md` `84978b9`). For `k ≥ 3`, `S_{k−1}` is nontrivial and a
-**non-effective** `g` can have both `S_{k−1} g` and `S_k g` effective: the witness
-has `g = σ^2 − σ + 1` (not effective), `S_2 g = 1 + σ^3` and `S_3 g = 1 + σ^2 +
-σ^4` (both effective).
+**non-effective** `g` can have both `S_{k−1} g` and `S_k g` effective. In fact the
+same explicit cofactor works for every `k ≥ 3`:
+```
+  g = 1 − σ + σ²,
+  S_{k−1}g = 1 + σ² + σ³ + ⋯ + σ^{k−2} + σ^k,
+  S_k g     = 1 + σ² + σ³ + ⋯ + σ^{k−1} + σ^{k+1}.
+```
+(An indicated sum is empty when its lower limit exceeds its upper limit.) Thus
+both products are effective while `g` is not. Taking `δ(u)=S_{k−1}g` and
+`δ(a_k)=S_k g` in one root coset, and defining the monic polynomials by
+`δ(∏_j(E+j)^{c_j})=∑_j c_jσ^j`, gives an exotic gatekeeper solution for every
+`k ≥ 3`. The displayed formulas follow by multiplying
+`(1+⋯+σ^{r−1})(1−σ+σ²)` and collecting coefficients; the necklace identity is
+then `S_kδ(u)=S_{k−1}δ(a_k)` exactly. At `k=3` this recovers
+`δ(u)=1+σ³`, `δ(a_3)=1+σ²+σ⁴` and the witness above.
 
 **Consequences for the program.** The clean quantum band-2 gatekeeper "either
 `b_1 = 0` or `a_2` shifted-square" (`quantum-M4.md`, `quantum-mirror.md`) does
@@ -271,31 +287,35 @@ theorem proved; general-`k` congruence a conjecture; band-3 modulus open.**
 
 ---
 
-## W3 — first integrals with a free trailing coefficient (THEOREM, any k)
+## W3 — conditional trailing-coefficient identity (any k)
 
-**Theorem W3.** The trailing coefficient `a_{−k}` enters the equation
-`C_{−(k−1)}` **only** through
+**Conditional identity W3.** The trailing coefficient `a_{−k}` enters the
+equation `C_{−(k−1)}` **only** through
 ```
-  −k a_{−k} b_1′ − a_{−k}′ b_1  =  −(k−1) a_{−k} b_1′  −  (a_{−k} b_1)′,
+  −k a_{−k} b_1′ − a_{−k}′ b_1  =  −(k−1) a_{−k} b_1′  −  (a_{−k} b_1)′.
 ```
-i.e. as an exact `τ`-derivative `−(a_{−k} b_1)′` plus a residue `−(k−1)
-a_{−k} b_1′`. After the W2 cascade makes `b_1` constant (`b_1′ = 0`), the residue
-drops and `a_{−k}` sits **inside an exact derivative**; `C_{−(k−1)}` then
-integrates with `a_{−k}` **free**, and setting the integral to its
-membership-forced constant determines `a_{−k}` from the other data.
+This decomposition is an arbitrary-`k` identity. If an **independent descent
+argument** has already proved `b_1′=0`, its residue vanishes and the
+`a_{−k}`-dependent part is the exact derivative `−(a_{−k}b_1)′`.
 
-This is exactly the band-2 W3 lever (`classical-Astar.md` Lemma 2.1: `Φ′ = κ
-C_{−1}` with `a_{−2}` free) generalized to `C_{−(k−1)}` with `a_{−k}` free. It is
-the trailing-coefficient analogue of W4 (which is the exact-derivative statement
-one rung further, at `C_0`). **Verified k = 2, 3, 4** (`verify §6`).
+Nothing in W2 alone supplies that hypothesis: W2 controls the homogeneous
+freedom `b_{k−1}` at the top wall, not the intervening coefficients
+`b_{k−2},…,b_1`. Nor does the displayed identity show that all the other terms
+of `C_{−(k−1)}` form an exact derivative. Therefore no arbitrary-`k` W3 first
+integral, no free-`a_{−k}` theorem, and no whole-cascade conclusion is claimed.
+At `k=2`, the separately proved gauged parametrization in
+`classical-Astar.md` yields its genuine W3 integral; extending that extra input
+to larger `k` remains open. **The conditional decomposition is verified at
+`k=2,3,4`** (`verify §6`).
 
 ---
 
 ## W6 — Lemma R is the mirror of W2 (audit correction; balance present in BOTH faces)
 
-**Theorem W6.** The bottom-adjacent equation `C_{−(2k−1)}` / `Q_{−(2k−1)}` is the
-mirror image of the W2 gatekeeper. With the bottom proportionality `b_{−k} = μ
-a_{−k}` (W1 mirror) and `φ := μ a_{−(k−1)} − b_{−(k−1)}`, `s := a_{−k}`:
+**Theorem W6.** On the nonzero bottom branch `a_{−k}≠0`, the bottom-adjacent
+equation `C_{−(2k−1)}` / `Q_{−(2k−1)}` is the mirror image of the W2 gatekeeper.
+With the bottom proportionality `b_{−k} = μ a_{−k}` (W1 mirror) and
+`φ := μ a_{−(k−1)} − b_{−(k−1)}`, `s := a_{−k}`:
 
 - **Quantum:** `Q_{−(2k−1)} = s^{[−(k−1)]} φ − s φ^{[−k]}`. The `E^{S+Φ−1}` leading
   coefficient is `(kΦ − (k−1)S)·lc(s)·lc(φ)`, so vanishing forces the **staggered
@@ -336,15 +356,17 @@ balance** — the balance is shared. The real asymmetry is the solution *class*
   shifted-`k`-th-power **sufficiency**; the necklace criterion `S_k δ(u) = S_{k−1}
   δ(a_k)` with the `S_{k}/S_{k−1}` coprimality (all `k`).
 - W4 moment: `C_0 = Ψ′` and `Q_0 = (T−1)G` with explicit potentials (both faces).
-- W3 free-trailing-coefficient first integral (`C_{−(k−1)}`, `a_{−k}` free).
+- W3 algebraic decomposition of the `a_{−k}`-part of `C_{−(k−1)}`; its
+  exact-derivative consequence is conditional on an independently proved
+  `b_1′=0` and is not a general first-integral theorem.
 - W6 bottom = W2 mirror: staggered balance `(k−1)S = kΦ` in both faces; classical
   integral `φ^k = c s^{k−1}`.
 
-**VERIFIED at k = 2, 3, 4 as a distinguishing computation (not a general proof):**
-- The quantum-W2 **break**: the exotic band-3 witness `u = E(E+3)`, `a_3 =
-  E(E+2)(E+4)`; its non-shifted-cube certificate; the non-effective cofactor `g =
-  σ²−σ+1` with `S_2 g, S_3 g` effective. (The *mechanism* — coprimality gap for
-  `k ≥ 3` — is a proof; the specific witness is an existence certificate.)
+**VERIFIED at k = 2, 3, 4 as distinguishing computations:**
+- The quantum-W2 **break** at band 3: `u = E(E+3)`, `a_3 = E(E+2)(E+4)` and its
+  non-shifted-cube certificate. The written product formulas for
+  `g=1−σ+σ²` prove the exotic family for every `k≥3`; finite checks merely
+  corroborate the first cases.
 
 **CONJECTURE:**
 - W5 lattice conjecture at general `k` (infeasibility of `L d = β` over `Z_{≥0}`
@@ -385,7 +407,7 @@ first-integral set, and the general lattice modulus are all open.
 uv run --with sympy python research/band3/verify_bandk_weapons.py
 ```
 
-Exact SymPy; 81 `PASS` lines at `k = 2, 3, 4`; ends `ALL BAND-K WEAPON CHECKS
+Exact SymPy; 94 `PASS` lines at `k = 2, 3, 4`; ends `ALL BAND-K WEAPON CHECKS
 PASSED`. The checks establish the displayed identities and the distinguishing
 witnesses; the arbitrary-`k` completeness of the THEOREM items is the written
 structural argument (leading-coefficient bookkeeping, UFD/necklace divisibility,

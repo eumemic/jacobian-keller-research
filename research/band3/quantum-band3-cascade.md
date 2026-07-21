@@ -17,6 +17,10 @@ Everything below is checked exactly by
 [`verify_quantum_band3.py`](verify_quantum_band3.py) (ends
 `ALL QUANTUM BAND3 CHECKS PASSED`).
 
+Every ratio statement below is restricted to the branch where its denominator
+extreme is nonzero. A vanishing extreme is treated as a separate branch rather
+than divided through.
+
 ## 0. Headline
 
 > The naive mirror **breaks at band 3.** The band-2 wall `Q₃` forced the top to
@@ -69,7 +73,7 @@ forms of `Q₆, Q₅, Q₀, Q₋₅, Q₋₆`.
 
 ## 2. `Q₆` — top proportionality (3-periodicity) and the gauge
 
-Only `(k,l)=(3,3)` contributes to `Q₆`:
+Assume `a₃≠0`. Only `(k,l)=(3,3)` contributes to `Q₆`:
 ```
 Q₆ = b₃^[3] a₃ − a₃^[3] b₃ .
 ```
@@ -258,53 +262,62 @@ This is the band-3 form of the band-2 central integral
 
 ### 5.1 Bottom proportionality and bottom wall
 
-By the same 3-periodicity argument reflected to the bottom, `Q₋₆ =
-b₋₃^[−3]a₋₃ − a₋₃^[−3]b₋₃ = 0` gives
+Assume `a₋₃≠0`. By the same 3-periodicity argument reflected to the bottom,
+`Q₋₆ = b₋₃^[−3]a₋₃ − a₋₃^[−3]b₋₃ = 0` gives
 ```
-   b₋₃ = μ₃ a₋₃ ,     μ₃ ∈ ℂ                                   (verify §4),
+   b₋₃ = μ₃ a₋₃ ,     μ₃ ∈ ℂ                                   (verify §4).
 ```
-and `Q₋₅` (with `b₋₃ = μ₃a₋₃`) has the bottom-wall part
-`b₋₂^[−3]a₋₃ − a₋₃^[−2]b₋₂` plus a `μ₃`-driven source. The quantum Fourier
-reflection `φ: E ↦ −E−1` (`../band2-square-sector/quantum-a2-zero.md` §2, a
-genuine automorphism, no sign flip) flips shift signs — `(P^[−3])|_φ =
-(P|_φ)^[+3]`, `(P^[−2])|_φ = (P|_φ)^[+2]` (`verify` §4) — carrying the bottom
-wall to the top-wall form. Hence **`a₋₃` obeys the same `Φ₃` root-structure as
-`a₃`**, with the mirror degree law `2 deg a₋₃ = 3 deg b₋₂`.
+If `a₋₃=0`, `Q₋₆=0` is vacuous and this `μ₃` gauge is unavailable; that is a
+separate vanishing branch. On the nonzero branch, direct substitution in `Q₋₅`
+shows that the correct gauged bottom variable is
+```
+   ϕ := b₋₂ − μ₃a₋₂,
+   Q₋₅ = ϕ^[−3]a₋₃ − a₋₃^[−2]ϕ.                         (BOTTOM-WALL)
+```
+Indeed, expanding the right side gives the displayed `b₋₂` wall plus
+`μ₃[a₋₃^[−2]a₋₂−a₋₂^[−3]a₋₃]`, fixing the minus sign in `ϕ`. The quantum Fourier
+reflection `E↦−E−1` (`../band2-square-sector/quantum-a2-zero.md` §2, a genuine
+automorphism, no sign flip) flips shift signs — `(P^[−3])|_φ=(P|_φ)^[+3]` and
+`(P^[−2])|_φ=(P|_φ)^[+2]` (`verify` §4) — carrying (BOTTOM-WALL) to the top-wall
+form. Hence, when `ϕ≠0`, **`a₋₃` and `ϕ` obey the same `Φ₃` necklace criterion**
+as `a₃,b₂`, with mirror degree law `2 deg a₋₃=3 deg ϕ`. No such law for raw
+`b₋₂` follows when `μ₃a₋₂` is present.
 
 ### 5.2 The first genuinely new phenomenon: `λ₃ ≠ μ₃`
 
 At band 2 the single gauge `D ↦ D − λX` handled the top, and the bottom kept one
 free proportionality constant (`w = μs`, `../band2-square-sector/quantum-mirror.md`).
-At band 3 the same single gauge is spent on the **top** (`b₃ = 0` via `λ₃`), so
-the **bottom** proportionality `b₋₃ = μ₃ a₋₃` survives with `μ₃` **independent
-of `λ₃`**. The two constants then couple through the middle equations: `verify`
-§4 exhibits
-```
-   Q₋₅ = [ b₋₂^[−3]a₋₃ − a₋₃^[−2]b₋₂ ]  +  μ₃·[ a₋₃^[−2]a₋₂ − a₋₂^[−3]a₋₃ ] ,
-```
-an **inhomogeneous** equation for `b₋₂` whose source is `μ₃`-proportional. This
+On the two-sided branch `a₃a₋₃≠0`, at band 3 the same single gauge is spent on
+the **top** (`b₃ = 0` via `λ₃`), so the **bottom** proportionality
+`b₋₃ = μ₃ a₋₃` survives with `μ₃` **independent of `λ₃`**. The two constants
+couple through the middle equations. In raw
+`b₋₂`, `Q₋₅` is inhomogeneous with a `μ₃`-source, while the substitution
+`ϕ=b₋₂−μ₃a₋₂` converts it exactly to the homogeneous (BOTTOM-WALL) equation.
+This
 is precisely the "cross-coupling of proportionality constants" the archived
 milestone flagged as the first new band-3 effect (quoted in the band-2 theorem
 residuals, `84978b9`): the top and bottom cannot both be gauged flat, and the
 residue `μ₃` contaminates the bottom wall. There is no band-2 analogue.
 
-### 5.3 Lemma-R staggered rigidities (quantum leading coefficients are stronger)
+### 5.3 Lemma-R bottom-wall balance: same degrees, different structure
 
-The general staggered fact: for a difference `f^[a]g^[b] − f^[a']g^[b']` whose
-top terms coincide (`p = deg f`, `q = deg g`),
+The classical and quantum bottom walls have the same degree balance. For the
+quantum staggered difference `f^[a]g^[b] − f^[a']g^[b']`, with `p = deg f` and
+`q = deg g`, cancellation of the top terms leaves
 ```
    coeff(E^{p+q−1}) = ( (a−a')p + (b−b')q )·lc(f)·lc(g)        (verify §5).
 ```
-This differentiation-free "extra" order (differentiation is shift-invariant and
-carries no such term — the mechanism of band-2 Lemma R,
-`../band2-square-sector/quantum-mirror.md` §5) yields degree-forcing lemmas
-throughout the negative tail. Instances proved exactly (`verify` §5), each
-firing **when the named term dominates**:
+The classical differential wall has the corresponding leading coefficient and
+forces the same relation; for band `k` both give `(k−1)S=kΦ`. The distinction is
+not a stronger quantum degree law: the classical differential equation yields
+ordinary-power behavior, whereas the quantum shifted equation retains the
+root-necklace/cyclotomic structure described in §3. Instances proved exactly
+(`verify` §5), each firing **when the named term dominates**:
 
 | equation / term | staggered shifts `(a,b)/(a',b')` | obstruction `(a−a')p+(b−b')q` | forced degree relation |
 |---|---|---|---|
 | top wall `Q₅`, `a₃^[0]b₂^[3] − a₃^[2]b₂^[0]` | `(0,3)/(2,0)` | `−2p+3q` | `2 deg a₃ = 3 deg b₂` |
-| bottom wall `Q₋₅`, `a₋₃^[0]b₋₂^[−3] − a₋₃^[−2]b₋₂^[0]` | `(0,−3)/(−2,0)` | `2p−3q` | `2 deg a₋₃ = 3 deg b₋₂` |
+| gauged bottom wall `Q₋₅`, `a₋₃^[0]ϕ^[−3] − a₋₃^[−2]ϕ^[0]` | `(0,−3)/(−2,0)` | `2p−3q` | `2 deg a₋₃ = 3 deg ϕ` (when `ϕ≠0`) |
 | `Q₋₄`, `a₋₃^[0]b₋₁^[−3] − a₋₃^[−1]b₋₁^[0]` | `(0,−3)/(−1,0)` | `p−3q` | `deg a₋₃ = 3 deg b₋₁` |
 | `Q₋₄`, `μ₃(a₋₃^[−1]a₋₁^[0] − a₋₃^[0]a₋₁^[−3])` | `(−1,0)/(0,−3)` | `−p+3q` | `deg a₋₃ = 3 deg a₋₁` |
 
@@ -342,7 +355,9 @@ Writing the descent in the gauge `b₃ = 0`:
 1. **`Q₆`** ⇒ `b₃ = λ₃ a₃`; gauge `b₃ = 0`. *(Proved, §2.)*
 2. **`Q₅` wall** ⇒ either `b₂ = 0`, or `a₃` is `Φ₃`-compatible per coset and
    `b₂ = κ₂·g(a₃)` (1-dimensional). *(Proved, §3; shifted-cube **not** forced.)*
-3. **`Q₋₆`** ⇒ `b₋₃ = μ₃ a₋₃` (independent scalar). *(Proved, §5.1.)*
+3. **`Q₋₆`** ⇒ if `a₋₃≠0`, then `b₋₃ = μ₃ a₋₃` (independent scalar);
+   if `a₋₃=0`, the extreme equation is vacuous and routes to a separate
+   vanishing branch. *(Proved, §5.1.)*
 4. **`Q₄, Q₃, Q₂`** (positive middle) — inhomogeneous cascades coupling
    `b₁, b₀` to `(a₃, a₂, b₂)`. When `a₃` is a nonzero **constant** (trivial
    cube, normalized `a₃=1` by diagonal scaling), the wall `Q₅ = a₃(b₂^[3]−b₂)`
@@ -357,17 +372,22 @@ Writing the descent in the gauge `b₃ = 0`:
 6. **`Q₋₁ … Q₋₄`** (negative middle) — the staggered rigidities of §5.3, plus
    the `μ₃`-cross-coupling. *(Partial; degree-forcing lemmas proved, closure
    open.)*
-7. **`Q₋₅` bottom wall** ⇒ `a₋₃` `Φ₃`-structure, contaminated by `μ₃`.
+7. **`Q₋₅` bottom wall** ⇒ the pair `(a₋₃,ϕ)` with
+   `ϕ=b₋₂−μ₃a₋₂` obeys the reflected `Φ₃` necklace law.
    *(Proved structure, §5; closure open.)*
 
-**Band-2 reductions consumed.** Where `a₃, a₋₃` degenerate to constants the pair
-drops to band 2, closed by the assembled quantum band-2 theorem
+**Band-2 reductions consumed.** A pair drops to band at most 2 only when its
+level-3 extremes vanish (after any stated normalization), not merely when their
+coefficient polynomials are constant. Such genuinely lower-band sectors are
+closed by the assembled quantum band-2 theorem
 (`../band2-square-sector/quantum-band2-theorem.md`, `84978b9`): the
 shifted-square sector (`quantum-mirror.md` `ad43ab5` + `quantum-completion.md`),
 the non-shifted-square kill (`quantum-M4.md`), the `a₂=0` reduction and Fourier
 orientation (`quantum-a2-zero.md`), and band-1 rigidity (`quantum-band1.md`).
-The genuinely new sectors are exactly those with a **nonconstant** extreme
-`a_{±3}` — where the `Φ₃`/sesqui wall and the `λ₃–μ₃` cross-coupling have no
+A genuine band-3 sector has, after orientation, a **nonzero level-3 extreme**;
+a nonzero constant extreme remains genuine band 3 and includes the tame sector
+above. Nonconstant extremes instead identify the wall-novel/open residual
+behavior, where the `Φ₃`/sesqui wall and the `λ₃–μ₃` cross-coupling have no
 band-2 shadow.
 
 ## 8. Status of claims
@@ -379,9 +399,9 @@ band-2 shadow.
   **refutation** of shifted-cube necessity via `E(E−2)(E−4)` and the
   realizability gap `{1,5,6}` (§3.2, §3.4); the Telescoping Lemma `Q₀=(T−1)G`
   with the band-agnostic closed-form `G`, its band-2 specialization, and
-  `G(0)=0 ⇒ G=E` (§4); the bottom proportionality `b₋₃ = μ₃a₋₃`, the reflection
-  shift-flip, the `Q₋₅`/`Q₋₄` decompositions, and the staggered leading-coefficient
-  Lemma-R identities (§5).
+  `G(0)=0 ⇒ G=E` (§4); on the branch `a₋₃≠0`, the bottom proportionality
+  `b₋₃ = μ₃a₋₃`, the reflection shift-flip, the `Q₋₅`/`Q₋₄` decompositions, and
+  the staggered leading-coefficient Lemma-R identities (§5).
 - **Computed / corroboration only:** the bounded wall-admissibility sweep and
   the genuine positive-control witness (`verify` §6–§7).
 - **Open (the frontier this cascade exposes):**
@@ -391,9 +411,11 @@ band-2 shadow.
   2. the closure of the `μ₃`-cross-coupled negative tail (§5), hence any band-3
      tame classification;
   3. any global DC1/JC2 statement — **not claimed**; band 3 is not closed here.
-- **No counterexample to DC1 is produced.** The `E(E−2)(E−4)` example is a
-  counterexample to the *shifted-cube conjecture for the wall equation*, not to
-  anything about full Weyl pairs.
+- **No counterexample to DC1 is produced.** The `E(E−2)(E−4)` construction and
+  other wall witnesses solve `Q₅` only. They are not asserted to satisfy the
+  remaining `Q_m`, are not Weyl pairs, and refute only shifted-cube necessity for
+  the isolated wall equation. The §6 positive control is separately verified as
+  a genuine Weyl pair.
 
 ## 9. Verification
 
@@ -412,18 +434,17 @@ A successful run ends `ALL QUANTUM BAND3 CHECKS PASSED`.
 
 ## 10. Relation to the classical band-3 sibling and the induction
 
-The classical band-3 agent works the `{G,F}=1`, `τ=xξ` face in parallel and
-independently. The expected correspondence (to be reconciled, not assumed):
-the classical top `C₆` gives `b₃ = λ₃a₃` by `(b₃/a₃)' = 0`; the classical `C₅`
-wall is the differential staggered equation `2·(...)` whose *differential*
-leading content lacks the `Φ₃` cyclotomic residue — so the classical wall is
-expected to force the ordinary cube `a₃ = h³` (the `ħ→0` degeneration collapses
-`h h⁽¹⁾ h⁽²⁾ → h³` and the `Φ₃`-cofactor slack disappears in the limit). If so,
-**the counterexample `E(E−2)(E−4)` is a purely quantum phenomenon** — the
-staggered integer shifts opening room that differentiation closes, the same
-"quantum is more rigid *and* differently rigid" theme as Lemma R
-(`../band2-square-sector/quantum-mirror.md` §5). This is a prediction, flagged
-for cross-check, not a proved statement.
+The classical band-3 sibling works the `{G,F}=1`, `τ=xξ` face in parallel. Its
+top `C₆` gives `b₃ = λ₃a₃` by `(b₃/a₃)' = 0`, and its `C₅` wall proves the
+ordinary-power alternative: a nonzero wall variable forces `a₃=c·h³`. The
+quantum `Q₅` wall has the **same degree balance** `2 deg a₃=3 deg b₂`, but its
+shifted equation retains root-necklace/cyclotomic cofactors absent from the
+classical differential equation. Thus `E(E−2)(E−4)` is a purely quantum
+**isolated-wall** phenomenon: it solves `Q₅`, but it is not asserted to satisfy
+the full cascade, genuine membership, or generation, and is not a Weyl pair or
+a DC1 counterexample. Quantum is not stronger at the level of this degree law;
+the solution structures differ (ordinary powers classically, necklaces
+quantumly), exactly as in the corrected W6 comparison.
 
 The band-3 floor of the width induction therefore stands, on the DC1 face, on:
 top proportionality ✓, the wall structure ✓ (with its new `Φ₃`/sesqui form),

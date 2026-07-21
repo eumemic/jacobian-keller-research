@@ -15,7 +15,7 @@ Convention (frozen, matching every sibling quantum memo):
       E | a_-1,b_-1 ;  E(E-1) | a_-2,b_-2 ;  E(E-1)(E-2) | a_-3,b_-3.
 
 Sections:
-  0. crossed-product engine; Q_m == direct commutator (m=-6..6); closed forms.
+  0. crossed-product engine; Q_m == separately looped crossed-product expansion (m=-6..6); closed forms.
   1. Q_6 top: b3^[3]a3 - a3^[3]b3; period-3 rigidity; gauge legitimacy => b3=0.
   2. THE WALL Q_5 (gauge b3=0) = b2^[3]a3 - a3^[2]b2:
        - shifted-cube sufficiency at symbolic degree;
@@ -85,12 +85,12 @@ def divides(fac, c):
 # =====================================================================
 # 0. Crossed-product engine: Q_m equals the direct commutator ladder coeff.
 # =====================================================================
-print("--- 0. Q_m == direct commutator (band 3) ---")
+print("--- 0. Q_m == separately looped crossed-product expansion (band 3) ---")
 A = {k: poly(f'A{k+3}', 2)[0] for k in range(-3, 4)}
 Bc = {k: poly(f'B{k+3}', 2)[0] for k in range(-3, 4)}
 
 
-def direct_commutator(m, K=3):
+def expanded_commutator(m, K=3):
     # [D,X] = DX - XD;  (x^l b_l)(x^k a_k) = x^{l+k} b_l(E+k) a_k(E),
     #                   (x^k a_k)(x^l b_l) = x^{k+l} a_k(E+l) b_l(E).
     tot = 0
@@ -102,7 +102,8 @@ def direct_commutator(m, K=3):
 
 
 for m in range(-6, 7):
-    az(direct_commutator(m) - Qm(A, Bc, m), f"Q_{m} = direct commutator ladder coeff")
+    az(expanded_commutator(m) - Qm(A, Bc, m),
+       f"Q_{m} agrees with the separately looped crossed-product expansion")
 
 az(Qm(A, Bc, 6) - (sh(Bc[3], 3) * A[3] - sh(A[3], 3) * Bc[3]),
    "Q_6 = b3^[3] a3 - a3^[3] b3")
@@ -237,11 +238,11 @@ a3_cube6 = sp.expand(h6 * sh(h6, 1) * sh(h6, 2))
 b2v, b2c = poly('bb', 6)
 sol = list(sp.linsolve(sp.Poly(sp.expand(sh(b2v, 3) * a3_cube6 - sh(a3_cube6, 2) * b2v), E).all_coeffs(), b2c))[0]
 nfree = len({s for x in sol for s in x.free_symbols})
-istrue(nfree <= 1, "wall solution space for cube a3 (deg 6) is 1-dimensional (single scalar)")
+istrue(nfree == 1, "wall solution space for cube a3 (within b2 deg<=6) is 1-dimensional")
 b2v2, b2c2 = poly('cc', 4)
 sol2 = list(sp.linsolve(sp.Poly(sp.expand(sh(b2v2, 3) * a3_ce - sh(a3_ce, 2) * b2v2), E).all_coeffs(), b2c2))[0]
 nfree2 = len({s for x in sol2 for s in x.free_symbols})
-istrue(nfree2 <= 1, "wall solution space for counterexample a3 (deg 3) is 1-dimensional")
+istrue(nfree2 == 1, "wall solution space for exotic a3 (within b2 deg<=4) is 1-dimensional")
 
 # (2e) degree law 2 deg a3 = 3 deg b2 : leading E^{p+q} cancels, E^{p+q-1} coeff = (3q-2p) lc.
 p_, q_ = sp.symbols('p q', positive=True, integer=True)
@@ -265,7 +266,7 @@ for d in (4, 6, 8):
     bv, bcf = poly(f'bad{d}', d)
     s = list(sp.linsolve(sp.Poly(sp.expand(sh(bv, 3) * a3_bad - sh(a3_bad, 2) * bv), E).all_coeffs(), bcf))[0]
     istrue(all(x == 0 for x in s),
-           f"a3 roots {{1,5,6}}: wall has ONLY the trivial b2=0  (b2 deg<= {d})  -- Phi3-div is NOT sufficient")
+           f"a3 roots {{1,5,6}}: bounded solve has only b2=0 (b2 deg<={d}); Phi3-div is not sufficient")
 
 
 # =====================================================================
@@ -334,7 +335,10 @@ Bcp = dict(Bc); Bcp[3] = sp.Integer(0); Bcp[-3] = sp.expand(mu3 * A[-3])
 qm5_cp = Qm(A, Bcp, -5)
 az(qm5_cp - ((sh(Bcp[-2], -3) * A[-3] - sh(A[-3], -2) * Bcp[-2])
              + mu3 * (sh(A[-3], -2) * A[-2] - sh(A[-2], -3) * A[-3])),
-   "Q_-5 = [b-2 wall] + mu3 [a-3,a-2 staggered]  (mu3-source: cross-coupling, absent at band 2)")
+   "Q_-5 raw decomposition has the mu3 cross-coupling source")
+phi_m2 = sp.expand(Bcp[-2] - mu3 * A[-2])
+az(qm5_cp - (sh(phi_m2, -3) * A[-3] - sh(A[-3], -2) * phi_m2),
+   "Q_-5 = phi^[-3] a_-3 - a_-3^[-2] phi for phi=b_-2-mu3*a_-2 (minus sign verified)")
 
 
 # =====================================================================
@@ -348,7 +352,7 @@ print("\n--- 5. Lemma-R staggered rigidities (negative tail) ---")
 ff, ffc = poly('ff', 4); gg2, gg2c = poly('gg2', 3)
 pf = 4; qf = 3
 table = [
-    ("bottom wall Q_-5  [a-3^[0] b-2^[-3] - a-3^[-2] b-2^[0]]", 0, -3, -2, 0, "2 deg a-3 = 3 deg b-2"),
+    ("gauged bottom wall Q_-5 [a-3^[0] phi^[-3] - a-3^[-2] phi^[0]]", 0, -3, -2, 0, "2 deg a-3 = 3 deg phi"),
     ("Q_-4 term         [a-3^[0] b-1^[-3] - a-3^[-1] b-1^[0]]", 0, -3, -1, 0, "  deg a-3 = 3 deg b-1"),
     ("Q_-4 term (mu3)   [a-3^[-1] a-1^[0] - a-3^[0] a-1^[-3]]", -1, 0, 0, -3, "  deg a-3 = 3 deg a-1"),
 ]

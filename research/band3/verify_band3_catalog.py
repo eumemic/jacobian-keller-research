@@ -199,7 +199,7 @@ ok(sp.expand(Cm_eval(-6, {-3: am3g}, {-3: mu*am3g})) == 0,
    "C_{-6} = 3(a_{-3}' b_{-3} - a_{-3} b_{-3}') = 0  <=  b_{-3} = mu a_{-3} (bottom Wronskian)")
 
 print("="*72)
-print("SECTION 3  CLASSICAL single-shear-origin structure lemma (all parameters)")
+print("SECTION 3  CLASSICAL single-shear normal form (symbolic parameters in this class)")
 print("  F,G both C-linear combos of X (linear) and Psi (sheared); the whole")
 print("  |k|>=2 tower of G is lambda times that of F  =>  ONE gauge kills it.")
 print("="*72)
@@ -209,19 +209,28 @@ X1 = al*x + be*xi; Xi1 = ga*x + de*xi
 Psi = sp.expand(Xi1 + mu3*X1**3 + mu2*X1**2 + mu1*X1)
 F = sp.expand(aa*X1 + bb*Psi); G = sp.expand(cc*X1 + dd*Psi)
 aF = band_decomp(F); bG = band_decomp(G)
-# (iii) for every |k|>=2: b_k = (d/b) a_k  identically
-lam_nf = sp.cancel(dd/bb)
-tower_ok = all(sp.simplify(sp.expand(bG.get(k, 0) - lam_nf*aF.get(k, 0))) == 0
-               for k in (2, 3, -2, -3))
-ok(tower_ok, "single cubic shear: b_k = (d/b) a_k for ALL |k| in {2,3} and {-2,-3}")
-# (iv) top and bottom proportionality constants coincide; gauge kills the tower
-a3 = sp.expand(aF.get(3, 0)); am3 = sp.expand(aF.get(-3, 0))
-b3 = sp.expand(bG.get(3, 0)); bm3 = sp.expand(bG.get(-3, 0))
-ok(sp.simplify(sp.cancel(b3/a3) - sp.cancel(bm3/am3)) == 0,
-   "lambda_top (b3/a3) == mu_bottom (b_{-3}/a_{-3}) == d/b  (single-shear-origin)")
-gauged = {k: sp.expand(bG.get(k, 0) - lam_nf*aF.get(k, 0)) for k in set(bG) | set(aF)}
-ok(all(sp.expand(gauged.get(k, 0)) == 0 for k in (2, 3, -2, -3)),
-   "gauge G->G-(d/b)F annihilates gauged b_{+-2}, b_{+-3} SIMULTANEOUSLY (no resistant branch)")
+# All-parameter theorem, with no division: b*b_k = d*a_k at every tower level.
+tower_levels = (2, 3, -2, -3)
+tower_ok = all(sp.expand(bb*bG.get(k, 0) - dd*aF.get(k, 0)) == 0
+               for k in tower_levels)
+ok(tower_ok, "single shear: b*b_k = d*a_k at every |k|=2,3 tower level (all parameters)")
+# Oriented ratio/gauge check, with b != 0 encoded in the symbol assumption.
+b_nz = sp.symbols('b_oriented', nonzero=True)
+lam_nf = dd/b_nz
+gauged = {k: sp.cancel(bG.get(k, 0).subs(bb, b_nz)
+                       - lam_nf*aF.get(k, 0).subs(bb, b_nz))
+           for k in tower_levels}
+ok(all(gauged[k] == 0 for k in tower_levels),
+   "oriented b!=0: lambda=d/b and G->G-(d/b)F kills every |k|=2,3 tower level")
+# b=0 edge: use symplectic A2=I.  Then G carries the tower; after
+# (F,G)->(G,-F), the first output has nonzero level 3 and ratio 0 kills the other tower.
+b0_sub = {aa: 1, bb: 0, cc: 0, dd: 1, al: 1, be: 1, ga: 0, de: 1,
+          mu3: 1, mu2: 1, mu1: 0}
+F_b0 = sp.expand(F.subs(b0_sub)); G_b0 = sp.expand(G.subs(b0_sub))
+F_ex, G_ex = G_b0, -F_b0
+a_ex, b_ex = band_decomp(F_ex), band_decomp(G_ex)
+ok(a_ex.get(3, 0) != 0 and all(sp.expand(b_ex.get(k, 0)) == 0 for k in tower_levels),
+   "b=0 pair exchange: exchanged first output carries level 3; oriented lambda=0 gauge kills the other tower")
 # (i) pure cubic (mu2=mu1=0): odd-only support; a2 identically 0
 Fpc = F.subs({mu2: 0, mu1: 0}); apc = band_decomp(Fpc)
 ok(sp.expand(apc.get(2, 0)) == 0 and sp.expand(apc.get(0, 0)) == 0 and set(apc) <= {-3, -1, 1, 3},
@@ -232,7 +241,7 @@ ok(sp.simplify(sp.cancel(sp.expand(aF.get(-3, 0))/t**3)).is_polynomial(t) and
    "membership: tau^3 | a_{-3}, tau^2 | a_{-2} (genuine C[x,xi] pair)")
 
 print("="*72)
-print("SECTION 4  blow-up law: band 3 requires a cubic shear")
+print("SECTION 4  blow-up law for displayed normalized opposite-direction shears")
 print("="*72)
 def shP(d): return (u, v + u**d)
 def shQ(d): return (u + v**d, v)
@@ -245,7 +254,7 @@ for a in (1, 2, 3):
         rows.append((a, b, band))
         if band != a*b:
             prod_ok = False
-ok(prod_ok, "opposite-direction shears deg(a) then deg(b): band = a*b exactly  " + str(rows))
+ok(prod_ok, "displayed monic opposite-direction two-shear families have band=a*b  " + str(rows))
 # quadratic+affine words realize only bands that are products of 2 -> never 3
 cs = [1, -1, 2]
 QUAD = [(u, v + c*u**2) for c in cs] + [(u + c*v**2, v) for c in cs]
@@ -310,7 +319,7 @@ entry("B3-3 two-sided ODD-only  A2.[pure cubic shear].A1  [odd support -3,-1,1,3
        'branch': 'B0-band3 (collapse, mu=lambda)'})
 
 print("="*72)
-print("SECTION 6  bounded enumeration: NO tame word reaches the resistant branch")
+print("SECTION 6  bounded enumeration: no enumerated word reaches the resistant branch")
 print("="*72)
 CUBE = [(u, v + c*u**3) for c in cs] + [(u + c*v**3, v) for c in cs]
 for g in CUBE:
@@ -399,13 +408,29 @@ for k, val in qpow(X1q, 3).items():
 Psiq = {k: val for k, val in Psiq.items() if val != 0}
 Xq = qlin(aa, bb, X1q, Psiq)
 Dq = qlin(cc, dd, X1q, Psiq)
-# single-shear-origin: b_k = (d/b) a_k for |k|>=2
-lam_q = sp.cancel(dd/bb)
-tower_q = all(sp.simplify(sp.expand(Dq.get(k, 0) - lam_q*Xq.get(k, 0))) == 0 for k in (3, -3))
-ok(tower_q, "quantum single cubic shear: b_k = (d/b) a_k for |k|=3  (single-shear-origin)")
+# All-parameter theorem, division-free at both quantum tower levels.
+qtower_levels = (3, -3)
+tower_q = all(sp.expand(bb*Dq.get(k, 0) - dd*Xq.get(k, 0)) == 0
+              for k in qtower_levels)
+ok(tower_q, "quantum single shear: b*b_k = d*a_k at both |k|=3 tower levels (all parameters)")
+# Oriented ratio/gauge check, with b != 0 encoded in the symbol assumption.
+qb_nz = sp.symbols('qb_oriented', nonzero=True)
+lam_q = dd/qb_nz
+qgauged = {k: sp.cancel(Dq.get(k, 0).subs(bb, qb_nz)
+                        - lam_q*Xq.get(k, 0).subs(bb, qb_nz))
+            for k in qtower_levels}
+ok(all(qgauged[k] == 0 for k in qtower_levels),
+   "quantum oriented b!=0: lambda=d/b and D->D-(d/b)X kills both |k|=3 tower levels")
 a3Q = sp.expand(Xq.get(3, 0)); am3Q = sp.expand(Xq.get(-3, 0))
-ok(sp.simplify(sp.cancel(sp.expand(Dq.get(3, 0))/a3Q) - sp.cancel(sp.expand(Dq.get(-3, 0))/am3Q)) == 0,
-   "quantum lambda_top == mu_bottom == d/b (no resistant branch from single cubic shear)")
+# b=0 edge with symplectic A2=I: D carries the tower.  Pair exchange
+# (X,D)->(D,-X) makes its level-3 coefficient first and leaves ratio 0.
+qb0_sub = {aa: 1, bb: 0, cc: 0, dd: 1, al: 1, be: 1, ga: 0, de: 1, mu: 1}
+X_b0 = {k: sp.expand(val.subs(qb0_sub)) for k, val in Xq.items()}
+D_b0 = {k: sp.expand(val.subs(qb0_sub)) for k, val in Dq.items()}
+X_ex = D_b0
+D_ex = {k: -val for k, val in X_b0.items()}
+ok(X_ex.get(3, 0) != 0 and all(sp.expand(D_ex.get(k, 0)) == 0 for k in qtower_levels),
+   "quantum b=0 pair exchange: exchanged first output carries level 3; oriented lambda=0 gauge kills the other tower")
 # quantum membership: a_{-3} divisible by falling factorial E(E-1)(E-2)
 ff = E*(E-1)*(E-2)
 ok(sp.simplify(sp.cancel(am3Q/ff)).is_polynomial(E),
@@ -429,6 +454,6 @@ if FAILS:
     for fl in FAILS:
         print("  -", fl)
     raise SystemExit("verify_band3_catalog.py FAILED: " + "; ".join(FAILS))
-print("Structure lemma holds at all parameters (classical + quantum);")
+print("Structure lemma holds symbolically throughout the stated single-shear normal forms;")
 print("resistant branch A*-band3 reached by ZERO tame words in the stated enumeration.")
 print("ALL BAND3 CATALOG CHECKS PASSED")

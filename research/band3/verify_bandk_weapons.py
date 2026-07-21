@@ -30,11 +30,12 @@ Sections:
         Quantum: Q_0 = (T-1)G with the explicit staggered potential G. Both exact, any k.
   5. W5  lattice: the band-2 A* degree-balance system re-cast as an integer affine
         system; the mod-3 (=infeasible) congruence; the general formulation skeleton.
-  6. W3  free trailing coefficient: a_{-k} enters C_{-(k-1)} through -(k-1)a_{-k}b_1' -
-        (a_{-k} b_1)', exact once b_1 is constant (post-cascade) => first integral.
-  7. W6  Lemma R staggered rigidity: general (a S - b Phi) leading coefficient; the
-        band-k quantum instance Q_{-(2k-1)} = s^[-(k-1)] phi - s phi^[-k] => (k-1)S = kPhi;
-        classical bottom C_{-(2k-1)} is a shift-invariant Wronskian (no such rigidity).
+  6. W3  conditional trailing identity: a_{-k} enters C_{-(k-1)} through
+        -(k-1)a_{-k}b_1' - (a_{-k} b_1)'.  It is an exact derivative only under
+        the independently established extra hypothesis b_1'=0.
+  7. W6  bottom-wall degree balance in both faces: (k-1)S = kPhi.
+        Classically the differential wall gives ordinary-power behavior; quantumly
+        the staggered wall gives root-necklace/cyclotomic behavior.
 
 Run:  uv run --with sympy python research/band3/verify_bandk_weapons.py
 Ends: ALL BAND-K WEAPON CHECKS PASSED
@@ -153,7 +154,7 @@ for k in KS:
             if nz:
                 found = du
                 break
-    ok(found is None, f"k={k}  (=>) a_k=t not a k-th power => NO nonzero u (deg u < {3*k})")
+    ok(found is None, f"k={k}  bounded corroboration: a_k=t has NO nonzero u with deg u < {3*k}")
     ok(sp.gcd(k, k - 1) == 1, f"k={k}  gcd(k,k-1)=1 (drives k | exponents => a_k = c h^k)")
 
 
@@ -233,6 +234,17 @@ for k in KS:
     ok(sp.gcd(sp.Poly(Sr(k), sig), sp.Poly(Sr(k - 1), sig)).as_expr() == 1,
        f"k={k}  gcd(S_k, S_(k-1)) = 1  in Q[sigma]  (coprime necklace operators)")
 ok(sp.expand(Sr(1)) == 1, "k=2 special: S_(k-1)=S_1=1 => cofactor forced effective => a_2 IS a shifted square")
+# Bounded regression for the memo's exact all-k family from
+# g=1-sigma+sigma^2.  The memo supplies the coefficientwise arbitrary-k proof;
+# this loop only checks representative k=3,...,9 instances.
+for k in range(3, 10):
+    gex = 1 - sig + sig**2
+    expected_u = 1 + sum(sig**j for j in range(2, k - 1)) + sig**k
+    expected_a = 1 + sum(sig**j for j in range(2, k)) + sig**(k + 1)
+    az(sp.expand(Sr(k - 1) * gex - expected_u),
+       f"k={k} necklace family: S_(k-1)(1-sigma+sigma^2) has the stated effective form")
+    az(sp.expand(Sr(k) * gex - expected_a),
+       f"k={k} necklace family: S_k(1-sigma+sigma^2) has the stated effective form")
 print("   => classical W2 lifts verbatim (a_k = c h^k); QUANTUM W2 does NOT for k>=3:")
 print("      the shifted-power class is a PROPER subset of the gatekeeper solution set.")
 
@@ -288,7 +300,7 @@ print("   CONJECTURE: outside the tame strata g>1, so the system is infeasible o
 
 # =====================================================================
 print("\n" + "=" * 70)
-print("6. W3  free trailing coefficient: a_{-k} enters C_{-(k-1)} inside an exact derivative")
+print("6. W3  conditional trailing identity: exact derivative only if b_1'=0 is known independently")
 print("=" * 70)
 for k in KS:
     a = cfun('a', k); b = cfun('b', k)
@@ -302,8 +314,8 @@ for k in KS:
     # rewrite: -k s b1' - s' b1 = -(k-1) s b1' - (s b1)'.  The (s b1)' is EXACT.
     az((-k * s * sp.diff(b[1], t) - sp_ * b[1]) - (-(k - 1) * s * sp.diff(b[1], t) - sp.diff(s * b[1], t)),
        f"k={k}  = -(k-1) s b_1' - (s b_1)'   (exact part (s b_1)'; residue -(k-1)s b_1')")
-print("   Post-W2 cascade b_1 is constant (b_1'=0): the residue drops and a_{-k} sits INSIDE the")
-print("   exact derivative -(s b_1)'. => C_{-(k-1)} integrates with a_{-k} FREE (W3, general k).")
+print("   CONDITIONAL CONSEQUENCE: if a separate rung-by-rung argument proves b_1'=0,")
+print("   the residue drops and the a_{-k}-part is -(a_{-k}b_1)'.  W2 alone does not prove this premise.")
 
 
 # =====================================================================

@@ -327,7 +327,8 @@ for m in range(-6, 7):
     zero(Cm(m, Aw, Bw) - (1 if m == 0 else 0),
          f"witness satisfies C_{m} = delta_{{m0}}")
 # membership: a_-1 = tau (tau | a_-1 ok), a_-2=a_-3=0 ok; e=0, k1 h = -1.
-check(True, "witness lies in the cubic e=0 subsector (b2=0, b1=-1=k1 h, h=alpha^(1/3))")
+check(Bw[2] == 0 and Bw[1] == -1 and Aw[3] == al,
+      "witness has b2=0, b1=-1, and top a3=alpha")
 
 # =====================================================================
 # SECTION 11.  Bounded-degree corroboration: no e!=0 cubic band-3 Keller pair

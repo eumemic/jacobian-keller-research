@@ -6,7 +6,7 @@ This memo derives the complete classical band-3 coefficient system and pushes th
 band-2 arsenal down the cascade as far as it forces, mapping exactly where the
 band-2 weapons break. Every displayed algebraic identity is machine-verified by
 `verify_classical_band3.py` (same directory); a successful run ends
-`ALL CLASSICAL BAND3 CHECKS PASSED` (66 checks). The degree-balance and
+`ALL CLASSICAL BAND3 CHECKS PASSED` (79 checks). The degree-balance and
 membership arguments are written proofs; the bounded-degree kernel sweeps are
 regression corroboration only.
 
@@ -120,8 +120,9 @@ operator advancing from the 1/2-power to the **2/3-power** form.
 ```
 so `L[u] = 0 ⇔ (u³/a_3²)' = 0 ⇔ u³ = c a_3²` for some `c ∈ C^*` (or `u=0`).
 
-**Proposition 3.2 (exact homogeneous-freedom criterion).** Over `C`, a *nonzero*
-polynomial solution of `L[u] = 0` exists **iff `a_3` is a scalar cube**,
+**Proposition 3.2 (exact wall criterion for nonzero homogeneous freedom).** Over
+`C`, the isolated wall equation has a *nonzero* polynomial solution of `L[u]=0`
+**iff `a_3` is a scalar cube**,
 `a_3 = c h³` with `h ∈ C[τ]`, `c ∈ C^*`. In that case the full polynomial
 solution space is the line `{u = e h² : e ∈ C}`.
 
@@ -131,6 +132,11 @@ solution space is the line `{u = e h² : e ∈ C}`.
 writing `m_i = 3 p_i`, `a_3 = γ (∏_i(τ−r_i)^{p_i})³ = c h³` with `h = ∏_i(τ−r_i)^{p_i}`,
 `c = γ`. Conversely `a_3 = c h³` gives `L[e h²] = 3 c h³·2 e h h' − 2·3 c h² h'·e h² = 0`
 (machine-checked), and `u³ = c' a_3² = c'' h⁶` forces `u ∈ C·h²`. ∎
+
+This proposition classifies only the homogeneous freedom visible at `C_5`; it
+does not say that `a_3` must be a cube when the wall solution is `u=0`. That
+stronger conclusion for a full Keller pair is Theorem A's contrapositive and
+uses every downstream step through `C_0` plus membership.
 
 The general pattern (verifier §4): the level-`ℓ` descent operator is
 ```
@@ -270,8 +276,9 @@ The central identity is the moment `M = τ`:
    − (2e/3c) a_2 a_{-1} = τ.
 ```
 The residual system is then `C_{-1} = C_{-2} = C_{-3} = 0` together with
-`C_{-6}` (bottom proportionality `b_{-3} = μ_3 a_{-3}`), `C_{-5}` (bottom wall),
-`C_{-4}`, and the memberships `τ ∣ b_{-1}`, `τ² ∣ a_{-2}, b_{-2}`,
+`C_{-6}` (on `a_{-3}≠0`, bottom proportionality `b_{-3} = μ_3 a_{-3}`;
+vacuous on `a_{-3}=0`), `C_{-5}` (bottom wall), `C_{-4}`, and the memberships
+`τ ∣ b_{-1}`, `τ² ∣ a_{-2}, b_{-2}`,
 `τ³ ∣ a_{-3}, b_{-3}`. Unlike band 2, this system has **two** free
 lower F-functions (`a_2` and `a_1`) surviving into the negative cascade; closing
 it is exactly the additional work band 3 demands over band 2. The `e = 0` slice
@@ -281,8 +288,9 @@ of this system is the one that most closely mirrors the band-2 square sector.
 
 The clean, provable first integrals are:
 
-1. **Wronskian ratios** (§2): `b_3/a_3 = λ_3`, `b_{-3}/a_{-3} = μ_3` — first
-   integrals of `C_6`, `C_{-6}`.
+1. **Wronskian ratios** (§2): on `a_3≠0`, `b_3/a_3 = λ_3`; on
+   `a_{-3}≠0`, `b_{-3}/a_{-3} = μ_3` — first integrals of `C_6`, `C_{-6}`
+   on their respective nonvanishing branches.
 2. **The moment** `M = τ` (§5) — a two-sided first integral (W4), with the
    very-bottom coefficients `a_{-3}, b_{-3}` entering linearly.
 

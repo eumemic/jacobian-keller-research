@@ -26,35 +26,38 @@ never reached (`tame-catalog.md`, `f637b1a`). Band 3 sharpens this into a
 
 Three exact structural facts, all machine-verified for **all parameters**:
 
-1. **Blow-up law (band 3 needs a cubic shear).** Composing an `x`-shear of
-   degree `a` with a `ξ`-shear of degree `b` (opposite directions, both
-   nonlinear) produces a pair of band **exactly `a·b`**. Quadratic-and-affine
-   words therefore realize only bands `{1,2,4,8,16,…}` — powers of 2 — and
-   **never band 3**. A genuine band-3 extreme (odd weight `±3`) requires an
-   odd-degree, i.e. **cubic**, shear. `verify` §4.
+1. **Blow-up law for the displayed two-shear families.** Composing the
+   normalized monic, nonzero nonlinear `x`- and `ξ`-shears used in `verify` §4
+   produces band **exactly `a·b`**: the displayed extreme coefficient is nonzero.
+   Thus two quadratics in those opposite-direction families have band 4, while
+   the bounded quadratic/affine enumeration reaches no band-3 word. Zero or
+   affine shear terms, more general interleavings, and possible cancellations
+   require separate treatment; no unbounded tame-word theorem is inferred.
 
 2. **Single-shear-origin, upgraded to a tower.** In the normal form
    `Φ = A₂ ∘ S ∘ A₁` with `A₁,A₂` affine symplectic and `S` a **single**
    triangular shear (one coordinate stays linear), `F` and `G` are both
    `C`-linear combinations of two functions `X` (linear, band 1) and
    `Ψ` (sheared, band 3). The **entire weight-`|k|≥2` tower** of `F` and `G`
-   lives in `Ψ`, so `b_k=λ a_k` with the *same* `λ=d/b` for every `|k|≥2`.
-   Hence the single gauge `G→G−λF` annihilates
-   **`b_3, b_2, b_{−2}, b_{−3}` simultaneously**. `verify` §3, §7 (classical and
-   quantum, all parameters).
+   lives in `Ψ`, so the all-parameter statement is the division-free identity
+   `b·b_k=d·a_k` for every `|k|≥2`. If `b≠0`, this becomes the common ratio
+   `b_k=(d/b)a_k`, and `G→G−(d/b)F` annihilates **`b_3, b_2, b_{−2}, b_{−3}`
+   simultaneously**. If `b=0`, symplecticity `ad−bc=1` forces `d≠0`, so the
+   opposite output `G` carries the tower; exchanging `(F,G)` for `(G,−F)` gives
+   an orientation with nonzero first tower coefficient before applying the
+   ratio/gauge statement. `verify` §3, §7 (classical and quantum, all parameters).
 
-3. **Cross-coupling of proportionality constants → the resistant locus.** The
-   top Wronskian `C_6` gives `b_3=λ a_3`; the bottom Wronskian `C_{−6}` gives
+3. **Cross-coupling of proportionality constants → the resistant locus.** On
+   the two-sided branch `a_3a_{−3}≠0`, the top Wronskian `C_6` gives
+   `b_3=λ a_3` and the bottom Wronskian `C_{−6}` gives
    `b_{−3}=μ a_{−3}`. The **A\*-band3 resistant branch** is exactly
    `μ≠λ` (gauged `b_{−3}=(μ−λ)a_{−3}≠0`). The single-shear normal form forces
-   `μ=λ` structurally, because both extremes come from the one `Ψ`. Producing
-   `μ≠λ` would require the `+3` and `−3` extremes to come from *different*
-   sources (an `x`-cubic and a `ξ`-cubic), and by the blow-up law any such pair
-   has band `≥ 3·3 = 9`. So the resistant branch is a **counterexample-or-nothing
-   locus**: no tame word in the stated bounded enumeration reaches it, and the
-   structural obstruction is the same blow-up law. This is the band-3 analogue of
-   the classical A\* question — conjecturally empty, to be proved from the
-   coefficient equations by D1/D2 exactly as `classical-Astar.md` did for band 2.
+   `μ=λ` because both extremes come from one `Ψ`, and no word in the stated
+   bounded enumeration reaches `μ≠λ`. The heuristic that distinct positive and
+   negative cubic sources should blow the band up to at least 9 is proved only
+   for the displayed nondegenerate two-shear families; it is not an unbounded
+   classification. Thus resistant-locus emptiness remains conjectural and must
+   be settled from the coefficient equations.
 
 Everything here is band-scoped and claims neither JC2 nor DC1.
 
@@ -66,13 +69,15 @@ Everything here is band-scoped and claims neither JC2 nor DC1.
 two-variable Poisson expansion of `{G,F}` for the fully generic band-3 pair.
 The two extreme rungs and the rung one down are the load-bearing ones.
 
-**Top Wronskian `C_6` (weapon W1).**
+**Top Wronskian `C_6` (weapon W1).** On the branch `a_3≠0`,
 `C_6 = 3(a_3 b_3' − a_3' b_3) = 0 ⟹ (b_3/a_3)' = 0 ⟹ b_3 = λ a_3`, `λ∈C`.
-Gauge `G→G−λF` sets `b_3=0`. `verify` §2.
+Gauge `G→G−λF` sets `b_3=0`. If `a_3=0`, `C_6=0` is vacuous and belongs
+to a separate vanishing branch. `verify` §2.
 
-**Cube-class `C_5` (band-3 M4 analogue).** After the gauge,
-`C_5` reduces to `3 a_3 b_2' − 2 a_3' b_2 = 0`. Its integrating invariant is
-`b_2^3/a_3^2`: `d/dτ(b_2^3/a_3^2)·a_3^3/b_2^2 = 3 a_3 b_2' − 2 a_3' b_2` exactly
+**Cube-class `C_5` (band-3 M4 analogue).** On the same `a_3≠0` branch, after
+the gauge, `C_5` reduces to `3 a_3 b_2' − 2 a_3' b_2 = 0`. Its integrating
+invariant is `b_2^3/a_3^2`, with the denominator-safe cleared identity
+`a_3^3·d/dτ(b_2^3/a_3^2) = b_2^2(3 a_3 b_2' − 2 a_3' b_2)` exactly
 (`verify` §2). Hence, for `b_2≠0`,
 
 ```
@@ -84,9 +89,11 @@ band 3 has `a_3=h³` (cube) with `b_2=κh²`, one weight-level lower. Proving `a
 is forced to be a cube even when `b_2=0` (the full band-3 M4 theorem, needing
 the whole cascade) is D1/D2's job; here it is recorded as the cascade's shape.
 
-**Bottom Wronskian `C_{−6}`.**
+**Bottom Wronskian `C_{−6}`.** If `a_{−3}≠0`,
 `C_{−6} = 3(a_{−3}' b_{−3} − a_{−3} b_{−3}') = 0 ⟹ b_{−3} = μ a_{−3}`, `μ∈C`.
-`verify` §2. The pair `(λ,μ)` is the **cross-coupling** datum of band 3.
+If `a_{−3}=0`, this extreme equation is vacuous and belongs to a separate
+vanishing branch. Thus `(λ,μ)` is the **cross-coupling** datum on the two-sided
+branch `a_3a_{−3}≠0`. `verify` §2.
 
 ---
 
@@ -100,14 +107,18 @@ the whole cascade) is D1/D2's job; here it is recorded as the cascade's shape.
 > `F = aX + bΨ`, `G = cX + dΨ`. Then:
 >
 > (i) **Tower proportionality.** For every `|k|≥2`, `(X)_k=0` (X is band 1), so
-> `a_k = b·Ψ_k` and `b_k = d·Ψ_k`; hence `b_k = (d/b)·a_k` with the *same*
-> constant `λ=d/b` for all `|k|≥2`.
+> `a_k = b·Ψ_k` and `b_k = d·Ψ_k`; hence the division-free identity
+> `b·b_k=d·a_k` holds for all parameters and every `|k|≥2`.
 >
-> (ii) **One gauge kills the tower.** `G→G−λF` annihilates
-> `b_3, b_2, b_{−2}, b_{−3}` simultaneously.
+> (ii) **One oriented gauge kills the tower.** If `b≠0`, the common ratio is
+> `λ=d/b`, and `G→G−λF` annihilates `b_3, b_2, b_{−2}, b_{−3}` simultaneously.
+> If `b=0`, symplecticity forces `d≠0`; the tower is then carried by `G`, and
+> pair exchange `(F,G)→(G,−F)` supplies an orientation with nonzero first tower
+> coefficient to which the ratio and gauge apply.
 >
-> (iii) **λ = μ.** In particular the top and bottom proportionality constants
-> coincide, so gauged `b_{−3}=0`: the pair is **never** in the resistant branch.
+> (iii) **λ = μ after orientation.** The oriented top and bottom proportionality
+> constants coincide, so gauged `b_{−3}=0`: the pair is **never** in the
+> resistant branch.
 >
 > (iv) **Support.** If `p` is a pure cubic `μX³`, the support is odd-only
 > `{−3,−1,1,3}` (`a_2=a_0=a_{−2}=0`); a lower-degree tail in `p` adds the even
@@ -116,8 +127,11 @@ the whole cascade) is D1/D2's job; here it is recorded as the cascade's shape.
 *Proof of (i)–(iii).* `X` is a nonzero linear form in `x,ξ`, hence weight `±1`
 only: its `x^k`-coefficient vanishes for `|k|≥2`. `Ψ = Ξ + p(X)` carries all the
 weight-`≥2` content. Since `F,G` are the *same* two functions `X,Ψ` combined
-with constant rows `(a,b)` and `(c,d)`, every weight-`|k|≥2` coefficient of both
-is a constant multiple of `Ψ_k`, with ratio `d/b` independent of `k`. `∎`
+with constant rows `(a,b)` and `(c,d)`, every weight-`|k|≥2` coefficient obeys
+`b·b_k=d·a_k`, without division. When `b≠0` this gives the ratio `d/b`,
+independent of `k`. When `b=0`, `ad−bc=1` gives `d≠0`; thus `F` has no tower,
+`G` carries it, and pair exchange gives the nonzero-first-output orientation used
+for the ratio and tower-killing gauge. `∎`
 
 `verify` §3 proves (i)–(iv) symbolically for the fully generic
 `α,β,γ,δ,a,b,c,d,μ₃,μ₂,μ₁` (the most general single shear of degree ≤ 3),
@@ -141,9 +155,12 @@ the single-shear form.
 The mandate asks which compositions of two quadratic shears stay inside band 3.
 The blow-up law answers it completely.
 
-- **Opposite directions** (`x`-shear then `ξ`-shear, or vice versa) of degrees
-  `(a,b)`: band `= a·b` exactly, because the extreme monomial `x^{ab}` (or
-  `ξ^{ab}`) cannot cancel. Two quadratics give band `2·2 = 4 > 3`. `verify` §4.
+- **Opposite directions in the displayed nondegenerate families** (`x`-shear
+  then `ξ`-shear, or vice versa), with nonzero leading coefficients and degrees
+  `a,b≥2`: band `=a·b`, because the computed extreme coefficient is nonzero.
+  Two quadratics in this family give band 4. If a leading coefficient vanishes,
+  the effective degree drops; longer words may permit cancellations not covered
+  by this two-shear calculation. `verify` §4.
 - **Same direction**: two `ξ`-shears `Ξ↦Ξ+p₁(X)` then `Ξ↦Ξ+p₂(X)` compose
   additively (`Ξ↦Ξ+p₁+p₂`), so the band is `max(deg p₁, deg p₂)`, never new
   weight `±3` from two quadratics.
@@ -151,12 +168,11 @@ The blow-up law answers it completely.
   realize bands `{1,2,4,8,16}` and **never 3** (`verify` §4); the
   quad-affine-quad sweep produces **zero** genuine band-3 pairs (`verify` §6).
 
-**Conclusion.** There is *no* genuine "quadratic–quadratic interleaving inside
-band 3." Every genuine band-3 tame pair must contain a cubic shear, and — up to
-the affine `A₂` freedom and same-direction lower-degree tails absorbed into `Ψ`
-— arises from a *single* cubic shear. This is why the structure lemma above is
-the correct and complete structural statement: the only band-3-preserving
-construction is the single-cubic-shear normal form, and it forces `λ=μ`.
+**Bounded conclusion.** No quadratic–quadratic interleaving tested in §4 or §6
+lands in band 3. The exact single-shear lemma explains every displayed catalog
+entry and forces `λ=μ` there. It does **not** prove that every unbounded tame
+band-3 word contains, or reduces to, one cubic shear; zero/extreme degeneracies,
+longer interleavings, and cancellations remain outside this catalog's theorem.
 
 ---
 
@@ -270,11 +286,13 @@ Everything deforms one floor up the quantization ladder (`verify` §7).
   three literal factors of `h³` become the three shifted factors
   `h(E)h(E+1)h(E+2)`, and the two of `h²` become `h(E)h(E+1)`.
 - **Single-shear-origin (quantum), all parameters**: for the ladder normal form
-  `A₂ ∘ (∂↦∂+μX³) ∘ A₁`, `b_k=(d/b)a_k` for `|k|=3`, `λ_top=μ_bottom=d/b`, and
-  the gauge kills `b_{±3}`. Membership is the **falling factorial**:
-  `a_{−3}` is divisible by `E(E−1)(E−2)` automatically (`verify` §7) — the
-  deformation of `τ³ | a_{−3}`, the mechanism that closes the quantum extreme
-  where polynomiality closed the classical one.
+  `A₂ ∘ (∂↦∂+μX³) ∘ A₁`, the division-free identity `b·b_k=d·a_k` holds for
+  `|k|=3`. In an orientation with `b≠0`, `λ_top=μ_bottom=d/b` and the gauge kills
+  `b_{±3}`. If `b=0`, symplecticity forces `d≠0`; pair exchange makes the
+  tower-carrying output first and supplies such an orientation. Membership is the
+  **falling factorial**: `a_{−3}` is divisible by `E(E−1)(E−2)` automatically
+  (`verify` §7) — the deformation of `τ³ | a_{−3}`, the mechanism that closes
+  the quantum extreme where polynomiality closed the classical one.
 - **Orientation** uses the Fourier automorphism `φ: x↦−∂, ∂↦x`, genuinely
   automorphic (`[φ∂,φx]=1`, no sign flip), verified in `verify` §7.
 
@@ -300,10 +318,12 @@ resistant branch.
 - the thirteen `C_m` and their quantum `Q_m` (§1, §6);
 - top/bottom Wronskian proportionalities and the cube / shifted-cube cascade
   identities (§1, §6);
-- the single-shear-origin structure lemma for `A₂∘S∘A₁`, classical and quantum,
-  including `λ=μ` and the tower-killing gauge (§2, §6);
-- the blow-up law `band = a·b` for opposite-direction shear compositions, and
-  hence "band 3 requires a cubic shear" for the displayed families (§3).
+- the single-shear-origin structure lemma for `A₂∘S∘A₁`, classical and quantum:
+  `b·b_k=d·a_k` at tower levels for all parameters, plus `λ=μ` and the
+  tower-killing gauge after `b≠0` orientation (including the `b=0` pair exchange)
+  (§2, §6);
+- the blow-up law `band=a·b` for the displayed nondegenerate
+  opposite-direction two-shear families (§3).
 
 **Computed (bounded, corroboration only):**
 - 1216 genuine band-3 tame pairs, `0` resistant, `0` two-quadratic pairs in
@@ -313,8 +333,9 @@ resistant branch.
 coefficient equations, lifting `classical-Astar.md` / `quantum-mirror.md`):**
 - **A\*-band3 is empty**: no genuine band-3 Keller/Weyl pair has gauged
   `b_{−3}≠0` (i.e. `μ≠λ`). Positive control: B0-band3 is nonempty (B3-2, B3-3,
-  Q3-2). The structural reason to expect emptiness is the blow-up law: `μ≠λ`
-  needs independent `x`- and `ξ`-cubic sources, which force band ≥ 9.
+  Q3-2). A motivating heuristic is that independent positive and negative cubic
+  sources produce band 9 in the displayed two-shear models; no general
+  source-decomposition or unbounded-word obstruction is proved here.
 - the **full band-3 M4**: `a_3` is a cube (resp. shifted cube) even when `b_2=0`.
 
 No JC2, DC1, or unbounded-word claim is made anywhere in this memo.
