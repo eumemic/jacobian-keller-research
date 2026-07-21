@@ -269,11 +269,16 @@ print("   (not needed for the contradiction, but confirms the reduced system is 
 # 7. MEMBERSHIP CONTRADICTION.
 # =====================================================================
 print("\n--- 7. membership contradiction ---")
-# Gauged b_{-2} = w is a NONZERO constant; genuine membership demands E(E-1) | b_{-2}.
-for k in (1, -1, sp.Rational(1, 2), 7):
-    if k != 0 and divides(falling(2), sp.Integer(1) * k):
-        raise AssertionError("E(E-1) wrongly divides a nonzero constant")
-az(sp.Integer(0), "E(E-1) does NOT divide any nonzero constant  =>  w=b_{-2}=0, contra w!=0")
+# Gauged b_{-2} = w is a NONZERO constant; genuine membership demands
+# E(E-1) | b_{-2}.  Divide a symbolic constant by the monic quadratic:
+# the quotient is zero and the remainder is that same constant, so divisibility
+# holds exactly when the constant is zero.
+w_const = sp.symbols('w_nonzero')
+w_quo, w_rem = sp.div(sp.Poly(w_const, E), sp.Poly(falling(2), E))
+az(w_quo.as_expr(), "division of constant w by E(E-1) has zero quotient")
+az(w_rem.as_expr() - w_const,
+   "division of constant w by E(E-1) has remainder w; membership forces w=0")
+print("   Since the descent gave w!=0, genuine membership is impossible.")
 print("   CONTRADICTION: no genuine band-2 Weyl pair with non-shifted-square a_2 exists.  QED.")
 
 
@@ -354,7 +359,7 @@ for m in range(-4, 5):
 for r, c in [(1, aX[-1]), (2, aX[-2]), (1, bD[-1])]:
     if not divides(falling(r), c):
         raise AssertionError("witness violates membership")
-az(sp.Integer(0), "witness genuine (memberships hold) and a_2 = 1 IS shifted-square")
+print("PASS witness satisfies all required negative-level memberships")
 if is_shifted_square(aX[2]):
     print("   witness a_2 = 1 is shifted-square (as required for a genuine pair to exist).")
 else:

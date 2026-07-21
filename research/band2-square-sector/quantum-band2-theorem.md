@@ -4,11 +4,12 @@
 
 This memo assembles the quantum band-2 program into a single theorem, mirroring
 the classical assembly `../band2-classical-full/full_classical_band2_theorem.md`
-(commit `f637b1a`) one floor up the quantization ladder. Every component is
-proved in its own memo with its own exact verifier; this document contributes
-only the composition, the orientation bookkeeping, and the tameness of the
-undoing operations. The driver `verify_quantum_band2_all.py` re-runs the entire
-verification chain and checks the assembly-specific facts; a successful run
+(commit `f637b1a`) one floor up the quantization ladder. Every component has a written proof and targeted symbolic checks; this document
+contributes only the composition, orientation bookkeeping, and tameness of the
+undoing operations. The written case splits and arbitrary-degree arguments —
+not the bounded computations — supply completeness. The driver
+`verify_quantum_band2_all.py` re-runs the tracked verification chain and checks
+assembly-specific identities; a successful run
 ends `ALL QUANTUM BAND-2 ASSEMBLY CHECKS PASSED`.
 
 ## Theorem and exact scope
@@ -60,9 +61,9 @@ nonzero. Both operations preserve `[·,·] = 1`, membership, and the band.
 **Step 3 (classification).** C4 classifies the oriented pair: after the
 reversible normalizations (gauge `D ↦ D − λX`, diagonal scaling, additive
 constants) it is the displayed tame family, which is the image of `(x, ∂)`
-under an explicit composition of affine symplectic and triangular
-automorphisms; C4's verifiers exhibit the generation certificate
-(`x` and `∂` recovered from `X, D` by explicit polynomial expressions).
+under the explicit three-step tame word written in `quantum-completion.md` §8;
+its verifier proves the word and the universal recovery identities
+`U=(D−λX−β)/κ`, `∂=κ(U²−X−A)`, `x=U−c₀−c₁∂` for general parameters.
 
 **Step 4 (undoing).** The operations of Steps 1–3 must themselves be tame:
 
@@ -109,20 +110,22 @@ the width induction now stands on both faces:
 python3 research/band2-square-sector/verify_quantum_band2_all.py
 ```
 
-runs, in order: the assembly-specific checks (φ is an automorphism; the
-triangular factorization of φ on generators; pair-exchange bookkeeping; a
-random tame round-trip), then the component verifiers
+runs, in order: the assembly-specific checks (φ preserves the Weyl relation; its
+triangular factorization on generators; pair-exchange bookkeeping; a fixed
+rational tame specialization), then the component verifiers
 (`verify_quantum_a2zero.py`, `verify_quantum_M4.py`,
-`verify_quantum_mirror.py`, `verify_quantum_completion.py`, and the band-1
-audit scripts), failing loudly if any sub-verifier fails.
+`verify_quantum_mirror.py`, `verify_quantum_completion.py`, and all five tracked
+band-1 scripts), failing loudly if any sub-verifier fails. These runs mix exact
+symbolic identities with explicitly bounded searches/regressions; passing does
+not computationally certify arbitrary-degree completeness. Completeness is the
+content of C1–C4's written proofs and the exhaustive assembly above.
 
 ## Status and residuals
 
-- Not peer reviewed; the components carry their own audit statuses
-  (`quantum-mirror.md` audit-endorsed and repaired upstream at `9e70871`;
-  band-1 audited CONFIRMED WITH REPAIRS; `quantum-completion.md`,
-  `quantum-M4.md`, `quantum-a2-zero.md`, and this assembly await their
-  hostile passes).
+- Not peer reviewed. The band-1 and resistant-branch inputs were previously
+  audited and repaired; the completion, M4q, orientation, and assembly have now
+  been repaired in response to the hostile audit recorded by the present
+  changes. This remains an internal proof package, not external validation.
 - The `B∖A₁` (localized/polar) landscape is deliberately out of scope —
   the audit of P3 showed the localized band-1 classification is richer than
   the retracted "affine + polar" claim, and no statement here depends on it.

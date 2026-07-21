@@ -13,27 +13,30 @@ $[-2,2]$ and $a_2=0$ to one of two smaller problems —
 
 - **(i)** the quantum $a_2\ne0$ **square sector** (worked elsewhere:
   [`quantum-mirror.md`](quantum-mirror.md) at commit `ad43ab5` closes the
-  resistant constant-$h$ branch; `quantum-completion.md` is the in-progress
-  sibling handling the rest of $a_2\ne0$), or
+  resistant constant-$h$ branch; `quantum-completion.md` supplies the repaired
+  complete shifted-square classification), or
 - **(ii)** the quantum **band-1** classification (now AUDITED:
   [`quantum-band1.md`](quantum-band1.md) Theorem 1 + Corollary 2, verdict
   CONFIRMED WITH REPAIRS — see §3 and §6).
 
 ### What this memo closes, and what it does not
 
-- **Closed here, unconditionally (arbitrary degree, machine-checked):** the
-  reduction infrastructure — the two routing operations preserve $[D,X]=1$ and
-  $A_1$-membership (§2), and the case split (§4) is an *exhaustive explicit
-  partition* of the $a_2=0$ locus with no configuration left unrouted.
+- **Closed here, unconditionally (arbitrary degree):** the reduction
+  infrastructure. The verifier checks exactly that the two routing operations
+  preserve $[D,X]=1$ and $A_1$-membership (§2); the written Boolean case split
+  (§4) gives an *exhaustive explicit partition* of the $a_2=0$ locus with no
+  configuration left unrouted.
 - **Closed here via the audited band-1 theorem:** **Sector Z** (§3), the
   band-1 collapse (input: `quantum-band1.md`, audited CONFIRMED WITH REPAIRS).
-- **NOT closed here:** **Sectors O1–O3** are *routed* to the $a_2\ne0$ square
-  sector; that target has its own open sub-cases (§7), so these sectors are **not
-  claimed closed**. I use "route/carry to", never "closed", for them.
+- **Closed in the full assembly, not by this memo alone:** Sectors O1–O3 are
+  routed to $a_2\ne0$; `quantum-M4.md` and `quantum-completion.md` now close that
+  target. This memo itself proves only the routing equivalence.
 
-Everything asserted here is proved at arbitrary degree and checked exactly by
-[`verify_quantum_a2zero.py`](verify_quantum_a2zero.py)
-(ends `ALL QUANTUM A2-ZERO CHECKS PASSED`).
+Everything asserted here is proved at arbitrary degree. The exact algebraic
+identities, membership bookkeeping, and routing witnesses are checked by
+[`verify_quantum_a2zero.py`](verify_quantum_a2zero.py) (ends
+`ALL QUANTUM A2-ZERO CHECKS PASSED`); Boolean exhaustiveness is the direct
+written case split in §4.
 
 ## Verdict
 
@@ -51,8 +54,8 @@ Everything asserted here is proved at arbitrary degree and checked exactly by
 >   $\,b_2=a_{-2}=0,b_{-2}\ne0$): quantum pair-exchange and/or the quantum Fourier
 >   reflection carry the pair to an equivalent genuine $A_1$ pair
 >   $[\,\widetilde D,\widetilde X\,]=1$ with the same support, same generated
->   subalgebra, and $\widetilde a_2\ne0$. *(Routed to the $a_2\ne0$ sector; **not
->   closed here** — see §7 for that sector's remainder.)*
+>   subalgebra, and $\widetilde a_2\ne0$. *(Routed here; closed only after citing M4q and the repaired shifted-square
+>   theorem in the full assembly.)*
 
 This is the quantum analogue of the classical **orientation lemma** (Section 3
 of the full classical memo, `f637b1a`) plus the classical **band-1 lemma**
@@ -159,7 +162,7 @@ commit `5a76673`: "$c\,h(E)h(E-1)$"). So when the source is shifted-square the
 reflection lands *inside* that class, not merely near it. (For a general
 nonzero $a_{-2}$ the image top is a general nonzero polynomial — see §7.)
 
-## 3. Quantum band-1 rigidity (Sector Z) — conditional on P3
+## 3. Quantum band-1 rigidity (Sector Z) — repaired input
 
 If $a_2=a_{-2}=b_2=b_{-2}=0$ then both supports lie in $\{-1,0,1\}$: the pair is
 band-1. Two facts (`verify` §0):
@@ -219,82 +222,39 @@ polynomial, treated as an explicit branch.
 Each step preserves $[D,X]=1$ (§2.1, §2.2), band-2 support, membership, and the
 generated subalgebra. $\qquad\blacksquare$
 
-The oriented pair has $a_2\ne0$, so it lies in the $a_2\ne0$ **square sector**.
-**This memo does not close that sector.** For orientation, its first move
-(from $Q_4$: $b_2=\lambda a_2$, gauge $b_2=0$; from $Q_3$: the quantum
-shifted-square lemma $h(E+2)a_2(E)=a_2(E+1)h(E)$, J3q `5a76673`) splits $a_2\ne0$
-into a shifted-square branch — whose constant-$h$ resistant locus is closed in
-[`quantum-mirror.md`](quantum-mirror.md) (`ad43ab5`), the rest in the in-progress
-`quantum-completion.md` — and a non-shifted-square branch (a quantum-$M4$
-analogue, not yet written; see §7). The status of those branches belongs to the
-$a_2\ne0$ sector, **not to this edge**.
+The oriented pair has $a_2\ne0$. The later theorem `quantum-M4.md` proves at
+arbitrary degree that its top coefficient is a shifted square, and the repaired
+`quantum-completion.md` plus `quantum-mirror.md` classify that sector. Thus the
+routing proved here is now a completed input to `quantum-band2-theorem.md`; it
+was open when this memo was first drafted.
 
-## 5. The complete $a_2=0$ sector tree (ledger)
+## 5. The complete $a_2=0$ sector tree (current ledger)
 
-The four defining conditions are a mutually exclusive, exhaustive partition of
-$\{a_2=0\}$ (each row assumes the negation of the rows above it).
+| Sector | Defining condition | Routing | Current status |
+|---|---|---|---|
+| Z | $a_{-2}=b_2=b_{-2}=0$ | band-1 collapse | Closed by repaired `quantum-band1.md` |
+| O1 | $b_2\ne0$ | pair exchange | Routed here; target closed by M4q + completion |
+| O2 | $b_2=0,a_{-2}\ne0$ | Fourier $\varphi$ | Routed here; target closed by M4q + completion |
+| O3 | $b_2=a_{-2}=0,b_{-2}\ne0$ | exchange then Fourier | Routed here; target closed by M4q + completion |
 
-| Sector | Defining condition ($a_2=0$ throughout) | Routing operation | Target | Status of this sector |
-|---|---|---|---|---|
-| **Z** | $a_{-2}=b_2=b_{-2}=0$ (both band-1) | none (collapse to band 1) | P3 | **CLOSED, conditional on band-1-fact-1** (P3, provisional) |
-| **O1** | $b_2\ne0$ | pair-exchange $(D,-X)$ | $a_2\ne0$ sector | **ROUTED, not closed** (open in target, §7) |
-| **O2** | $b_2=0,\ a_{-2}\ne0$ | Fourier $\varphi$ | $a_2\ne0$ sector | **ROUTED, not closed** (open in target, §7) |
-| **O3** | $b_2=0,\ a_{-2}=0,\ b_{-2}\ne0$ | pair-exchange $\circ\ \varphi$ | $a_2\ne0$ sector | **ROUTED, not closed** (open in target, §7) |
+The partition and routing are the arbitrary-degree contribution of this memo.
+The classification of the targets is cited, not re-proved or machine-certified
+here. No localized involution $x\mapsto x^{-1}$ is used: orientation is by the
+genuine Fourier automorphism of $A_1$.
 
-**Precise closure claim.** This memo closes, unconditionally, the *reduction*:
-the partition is exhaustive and each routing operation is a bracket- and
-membership-preserving equivalence (§2, machine-checked). It closes **Sector Z**
-conditional on P3. It does **not** close Sectors O1–O3 — those are equivalences
-to $a_2\ne0$ problems that remain open (§7). No sector is closed by "direct
-closure".
+## 6. Band-1 input consumed
 
-## 6. Band-1 facts consumed (explicit conditional inputs)
+Sector Z uses exactly Theorem 1 and Corollary 2 of `quantum-band1.md`: genuine
+$A_1$ band-1 pairs are affine symplectic and generate $A_1$. The former
+localized “affine + polar” classification remains retracted and is irrelevant.
 
-- **Fact 1 — Theorem P3 (quantum band-1 rigidity).** A pair $[D,X]=1$ in
-  $A_1[x^{-1}]$ with both supports in $\{-1,0,1\}$ has the P3 normal form; its
-  genuine $A_1$ members are exactly the affine symplectic pairs, which generate
-  $A_1$. Source:
-  [`../../archive-import/provisional/dixmier-band-program/band1-rigidity-milestone.md`](../../archive-import/provisional/dixmier-band-program/band1-rigidity-milestone.md)
-  (commit `d3e3b29`), §3, Theorem P3. **Status: PROVISIONAL** (parallel audit in
-  progress). Used to close **Sector Z** only. This is the sole band-1 fact this
-  memo depends on.
+## 7. Retrospective status
 
-No other conditional band-1 input is used. In particular the membership
-criterion $E^{\underline r}\mid a_{-r}$, the crossed-product multiplication, and
-the $Q_m$ system (also stated in that provisional milestone) are re-derived and
-machine-checked independently here (`verify` §0), so the memo does not depend on
-the milestone for them.
-
-## 7. Open remainder (inherited, not at the $a_2=0$ edge)
-
-The $a_2=0$ *reduction* is complete; the residual **classification** work lives
-entirely in the two targets it feeds. Explicit list of what remains open:
-
-- **From Sector Z:** the audit of provisional **P3** (commit `d3e3b29`).
-- **From Sectors O1–O3:** the $a_2\ne0$ sector, itself not fully closed. Its
-  open sub-cases, enumerated:
-  1. **Shifted-square, nonconstant $h$** — open (the "$h$ affine" lemma;
-     `quantum-mirror.md` §7 records the general-$h$ telescoping lever).
-  2. **Shifted-square, constant $h$, resistant locus $\kappa\mu s\ne0$** —
-     closed EMPTY in `quantum-mirror.md` (`ad43ab5`); other constant-$h$
-     sub-branches per `quantum-completion.md` (in progress).
-  3. **Non-shifted-square $a_2$** — orientation can produce this. Note a
-     *one-sided* image ($a_2\ne0,\ a_{-2}=0$: e.g. O2 gives
-     $(\varphi X)_{-2}=E(E-1)\,a_2(-E-1)=0$ exactly, since the original
-     $a_2=0$), which is **not** covered by the two-sided obstruction J3q. From
-     $Q_3$ the shifted-square lemma yields the branch $b_1=\lambda a_1$; whether
-     the ensuing cascade closes (a quantum-$M4$ analogue) is **not proved
-     anywhere yet** and is not asserted here. This is the sharpest open item the
-     reduction exposes.
-
-  All three are $a_2\ne0$ deliverables, tracked in that sector — not at this edge.
-
-Assembling this memo (the $a_2=0$ edge) with the $a_2\ne0$ square-sector work
-*would* give the full quantum band-2 theorem (the band-2 case of DC1) **only
-once** P3 is audited and the three $a_2\ne0$ sub-cases above are closed. Until
-then no full band-2 / DC1 statement is claimed. The intended assembly mirrors the
-classical full band-2 theorem (`f637b1a`: band-1 lemma + orientation lemma + M4 +
-M5); the quantum M4 and the nonconstant-$h$ lemma are the pieces still missing.
+The open items listed in the original draft have since been supplied: the
+band-1 repair, M4q shifted-square theorem, and complete shifted-square sector.
+Their assembly is `quantum-band2-theorem.md`. This update is retrospective; the
+present memo's verifier checks exact orientation identities and witnesses, while
+the written Boolean split supplies exhaustiveness.
 
 ## 8. Contrast with the classical template
 

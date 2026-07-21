@@ -130,7 +130,14 @@ u_ = lam*vgen; w_ = sp.expand(c*u_*sh(u_, -1))
 central = sp.expand(sh(w_, 1) + w_ + sh(pc3, -1)*vgen - kappa*u_)
 bracket = sp.expand(c*lam**2*(sh(vgen, 1) + sh(vgen, -1)) + sh(pc3, -1) - kappa*lam)
 az(central - vgen*bracket, "central (s=0,u=lam v) = v * (polynomial) => v | E => v linear")
-# finite system (v linear, u linear, w quadratic, p affine): Groebner EMPTY (w!=0)
+# Central equation also gives p^[-1] explicitly, hence deg(p)<=1.
+v1c = sp.symbols('v1c', nonzero=True)
+vc_lin = v1c*E
+pc_affine_formula = sp.expand(sh(1/v1c + kappa*lam - c*lam**2*v1c*(2*E), 1))
+az(sh(pc_affine_formula, -1) - (1/v1c + kappa*lam - c*lam**2*v1c*(2*E)),
+   "branch c central equation solves p^[-1], so deg(p) <= 1")
+# The (dp,dv)=(1,1) saturated Groebner run is exhaustive. Higher profiles below
+# are bounded regressions only.
 def branch_c_empty(dp, dv):
     p, pcf = poly('P', dp); nu, ncf = poly('N', dv-1); v = sp.expand(E*nu)
     u = lam*v; wv = sp.expand(c*u*sh(u, -1)); B = midB(p, dp)
@@ -147,10 +154,13 @@ def branch_c_empty(dp, dv):
         if list(Gg.exprs) != [sp.Integer(1)]:
             return False
     return True
-for (dp, dv) in [(1, 1), (1, 2), (2, 2)]:
+if not branch_c_empty(1, 1):
+    raise AssertionError("branch c NONEMPTY in exhaustive affine/linear profile")
+print("PASS branch c exhaustive saturated Groebner: (dp,dv)=(1,1) is empty")
+for (dp, dv) in [(1, 2), (2, 2)]:
     if not branch_c_empty(dp, dv):
-        raise AssertionError(f"branch c NONEMPTY at ({dp},{dv})")
-    print(f"PASS branch c EMPTY (w!=0, v!=0) at (dp={dp},dv={dv})")
+        raise AssertionError(f"branch c regression NONEMPTY at ({dp},{dv})")
+    print(f"PASS branch c bounded regression empty at (dp={dp},dv={dv})")
 # zero-poly sub-cases: u=0 => w=c u u^[-1]=0 contradicts w!=0.  v=0 (u!=0):
 #   central w^[1]+w-kappa u = E with w=c u u^[-1] gives u*(c(u^[1]+u^[-1])-kappa)=E => u|E => u=u1 E;
 #   then E^2 coeff is 2 c u1^2 = 0, impossible (c!=0,u1!=0).
@@ -206,6 +216,46 @@ if not (solb and ok):
     raise AssertionError(f"branch b P=0 did not force c=1/kappa^2: {solb}")
 print("PASS branch b P=0 finite system forces c = 1/kappa^2 (or v=0, excluded by s!=0)")
 print("  BRANCH b = tame family: P=0, v linear, c=1/kappa^2 (verified genuine below).\n")
+
+# Base branch s=w=0: exact arbitrary-degree deductions and surviving form.
+print("--- Base branch: s=w=0 ---")
+vbase, _ = poly('vbase', 3)
+az(sh(lam*vbase, -1)*vbase - sh(vbase, -1)*(lam*vbase),
+   "base Q_-2 vanishes after exact proportionality u=lambda v")
+# If v != 0, central gives v|E, hence v=v1 E and p constant; Q_-1 is nonzero.
+v1base, pbase = sp.symbols('v1base pbase')
+vLbase = v1base*E; uLbase = lam*vLbase
+Bbase = midB(pbase, 0)
+a0base = sp.expand((sh(vLbase, 1)+vLbase)/kappa + (Bbase**2-gamma*Bbase)/kappa**2 + A/kappa)
+abase = {2: sp.Integer(1), 1: pbase, 0: a0base, -1: uLbase, -2: sp.Integer(0)}
+bbase = {2: sp.Integer(0), 1: kappa, 0: Bbase, -1: vLbase, -2: sp.Integer(0)}
+az(sh(pbase, -1)*vLbase-kappa*uLbase-E - E*(pbase*v1base-kappa*lam*v1base-1),
+   "base central with v=v1 E gives p-kappa lambda=1/v1")
+az(Qm(abase, bbase, -1) - 2*E*v1base**2/kappa,
+   "base v!=0: Q_-1 = 2 E v1^2/kappa, impossible")
+# If v=0, central u=-E/kappa and the actual Q_-1 coefficient forces B constant;
+# the midpoint relation then forces p constant.
+u0base = -E/kappa
+Bgen, _ = poly('Bbasegen', 3)
+abase_Bgen = {2: sp.Integer(1), 1: pbase, 0: sp.Integer(0),
+              -1: u0base, -2: sp.Integer(0)}
+bbase_Bgen = {2: sp.Integer(0), 1: kappa, 0: Bgen,
+              -1: sp.Integer(0), -2: sp.Integer(0)}
+az(Qm(abase_Bgen, bbase_Bgen, -1)
+   - u0base*(sh(Bgen, -1)-Bgen),
+   "base v=0: actual Q_-1=-(E/kappa)(B^[-1]-B)")
+for d in range(1, 4):
+    Bd, Bdc = poly(f'Bbase_deg{d}', d)
+    az(sp.Poly(sh(Bd, -1)-Bd, E).nth(d-1) + d*Bdc[d],
+       f"base v=0: degree-{d} B has lc(B^[-1]-B)=-{d}lc(B); Q_-1=0 excludes it")
+# Check every ladder equation in the c1=0 normal form.
+a0const = sp.symbols('a0const')
+abase0 = {2: sp.Integer(1), 1: pbase, 0: a0const, -1: u0base, -2: sp.Integer(0)}
+bbase0 = {2: sp.Integer(0), 1: kappa, 0: Bbase, -1: sp.Integer(0), -2: sp.Integer(0)}
+for m in range(-4, 5):
+    az(Qm(abase0, bbase0, m) - (1 if m == 0 else 0),
+       f"base c1=0 normal form: Q_{m}=delta")
+print()
 
 # ==========================================================================
 # BRANCH * (resistant, s!=0, w!=0): EMPTY  [proved in quantum-mirror.md];
@@ -271,7 +321,26 @@ az(sT - (1/kappa**2)*vT*sh(vT, -1), "tame family: s = (1/kappa^2) v v^[-1]  (c =
 az(sT.subs(E, 0), "tame family membership: s(0)=0"); az(sT.subs(E, 1), "tame family membership: s(1)=0")
 az(vT.subs(E, 0), "tame family membership: v(0)=0")
 az(X.get(-1, 0).subs(E, 0), "tame family membership: a_-1(0)=0")
-print("  Tame family is a genuine band-2 pair; U=x+c0+c1 d is an affine symplectic")
-print("  generator, so (X,D) generate A_1 (tame automorphism image).\n")
+# Universal recovery identities in the ladder engine.
+Urec = scal(1/kappa, add(D, scal(-lam, X), {0: -beta}))
+drec = scal(kappa, add(mul(Urec, Urec), scal(-1, X), {0: -A}))
+xrec = add(Urec, {0: -c0}, scal(-c1, drec))
+for kk in set(U) | set(Urec):
+    az(Urec.get(kk, 0)-U.get(kk, 0), f"recovery identity U, ladder {kk}")
+for kk in set(d) | set(drec):
+    az(drec.get(kk, 0)-d.get(kk, 0), f"recovery identity partial, ladder {kk}")
+xgen = {1: sp.Integer(1)}
+for kk in set(xgen) | set(xrec):
+    az(xrec.get(kk, 0)-xgen.get(kk, 0), f"recovery identity x, ladder {kk}")
+# Explicit tame word: affine (x,d)->(U,V), triangular V' = V-kappa U^2+kappa A,
+# affine (U,V')->(-V'/kappa, lambda(-V'/kappa)+kappa U+beta).
+Vprime = add(d, scal(-kappa, mul(U, U)), {0: kappa*A})
+Xword = scal(-1/kappa, Vprime)
+Dword = add(scal(lam, Xword), scal(kappa, U), {0: beta})
+for kk in set(X) | set(Xword):
+    az(Xword.get(kk, 0)-X.get(kk, 0), f"explicit tame word produces X, ladder {kk}")
+for kk in set(D) | set(Dword):
+    az(Dword.get(kk, 0)-D.get(kk, 0), f"explicit tame word produces D, ladder {kk}")
+print("  General-parameter recovery identities and explicit tame word verified.\n")
 
 print("ALL QUANTUM COMPLETION CHECKS PASSED")

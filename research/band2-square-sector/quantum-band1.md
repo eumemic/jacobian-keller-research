@@ -56,10 +56,11 @@ polynomial, i.e. a constant. ∎ Likewise `m=−2` gives `b₋₁=μ a₋₁` wh
 
     W(f,g)(E) := g(E+1)f(E) − f(E−1)g(E)
 
-has **degree exactly `p+q−1`** with leading coefficient `(p+q)·lc(f)·lc(g) ≠ 0`
-(and `W=0` iff `p=q=0`, i.e. both constant). Same for the mirror
-`W'(f,g):=f(E−1)g(E)−g(E+1)f(E)`. *Proof.* The top terms `E^{p+q}` cancel; the
-`E^{p+q−1}` coefficient computes to `(p+q)lc(f)lc(g)`. (Machine-verified for all
+if `p+q>0`, has **degree exactly `p+q−1`** with leading coefficient
+`(p+q)·lc(f)·lc(g) ≠ 0`. If `p=q=0`, then `W=0`. Same for the mirror
+`W'(f,g):=f(E−1)g(E)−g(E+1)f(E)`. *Proof.* For `p+q>0`, the top terms
+`E^{p+q}` cancel and the `E^{p+q−1}` coefficient is
+`(p+q)lc(f)lc(g)`; the constant case is immediate. (Machine-verified for all
 `p,q ≤ 4`, `audit_band1_classification.py` §I1.) ∎
 
 **Corollary.** If `W(f,g)=1` (a nonzero constant) then `p+q=1`: one of `f,g` is a
@@ -92,8 +93,13 @@ affine.
 Then `X∈A₁` automatically and `m=0` is `W(a₁,b₋₁)=1` (with `b₁=λa₁`). By the
 Corollary, `deg a₁ + deg b₋₁ = 1`. If `a₁` is linear then `b₋₁` is constant, but
 membership `b₋₁(0)=0` forces `b₋₁=0`, contradicting `W=1`; so `a₁ = A` is constant
-and `b₋₁ = E/A` (from `AΔb₋₁=1` and `b₋₁(0)=0`) — affine. Case II (`a₁=0`) is
-identical with `W'(b₁,a₋₁)=1`.
+and `b₋₁ = E/A` (from `AΔb₋₁=1` and `b₋₁(0)=0`). The `m=+1` equation is then
+`AΔb₀-b₁Δa₀=0`, while `m=-1` is `(E/A)(a₀-a₀^{[-1]})=0`; hence `a₀` is
+constant and then `b₀` is constant. Thus the pair is affine. Case II (`a₁=0`)
+is the mirror: `m=+1` first forces `a₀` constant (because the nonzero `b₁`
+occurring in `W'(b₁,a₋₁)=1` multiplies `Δa₀`), and `m=-1` then forces `b₀`
+constant; the same degree and membership argument makes the extreme coefficients
+a constant and a scalar multiple of `E`.
 
 *Case IV: `a₁=a₋₁=0`.* Then `X=a₀(E)∈C[E]` and `[D,X]₀=0≠1` — impossible.
 
@@ -106,7 +112,7 @@ generates a proper subalgebra; equivalently, a pair generating a proper
 subalgebra of `A₁` must have a generator with `ad(E)`-support outside `{−1,0,1}`.*
 
 **Proof.** By Theorem 1, `X=ax+b∂+e`, `D=cx+d∂+f`, `ad−bc=1`. Then
-`dX−bD = x + (be−df)` and `−cX+aD = ∂ + (ce−af)`, and `1=[D,X]`, so `x,∂` lie in
+`dX−bD = x + (de−bf)` and `−cX+aD = ∂ + (af−ce)`, and `1=[D,X]`, so `x,∂` lie in
 `C⟨X,D⟩`. ∎ (Machine-checked in `audit_band1_classification.py`/`_exhaustive.py`.)
 
 ## Remark (what is NOT true — the correct B∖A₁ picture)
@@ -144,3 +150,9 @@ audited form for the band-2 induction base.
     uv run --with sympy python ../../archive-import/provisional/dixmier-band-program/audit_band1_search.py
     uv run --with sympy python ../../archive-import/provisional/dixmier-band-program/audit_band1_classification.py
     uv run --with sympy python ../../archive-import/provisional/dixmier-band-program/audit_band1_exhaustive.py
+
+The engine and classification scripts check exact identities supporting the
+written arbitrary-degree proof. The search, branch-B, and “exhaustive” scripts
+are bounded audits (the last exhausts only its stated degree profiles, currently
+through degree 4); they are regression evidence, not the source of Theorem 1's
+unbounded completeness.

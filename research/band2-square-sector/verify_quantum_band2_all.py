@@ -4,11 +4,11 @@
 Part 1: assembly-specific exact checks (sympy):
   - the Fourier map phi: x -> -d, d -> x extends to an automorphism on the
     ladder generators (multiplicativity spot-certified on generic pieces);
-  - the triangular factorization phi = exp(ad(x^2/2)) exp(ad(-d^2/2))
-    exp(ad(x^2/2)) holds exactly on both generators;
+  - the triangular factorization phi = exp(ad(-x^2/2)) exp(ad(-d^2/2))
+    exp(ad(-x^2/2)) holds exactly on both generators;
   - pair-exchange bookkeeping: [ -X, D ] = [D, X] as an operator identity;
-  - a random tame round-trip: the C4 family member with random rational
-    parameters satisfies [D, X] = 1 and yields x and d back by the explicit
+  - a fixed rational tame specialization satisfies [D, X] = 1 and yields x and
+    d back by the explicit
     generation formulas.
 Part 2: runs every component verifier as a subprocess and fails loudly if any
 fails. Run:  python3 verify_quantum_band2_all.py   (requires sympy)
@@ -87,7 +87,7 @@ def B_act(w):
 
 
 # each preserves the defining relation
-check("exp(ad(x^2/2)) action preserves [d,x]=1",
+check("exp(ad(-x^2/2)) action preserves [d,x]=1",
       sp.simplify(comm(A_act(d), A_act(x)) - 1) == 0)
 check("exp(ad(-d^2/2)) action preserves [d,x]=1",
       sp.simplify(comm(B_act(d), B_act(x)) - 1) == 0)
@@ -135,6 +135,9 @@ COMPONENTS = [
     ("verify_quantum_completion.py", HERE),
     ("audit_band1_engine.py", os.path.join(HERE, "..", "..", "archive-import", "provisional", "dixmier-band-program")),
     ("audit_band1_classification.py", os.path.join(HERE, "..", "..", "archive-import", "provisional", "dixmier-band-program")),
+    ("audit_band1_branchB.py", os.path.join(HERE, "..", "..", "archive-import", "provisional", "dixmier-band-program")),
+    ("audit_band1_search.py", os.path.join(HERE, "..", "..", "archive-import", "provisional", "dixmier-band-program")),
+    ("audit_band1_exhaustive.py", os.path.join(HERE, "..", "..", "archive-import", "provisional", "dixmier-band-program")),
 ]
 for script, base in COMPONENTS:
     path = os.path.join(base, script)

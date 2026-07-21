@@ -6,12 +6,10 @@ Exact SymPy verification backing the memo `quantum-a2-zero.md`:
 the QUANTUM (A_1) a_2 = 0 sector of band 2 is ROUTED, in every configuration, to
 one of
 
-    (i)   the quantum a_2 != 0 (shifted-)square sector   [worked elsewhere:
-          quantum-mirror.md (ad43ab5) + in-progress quantum-completion.md;
-          NOT closed here -- Sectors O1-O3 are routed, not closed],
-    (ii)  the quantum band-1 rigidity theorem P3          [conditional input;
-          closes Sector Z],
-    (iii) direct closure                                  [none needed here].
+    (i)   the quantum a_2 != 0 sector [closed elsewhere by quantum-M4.md plus
+          quantum-mirror.md and repaired quantum-completion.md; this script
+          checks routing only],
+    (ii)  the repaired quantum band-1 rigidity theorem [closes Sector Z].
 
 This script certifies the REDUCTION INFRASTRUCTURE only (the routing operations
 preserve [D,X]=1 and A_1-membership, and the case split is an exhaustive
@@ -163,8 +161,8 @@ print("\n--- Part 1: pair-exchange preserves [D,X]=1 and moves b_2 into the top 
 negA = {k: sp.expand(-v) for k, v in Ag.items()}
 PASS(eqdict(comm(negA, Bg), comm(Bg, Ag)),
      "[-X, D] = [D, X]  (operator identity; so [D,X]=1 => new pair Keller)")
-PASS(sp.expand(Bg[2] - Bg.get(2, 0)) == 0,
-     "after exchange, new top a_2' = (old) b_2  (b_2 != 0 => oriented)")
+# Under the definition (X',D')=(D,-X), the coefficient identity a'_2=b_2 is
+# literal relabelling rather than a symbolic identity requiring a separate test.
 
 
 # =====================================================================
