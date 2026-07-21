@@ -17,6 +17,9 @@ theorem or the isolated-block formulas of Lemma R.
 
 Exact checks are in
 [`verify_quantum_exotic_cokernel.py`](verify_quantum_exotic_cokernel.py).
+The unrestricted image of `Phi` for the full degree-three AP family is classified
+separately in [`quantum-ap-filler-image.md`](quantum-ap-filler-image.md); that
+classification still requires testing the cascade-produced target `E-R`.
 
 ## 1. Convention and the actual target class
 
