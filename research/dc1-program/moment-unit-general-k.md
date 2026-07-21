@@ -82,30 +82,59 @@ the counts for `k=2,3,4,5` are `0,1,4,13`. These are bounded observations, not a
 span bound, a finiteness theorem, or a classification of higher-degree,
 repeated-root, noninteger-root, or multiple-coset tops. No `k=6` count is used.
 
-## 3. The Lemma R gap
+## 3. Lemma R remains valid; its unrestricted two-filler corollary fails
 
-For the two nominal filler blocks, isolated leading-term calculations give
+Lemma R correctly computes the degree and leading coefficient of each isolated
+filler block, so neither block self-cancels. It does not exclude cancellation
+between the two blocks or collision with solved cascade contributions. The
+following argument disproves that stronger conclusion when filler degrees are
+unrestricted beyond Weyl membership.
+
+Write `a=a_k`, `u=b_{k-1}` and omit the sign with which the second block enters
+the surrounding equation. For `T f(E)=f(E+1)` and `S_n=1+T+...+T^(n-1)`,
 
 ```text
-K_k[c] = sum_(r=1)^k a_k(E-r)c(E+k-r),
-lead(K_k[c]) = k lc(a_k)lc(c),
+K_k[c]       = sum_(r=1)^k     a(E-r)c(E+k-r)
+             = S_k((T^-k a)c),
+H_(k-1)[v]   = sum_(r=1)^(k-1) u(E-r)v(E+k-1-r)
+             = S_(k-1)((T^-(k-1)u)v).
 ```
 
-and
+Over a characteristic-zero field, `S_n` preserves degree and multiplies the
+leading coefficient by `n`; hence it is a linear automorphism of `F[E]`. Weyl
+membership writes `c=(E)_k C`, `v=(E)_(k-1)V`, so the admissible images are
 
 ```text
--sum_(r=1)^(k-1) b_{k-1}(E-r)a_{-(k-1)}(E+k-1-r),
-lead = -(k-1)lc(b_{k-1})lc(a_{-(k-1)}).
+Im L_K = S_k(q_K F[E]),       q_K=(T^-k a)(E)_k,
+Im L_H = S_(k-1)(q_H F[E]),   q_H=(T^-(k-1)u)(E)_(k-1).
 ```
 
-Thus neither filler self-cancels its own leading term in characteristic zero.
-This does **not** prove the previously claimed uniform triangular annihilation:
+For nonzero `a,u`, their codimensions are respectively `deg(a)+k` and
+`deg(u)+k-1`. Their intersection is finite-codimensional in `F[E]`, hence
+infinite-dimensional. Thus infinitely many nonzero outputs `P` have unique
+admissible preimages `c,v` with `K_k[c]=P=H_(k-1)[v]`. The wall is not used, so
+the conclusion applies to every wall pair `(a,u)` for which both polynomials are
+nonzero. See
+[`two-filler-cross-cancellation.md`](two-filler-cross-cancellation.md) and its
+exact finite corroboration
+[`verify_two_filler_cross_cancellation.py`](verify_two_filler_cross_cancellation.py).
 
-- the two filler blocks can cross-cancel at a common degree; and
-- either filler can collide with terms from already solved blocks.
+For every nonzero equality `K_k[c]=H_(k-1)[v]`, comparison of degree and leading
+coefficient gives
 
-Consequently the proposed L4 reduction is not uniformly proved. A proof must
-control the full coefficient system, not merely each filler in isolation.
+```text
+deg(a)+deg(c) = deg(u)+deg(v),
+k lc(a)lc(c) = (k-1)lc(u)lc(v).
+```
+
+These are resonance conditions, not an exclusion. Membership-node equations
+supply only partial triangularity and cannot rule out common outputs. Therefore
+any unrestricted assertion that the fillers cannot cross-cancel under wall plus
+membership alone is false. Collision with solved blocks is likewise not excluded
+and must be tested against the specific cascade residual. The correct residual
+object is the finite-dimensional cokernel of
+`Phi(C,V)=L_K(C)-L_H(V)`, together with the specific residual supplied by the
+solved cascade blocks; this cokernel may vanish and is not asserted nonzero.
 
 ## 4. Scope of the finite moment systems
 
@@ -140,8 +169,8 @@ the fixed exotic, nonzero-wall, forward-solvable polynomial ansatz. It is not
 the only missing ingredient and is not a single obstruction equivalent to DC1.
 Independent residuals include:
 
-1. a valid two-filler reduction controlling cross-cancellation and collision
-   with solved blocks;
+1. compute the finite-dimensional cokernel of the two-filler map and test the
+   specific residual from the solved cascade blocks;
 2. exceptional pivot, rank, and denominator loci in the forward solver;
 3. arbitrary free degree;
 4. higher-degree and multiple-coset top geometry;

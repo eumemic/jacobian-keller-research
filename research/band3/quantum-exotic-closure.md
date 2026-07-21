@@ -164,7 +164,7 @@ entirely**, and the kill lives in the positive + middle data. For `a₃(0) ≠ 0
 (§6). This is the exact structural fact [EXO] §3.2 flagged, here isolated as a
 one-line membership identity.
 
-## 4. The tropical filler-annihilation skeleton (degree-free)
+## 4. Isolated filler blocks and the cross-cancellation gap (degree-free)
 
 The free negatives enter `Q₀ = (T−1)G` linearly as two **fillers**: `a_{−2}` (in
 `G₂`) and `μ₃ a_{−3}` (in `G₃`; `a_{−3}` occurs only through the product
@@ -178,15 +178,15 @@ the finite degree pairs listed there:
    G₂-filler  −b₂^[−2]a_{−2} − b₂^[−1]a_{−2}^[1] :
         deg = deg b₂ + deg a_{−2},  lead = −2·lc(b₂)·lc(a_{−2}) ≠ 0 .
 ```
-Because `K₃` cannot self-cancel its top (all three shifts share the sign of
-`lc(a₃)lc(c)`), the highest `Q₀`-coefficients — which no lower block reaches —
-force the **top coefficient of `a_{−3}` to vanish**, then the next, cascading
-downward; the `G₂`-filler does the same for `a_{−2}`. This is the degree-free
-*skeleton* of the kill: the top of `Q₀ = 1` triangularly annihilates the fillers
-from above. (It is the same "termwise degree domination" the classical sibling
-used, `classical-cube-closure.md` §7 at `99fe6ee`, here driving fillers to `0`
-rather than clashing two extremes.) What the skeleton alone does **not** finish
-is the low end, where the positive data couples in; that is completed next.
+These formulas prove that neither isolated filler block self-cancels. They do
+not triangularly annihilate either filler in the combined equation: the two
+blocks can have equal output degree and cross-cancel, and solved cascade blocks
+may also contribute at relevant degrees. In fact, with unrestricted filler
+degree, the two admissible filler images have an infinite-dimensional
+intersection; see
+[`two-filler-cross-cancellation.md`](../dc1-program/two-filler-cross-cancellation.md).
+Filler elimination is therefore valid only in the explicitly computed
+fixed-degree systems below, not as a degree-free theorem.
 
 ## 5. Main theorem: the AP class carries no unit (r symbolic, d = 1)
 
@@ -220,9 +220,9 @@ annihilating every filler, after which the constant coefficient (the slope) is
 ```
    [E⁰] = −8u₀ − 16u₁ = 0 ,
 ```
-**stranded at `0`** — the unit `1` has nothing to stand on. This is precisely the
-skeleton of §4 running all the way to the bottom, with the membership-freed slope
-left as `0`.
+**stranded at `0`** — the unit `1` has nothing to stand on. This is an exact
+instance-specific annihilation chain in the fixed `W1`, `d=1` system; §4 explains
+why it does not extend to an unrestricted degree-free filler theorem.
 
 ## 6. Verification across the class and beyond `d = 1`
 
@@ -288,9 +288,10 @@ instantiated for the band-3 exotic residual: the `+1` there is this slope.
 - **Fact 1:** the degree-3 realizable exotic branch is exactly the step-2 AP class
   `{r,r+2,r+4}` (§2, `verify §1`) — the exotic base collapses to one parameter;
 - the bottom membership-protection `G₃(1) = μ₃ a₃(0) a_{−3}(3)` (§3, `verify §2`);
-- the Lemma-R block leading-coefficient identities driving the filler-annihilation
-  cascade (§4), derived from the displayed arbitrary-degree leading-term expansion
-  and corroborated at selected degree pairs by `verify §3`;
+- the Lemma-R degree and leading-coefficient identities for each isolated filler
+  block (§4), derived from the displayed arbitrary-degree leading-term expansion
+  and corroborated at selected degree pairs by `verify §3`; these identities do
+  not imply unrestricted filler annihilation;
 - **Theorem 1:** for the AP class with `d = 1` free data, rational elimination
   forces the moment slope to `0` for generic `r`; the six values
   `r ∈ {0,−4,1,−1,2,3}` are confirmed directly, while all other exceptional rank

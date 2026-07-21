@@ -29,8 +29,9 @@ WHAT THIS SCRIPT ESTABLISHES (see the memo for the argument):
      richer: non-AP realizable exotic tops exist -- flagged as residual.]
   2. MEMBERSHIP PROTECTION: the level-3 (bottom) contribution to the slope is
      mu_3 * a_3(0) * a_{-3}(3); vanishes identically when 0 is a root of a_3.
-  3. TROPICAL SKELETON: selected degree pairs corroborate the k=3 and k=2 block
-     leading coefficients derived from the memo's displayed leading-term expansion.
+  3. ISOLATED FILLER BLOCKS: selected degree pairs corroborate the k=3 and k=2
+     degree and leading-coefficient formulas. These do not prove unrestricted
+     two-filler annihilation.
   4. MAIN THEOREM (generic moment obstruction): for the AP class {r,r+2,r+4}
      with symbolic r and d=1 free data, rational elimination forces slope 0 for
      generic r. Six values are checked separately; other exceptional r loci remain
@@ -254,11 +255,11 @@ az((sp.expand(sum(sh(a3_r0, j - 3) * sh(bm3, j) for j in range(3)))).subs(E, 1),
 
 
 # =====================================================================
-# 3. TROPICAL SKELETON: finite-degree corroboration of displayed leading formulas.
+# 3. ISOLATED FILLER BLOCKS: finite-degree corroboration of displayed formulas.
 # =====================================================================
-print("\n--- 3. tropical skeleton: leading formulas corroborated at selected degrees ---")
+print("\n--- 3. isolated filler blocks: formulas corroborated at selected degrees ---")
 # k=3 block operator K3[c] = a3^[-3] c + a3^[-2] c^[1] + a3^[-1] c^[2]; deg = deg a3 + deg c,
-# leading coeff = 3*lc(a3)*lc(c) != 0.  (T-1) keeps it top-order-1 nonzero => top of a_-3 forced 0.
+# leading coeff = 3*lc(a3)*lc(c) != 0. This rules out self-cancellation only.
 for (pp, nn) in [(3, 5), (3, 6), (6, 8), (3, 7)]:
     a3v, _ = poly('kA', pp); cv, _ = poly('kB', nn)
     K3 = sp.expand(sh(a3v, -3) * cv + sh(a3v, -2) * sh(cv, 1) + sh(a3v, -1) * sh(cv, 2))
@@ -272,7 +273,7 @@ for (qq, mm) in [(2, 4), (2, 5), (4, 6)]:
     lb = sp.Poly(b2v, E).nth(qq); la = sp.Poly(av, E).nth(mm)
     istrue(sp.Poly(K2, E).degree() == qq + mm and sp.expand(sp.Poly(K2, E).all_coeffs()[0] + 2 * lb * la) == 0,
            f"[CORROBORATED AT SELECTED DEGREES] k=2 filler: deg b2={qq}, deg a_-2={mm} -> deg={qq+mm}, lead = -2*lc(b2)*lc(a_-2) != 0")
-print("   => selected degree-pair checks corroborate the memo's written triangular filler-annihilation leading formulas.")
+print("   => selected degree-pair checks corroborate the memo's isolated-block degree and leading-coefficient formulas.")
 
 
 # =====================================================================
@@ -345,8 +346,8 @@ istrue(all(r not in sp.sympify(cc).free_symbols for cc in SEQ_PIVOTS) and len(SE
 istrue(resid_r == [c], "d=1, r SYMBOLIC: rational generic-r elimination leaves residual c  => slope 0 where pivots/denominators are valid")
 print("   => Q_0=1 is impossible for generic r; unchecked exceptional rank/denominator loci remain open.")
 
-# Explicit W1 triangular annihilation walk-through (the mechanism, spelled out):
-print("\n--- 4b. explicit W1 (r=0) triangular filler-annihilation at d=1 ---")
+# Exact instance-specific W1 annihilation walk-through:
+print("\n--- 4b. explicit W1 (r=0) fixed-degree filler annihilation at d=1 ---")
 W1 = (sp.expand(E * (E - 2) * (E - 4)), sp.expand((E - 1) * (E - 4)))
 A, B, pos, av, cs = build_cascade(*W1, 1)
 # after pos, Q_0 depends only on the fillers am2_0,am2_1, p0=mu3 am3_0, p1=mu3 am3_1:
