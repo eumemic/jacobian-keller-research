@@ -54,10 +54,13 @@ quantum `A_1[x^{-1}]=⊕_k x^k C[E]`, `(x^a f)(x^b g)=x^{a+b}f(E+b)g(E)`,
 > pole-free candidate emitted by the solver fails `C_0` for `μ≠0`; this is not an
 > unbounded nonexistence result. On the **quantum**
 > face the reflection needs a falling-factorial twist and — because the quantum
-> "Theorem A" is itself open (the `Q_5` wall does not force a shifted cube,
-> `E(E−2)(E−4)`) — the classical route does **not** transcribe; quantum A\*-I is
-> *reduced to the open quantum non-cube question*, with the same bounded
-> emptiness evidence and inhomogeneous `μ₃`-tail structure.
+> analogue of the general "Theorem A" remains open (the `Q_5` wall does not force
+> a shifted cube) — the classical route does **not** transcribe; quantum A\*-I is
+> *reduced to the generally open quantum non-cube question*, with the same bounded
+> emptiness evidence and inhomogeneous `μ₃`-tail structure. A separate theorem now
+> excludes the fixed normalized W1 datum `E(E−2)(E−4)` at arbitrary coefficient
+> degree, but does not classify the reflected data arising here or close quantum
+> A\*-I; see [`quantum-w1-arbitrary-degree.md`](quantum-w1-arbitrary-degree.md).
 
 ## 1. The branch, exactly
 
@@ -217,12 +220,17 @@ reflection to import Theorem A. Quantumly (i) the reflection `E↦−E−1` need
 falling-factorial twist — the naive substitution sends the trivial-cube top
 `a_3=1` to a reflected `x^{-3}`-coefficient `1`, which is **not** divisible by
 `E(E−1)(E−2)`, breaking `A_1`-membership (`verify §6`); and, decisively,
-(ii) the quantum analogue of **Theorem A is open**: the `Q_5` wall does **not**
-force a shifted cube — `a_3=E(E−2)(E−4)` solves it (`quantum-band3-cascade.md`
-§3.2). So even a correctly-twisted quantum reflection would only reduce quantum
-A\*-I to *"is the reflected non-shifted-cube-necklace top killed downstream?"* —
-precisely the open question of `quantum-band3-cascade.md` §3.5. **Quantum A\*-I is
-therefore reduced to the open quantum non-cube question, not closed.**
+(ii) the quantum analogue of a **general Theorem A remains open**: the `Q_5` wall
+does **not** force a shifted cube — `a_3=E(E−2)(E−4)` solves it
+(`quantum-band3-cascade.md` §3.2). The separate theorem
+[`quantum-w1-arbitrary-degree.md`](quantum-w1-arbitrary-degree.md) excludes that
+fixed normalized W1 datum once `Q_4=Q_3=Q_2=Q_1=0`, genuine Weyl membership, and
+`Q_0=1` are imposed, but it does not classify scalar multiples or opposite
+orientations, W2, other AP parameters, higher-degree/non-AP tops, or reflected
+A\*-I data in general. So even a correctly-twisted quantum reflection would only
+reduce quantum A\*-I to *"is the reflected non-shifted-cube-necklace top killed
+downstream?"* — the generally open question of `quantum-band3-cascade.md` §3.5.
+**Quantum A\*-I is therefore not closed.**
 
 **Bounded evidence.** Exact quantum sweeps (trivial-cube top, minimal
 `a_{-3}=c̃ E(E−1)(E−2)`, `b_{-3}=μ₃a_{-3}`, numeric `μ₃≠0`, degree profiles
@@ -251,8 +259,9 @@ A*-band3  (gauge b3=0; a3=c h^3≠0; a_-3≠0; b_-3=μ̃ a_-3, μ̃≠0)
             ⇒ ROUTED to the open nonconstant-h branch (classical-band3 §7.1)
 
 QUANTUM A*-band3  (gauge b3=0; b_-3=μ₃ a_-3, μ₃≠0; INHOMOGENEOUS μ₃-tail)
-   reflection needs falling-factorial twist; quantum Theorem A OPEN
-   ⇒ A*-I ROUTED to the open quantum non-cube question (quantum-band3 §3.5)
+   reflection needs falling-factorial twist; general quantum Theorem A OPEN
+   ⇒ A*-I ROUTED to the generally open quantum non-cube question
+      (normalized W1 alone is separately excluded at arbitrary coefficient degree)
    ⇒ EMPTY on exact bounded sweeps (24 configs, 0 hits) — COMPUTED
 ```
 
@@ -285,9 +294,11 @@ QUANTUM A*-band3  (gauge b3=0; b_-3=μ₃ a_-3, μ₃≠0; INHOMOGENEOUS μ₃-t
   unbounded proof; the raw Band-2-shaped first-integral route is obstructed, while
   Wave C's compensated integral is sector-specific and does not derive the needed
   congruence lattice here;
-- **Quantum A\*-I**: reduced to the open quantum non-shifted-cube question
-  (`quantum-band3-cascade.md` §3.5); the whole quantum A\* is counterexample-or-
-  nothing with bounded emptiness evidence only.
+- **Quantum A\*-I**: reduced to the generally open quantum non-shifted-cube
+  question (`quantum-band3-cascade.md` §3.5). The separate arbitrary-degree
+  normalized-W1 exclusion does not classify the reflected A\*-I tops or close
+  this branch; the whole quantum A\* remains counterexample-or-nothing with the
+  stated bounded emptiness evidence.
 
 **Not claimed:** a full A\*-band3 emptiness theorem on either face; the mixed
 `e≠0` sector; JC2; DC1; any unbounded-degree completeness.

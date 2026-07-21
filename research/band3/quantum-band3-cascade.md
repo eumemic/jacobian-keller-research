@@ -214,10 +214,16 @@ does **not** assert that a wall-admitting non-cube top extends to a genuine
 band-3 pair `[D,X]=1`. Whether it does is the band-3 analogue of the band-2
 question "is `h` forced constant?" — which band 2 answered *yes* (`h` constant,
 `../band2-square-sector/quantum-completion.md` §4, and nonconstant-`h`
-killed by membership). At band 3 the corresponding statement — *"is `a₃` forced
-to a trivial cube (constant), so that the counterexample tops are killed
-downstream?"* — is **open** and is the sharpest single question this cascade
-exposes. The wall counterexample shows it cannot be settled by `Q₅` alone.
+killed by membership). At band 3 the corresponding general statement — *"is `a₃` forced
+to a trivial cube (constant), so that every counterexample top is killed
+downstream?"* — remains **open** and is the sharpest single question this cascade
+exposes. The wall counterexample shows it cannot be settled by `Q₅` alone. A
+later separate theorem does kill the fixed normalized W1 datum
+`a₃=E(E−2)(E−4)`, `b₂=(E−1)(E−4)`, `b₃=0` at arbitrary coefficient degree once
+`Q₄=Q₃=Q₂=Q₁=0`, genuine Weyl membership, and `Q₀=1` are imposed; see
+[`quantum-w1-arbitrary-degree.md`](quantum-w1-arbitrary-degree.md). It does not
+classify scalar multiples or opposite orientations, W2, other AP parameters,
+higher-degree/non-AP tops, all Band 3, DC1, or JC2.
 
 ## 4. `Q₀` — the `m=0` telescoping (W4/W6 generalization, closed form, any band)
 
@@ -346,7 +352,8 @@ real pairs:
 with every membership holding, `a₃ = 1` (trivial shifted cube `h=1`), and
 `a₋₃ = c₁³ E(E−1)(E−2)`. Its `b₂ = 0` (the wall solution with `κ₂ = 0`). A
 genuine pair with **nonconstant** top would require the wall satisfied
-nontrivially and the whole tail consistent — exactly the open question of §3.5.
+nontrivially and the whole tail consistent — exactly the general open question of
+§3.5, with its narrow normalized-W1 exception.
 
 ## 7. Case tree (with band-2 reductions cited)
 
@@ -407,15 +414,20 @@ band-2 shadow.
 - **Open (the frontier this cascade exposes):**
   1. whether the full band-3 system + membership forces `a₃` to a *trivial*
      (constant) cube — i.e. whether the wall's non-cube tops are killed
-     downstream (the band-3 analogue of "constant `h`"); **not settled by `Q₅`**;
+     downstream (the band-3 analogue of "constant `h`"); **not settled by `Q₅`**.
+     The separate normalized-W1 theorem closes only its fixed datum and does not
+     classify scalar multiples, opposite orientations, W2, other AP parameters,
+     or higher-degree/non-AP tops;
   2. the closure of the `μ₃`-cross-coupled negative tail (§5), hence any band-3
      tame classification;
   3. any global DC1/JC2 statement — **not claimed**; band 3 is not closed here.
-- **No counterexample to DC1 is produced.** The `E(E−2)(E−4)` construction and
-  other wall witnesses solve `Q₅` only. They are not asserted to satisfy the
-  remaining `Q_m`, are not Weyl pairs, and refute only shifted-cube necessity for
-  the isolated wall equation. The §6 positive control is separately verified as
-  a genuine Weyl pair.
+- **No counterexample to DC1 is produced.** In this cascade memo, the
+  `E(E−2)(E−4)` construction and other wall witnesses solve `Q₅` only; the later
+  normalized-W1 theorem separately proves that this fixed datum cannot also
+  satisfy `Q₄=Q₃=Q₂=Q₁=0`, genuine membership, and `Q₀=1`. None of the wall
+  witnesses is asserted to be a Weyl pair, and the isolated construction refutes
+  only shifted-cube necessity for the wall equation. The §6 positive control is
+  separately verified as a genuine Weyl pair.
 
 ## 9. Verification
 

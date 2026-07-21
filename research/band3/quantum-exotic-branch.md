@@ -20,8 +20,12 @@ full band-3 system + genuine `A₁` membership, or is it killed downstream?**
 > part of the degree-3 AP family at free-data degree `d = 1`; six exact
 > specializations are also checked, while all other exceptional rank/denominator
 > loci remain open. Further bounded/sliced cases cover W1/W2 and AP `r=1,−1,3`
-> at `d = 2`, W1 at `d = 3,4`, and AP top degrees `3,6,9` at `d = 1`. Uniform
-> closure in free degree and all higher-degree non-AP tops remain open. No DC1/JC2 counterexample, full band-3 theorem, or unconditional
+> at `d = 2`, W1 at `d = 3,4`, and AP top degrees `3,6,9` at `d = 1`. A separate
+> arbitrary-degree theorem excludes `Q₀=1` for the fixed normalized W1 datum under
+> the positive cascade and genuine membership; see
+> [`quantum-w1-arbitrary-degree.md`](quantum-w1-arbitrary-degree.md). Uniform closure
+> outside normalized W1 remains open, including every other AP datum and all
+> higher-degree non-AP tops. No DC1/JC2 counterexample, full band-3 theorem, or unconditional
 > induction rung is produced.
 
 The displayed finite computations are checked exactly by
@@ -127,8 +131,10 @@ needed for the conditional `L₀` step itself.
 
 This is the genuinely new sub-case, with **no positive collapse**. We proceed
 constructively — *attempting to build a pair, verifying to destruction* — and
-find exact obstructions in the slices stated below, without promoting them to an
-arbitrary-degree theorem.
+find exact obstructions in the slices stated below. Those finite calculations
+are not themselves an arbitrary-degree theorem; the later separate result
+[`quantum-w1-arbitrary-degree.md`](quantum-w1-arbitrary-degree.md) supplies one only
+for the fixed normalized W1 datum.
 
 ### 3.1 The positive cascade is solvable
 
@@ -273,12 +279,17 @@ conjecture for the wall equation*, as already recorded in Wave A.
 >   part of the degree-3 AP family at `d = 1`; six exact specializations are also
 >   checked; all other exceptional rank/denominator loci remain open. Selected
 >   exact instances additionally cover W1/W2 at `d = 2`, W1 at `d = 3,4`, and AP
->   top degrees `3,6,9` at `d = 1` (§3 and `quantum-exotic-closure.md`).
+>   top degrees `3,6,9` at `d = 1` (§3 and `quantum-exotic-closure.md`). The
+>   separate theorem [`quantum-w1-arbitrary-degree.md`](quantum-w1-arbitrary-degree.md)
+>   excludes `Q₀=1` for the fixed normalized W1 datum, under the positive cascade
+>   and genuine membership, at arbitrary coefficient degree.
 
-These results supply exact bounded/sliced advances toward the quantum band-3
-gatekeeper. They do **not** restore the induction step unconditionally: closure
-uniform in free degree and for all higher-degree non-AP realizable tops remains
-open. No full band-3, DC1, or JC2 theorem is claimed.
+These results supply exact advances toward the quantum band-3 gatekeeper. They
+do **not** restore the induction step unconditionally: uniform closure outside
+normalized W1 remains open, including other AP data and all higher-degree non-AP
+realizable tops. The W1 theorem does not classify scalar multiples or opposite orientations,
+W2, other AP parameters, higher-degree/non-AP tops, or all Band 3. No full band-3,
+DC1, or JC2 theorem is claimed.
 
 ## 7. Status of claims (proved / computed / conjectured)
 
@@ -309,16 +320,19 @@ arbitrary-degree proof):**
 **OPEN (residual gap):**
 - unconditional closure of the `b₂ = 0` half beyond the fixed-top bounded collapse
   checks, including arbitrary exotic tops and arbitrary free-data degree;
-- closure of the `b₂ ≠ 0` half uniformly in free degree and for all higher-degree
-  non-AP realizable tops. The exact certificate localizes the obstruction to the
-  `Q₀` moment unit in the proved slices, but no degree-free certificate or complete
-  higher-degree non-AP classification is supplied. The bounded slices are closed;
-  the uniform branch is not.
+- closure of the `b₂ ≠ 0` half uniformly in free degree outside the fixed
+  normalized W1 datum, and for all higher-degree non-AP realizable tops. The exact
+  finite certificates localize the obstruction to the `Q₀` moment unit in their
+  proved slices, while the separate W1 boundary certificate is degree-free only
+  for that normalized datum. No complete higher-degree non-AP classification is
+  supplied; the uniform branch is not closed.
 
 **NOT claimed:** settlement of DC1 or JC2 (§5); a full band-3 theorem; unconditional
 arbitrary-top/free-degree closure of the `b₂ = 0` half; closure of the `b₂ ≠ 0`
-half at arbitrary degree; any statement about non-exotic (shifted-cube) tops
-beyond the gatekeeper reduction.
+half at arbitrary degree outside the fixed normalized W1 theorem; any
+classification of scalar multiples or opposite orientations of W1, W2, other AP
+parameters, or higher-degree/non-AP tops; any statement about non-exotic
+(shifted-cube) tops beyond the gatekeeper reduction.
 
 ## 8. Verification
 

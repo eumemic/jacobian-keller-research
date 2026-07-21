@@ -9,8 +9,11 @@ encoded in `verify_quantum_exotic_closure.py`, at the existing free-data caps
 normalized nonzero `b_2`, bottom normalization `b_-3=mu_3 a_-3`, and Weyl
 membership imposed at every negative level. Here `d` bounds the raw polynomial
 factors of the free coefficients after their
-membership factors are removed. It does not prove an arbitrary-degree
-obstruction, construct a full Weyl pair, or settle DC1/JC2. The unrestricted
+membership factors are removed. These finite checks alone do not prove an
+arbitrary-degree obstruction, construct a full Weyl pair, or settle DC1/JC2. A
+separate theorem now gives an arbitrary-degree obstruction for the fixed
+normalized W1 datum; see
+[`quantum-w1-arbitrary-degree.md`](quantum-w1-arbitrary-degree.md). The unrestricted
 admissible filler images still intersect infinitely dimensionally, exactly as proved in
 `../dc1-program/two-filler-cross-cancellation.md`; nothing here weakens that
 theorem or the isolated-block formulas of Lemma R.
@@ -18,8 +21,11 @@ theorem or the isolated-block formulas of Lemma R.
 Exact checks are in
 [`verify_quantum_exotic_cokernel.py`](verify_quantum_exotic_cokernel.py).
 The unrestricted image of `Phi` for the full degree-three AP family is classified
-separately in [`quantum-ap-filler-image.md`](quantum-ap-filler-image.md); that
-classification still requires testing the cascade-produced target `E-R`.
+separately in [`quantum-ap-filler-image.md`](quantum-ap-filler-image.md). The
+cascade-produced target `E-R` is now excluded from that image in arbitrary
+coefficient degree for the fixed normalized W1 datum by
+[`quantum-w1-arbitrary-degree.md`](quantum-w1-arbitrary-degree.md); the analogous
+target question remains open in the other generalities not covered there.
 
 ## 1. Convention and the actual target class
 
@@ -228,8 +234,14 @@ is not inferred from generic rank.
 These are exact finite computations for the already encoded `d=1,2` systems.
 They show concretely that the residual targets miss the finite filler images for
 W1 and W2 at those caps, while retaining the sole kernel parameter emitted by
-the capped sequential reconstruction (the constant `b_0` freedom). They do not
-imply an arbitrary-degree obstruction. In unrestricted degree,
+the capped sequential reconstruction (the constant `b_0` freedom). These finite
+computations do not themselves imply an arbitrary-degree obstruction. Separately,
+[`quantum-w1-arbitrary-degree.md`](quantum-w1-arbitrary-degree.md) excludes, over
+characteristic zero and at arbitrary coefficient degree, simultaneous
+`Q_4=Q_3=Q_2=Q_1=0`, genuine Weyl membership, and `Q_0=1` for the fixed normalized
+W1 datum `a_3=E(E-2)(E-4)`, `b_2=(E-1)(E-4)`, `b_3=0`. It does not classify scalar
+multiples or opposite orientations, W2, other AP parameters, higher-degree/non-AP
+tops, all Band 3, DC1, or JC2. In unrestricted degree,
 `Im L_K intersect Im L_H` remains infinite-dimensional, and the isolated
 Lemma-R formulas remain valid only as isolated-block degree and leading-term
 statements.

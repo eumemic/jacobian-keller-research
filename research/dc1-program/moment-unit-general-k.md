@@ -158,9 +158,16 @@ homogeneous Weyl pair. The finite checks do not establish arbitrary free degree,
 uniform translation outside the symbolic slice, or exceptional pivot and
 denominator loci.
 
-The Band-3 input is likewise limited: generic translation parameter `r` at
-`d=1`, together with selected exact slices. It is not a completed Band-3 rung or
-an arbitrary-degree theorem.
+The finite Band-3 input here is likewise limited: generic translation parameter
+`r` at `d=1`, together with selected exact slices. Those computations are not an
+arbitrary-degree theorem. Separately,
+[`../band3/quantum-w1-arbitrary-degree.md`](../band3/quantum-w1-arbitrary-degree.md)
+excludes, over characteristic zero and at arbitrary coefficient degree,
+simultaneous `Q_4=Q_3=Q_2=Q_1=0`, genuine Weyl membership, and `Q_0=1` for the
+fixed normalized W1 datum `a_3=E(E-2)(E-4)`, `b_2=(E-1)(E-4)`, `b_3=0`. It does
+not classify scalar multiples or opposite orientations, W2, other AP parameters,
+higher-degree/non-AP tops, all Band 3, DC1, or JC2. Thus no completed Band-3 rung
+follows.
 
 ## 5. Residual problems
 

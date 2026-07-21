@@ -5,9 +5,13 @@
 This memo advances the residual gap left by the quantum exotic branch memo
 (`quantum-exotic-branch.md`, commit `ebfc64d`, §7 "CONJECTURED": *the
 arbitrary-degree closure of the `b₂ ≠ 0` half*). It proves a generic-`r` statement
-for the degree-3 AP family at free-data degree `d = 1` and selected exact instances,
-but does not close exceptional `r` loci, the gap uniformly in free degree, or
-higher-degree non-AP tops.
+for the degree-3 AP family at free-data degree `d = 1` and selected exact instances.
+A later separate result,
+[`quantum-w1-arbitrary-degree.md`](quantum-w1-arbitrary-degree.md), excludes
+`Q₀=1` for the normalized W1 datum at arbitrary coefficient degree under the
+positive cascade and genuine Weyl membership. Exceptional
+`r` loci outside the stated checks, uniform free degree for every other AP
+specialization, and higher-degree non-AP tops remain open.
 `astar-band3.md` (`ebfc64d`, §6) routes quantum **A\*-I** through this question;
 the advances here are therefore bounded/sliced evidence for that induction rung,
 not a completed quantum band-3 floor or a DC1 result.
@@ -35,8 +39,10 @@ lines; ends `ALL QUANTUM EXOTIC CLOSURE CHECKS PASSED`).
 > i.e. `G(1) =` the constant coefficient of `Q₀`. The verifier symbolically forces
 > this slope to `0` for the degree-3 AP family at `d = 1`, and supplies slope
 > certificates for W1 at `d = 2,3,4`; other listed exact instances establish only
-> `Q₀ = 1` infeasibility unless stated otherwise. Thus `G = E` (slope `1`) is
-> impossible exactly in the documented slices. This is the quantum
+> `Q₀ = 1` infeasibility unless stated otherwise. The later W1 boundary-evaluation
+> certificate proves the same exclusion for the normalized W1 datum at arbitrary
+> coefficient degree. Thus `G = E` (slope `1`) is impossible exactly in those
+> documented slices and in that separate arbitrary-degree W1 case. This is the quantum
 > incarnation of the classical Theorem-A step-6 principle ([EXO] §3.2: "the moment
 > can carry only `τ`/`E`, never a residual unit against a membership-protected
 > extreme") and of the [WEAP] §W5 "moment-unit-unrealizable" weapon.
@@ -58,9 +64,9 @@ lines; ends `ALL QUANTUM EXOTIC CLOSURE CHECKS PASSED`).
 >   values remain open; no entire-slice or entire-branch closure is claimed.
 
 No DC1/JC2 counterexample is produced; the exotic branch is empty everywhere the
-argument reaches, consistent with DC1. The **residual** is honestly stated in §8:
-the *uniform-in-free-degree* certificate (selected instances at `d = 2,3,4` are
-proved), and all higher-degree non-AP realizable exotic tops.
+arguments reach, consistent with DC1. The **residual** is honestly stated in §8:
+uniform free degree outside the separately closed normalized W1 datum, and all
+higher-degree non-AP realizable exotic tops.
 
 ## 1. The moment-unit reformulation (degree-free)
 
@@ -226,9 +232,10 @@ why it does not extend to an unrestricted degree-free filler theorem.
 
 ## 6. Verification across the class and beyond `d = 1`
 
-The obstruction is not `W1`-specific and extends past the `d = 1` proof. Each
-listed result is an exact per-instance Gröbner or slope-residual decision, hence a
-proof only within the stated finite ansatz, not mere evidence:
+The finite obstruction is not `W1`-specific and extends past the `d = 1` proof.
+Each result listed in this section is an exact per-instance Gröbner or
+slope-residual decision, hence a proof only within the stated finite ansatz, not
+mere evidence. The later arbitrary-degree W1 theorem is separate:
 
 - **Six checked AP specializations at `d = 1` (`verify §5`).** For
   `r ∈ {0, −4, 1, −1, 2, 3}` (both `a₃(0) = 0` and `a₃(0) ≠ 0` cases):
@@ -240,6 +247,12 @@ proof only within the stated finite ansatz, not mere evidence:
   `r = 1, −1, 3` at `d = 2`. Only W1 has the slope certificate below. For W1 at
   `d = 3, 4`, this verifier finds a slope residual that is a nonzero multiple of
   `c`, hence forces slope `0`.
+- **Arbitrary-degree normalized W1 (separate theorem).** The exact boundary
+  certificate in [`quantum-w1-arbitrary-degree.md`](quantum-w1-arbitrary-degree.md)
+  proves `lambda_0(R)=0` and directly shows that `lambda_0` annihilates both
+  admissible filler blocks. Since `lambda_0(E)=4`, this excludes `Q₀=1`
+  independently of coefficient degrees; the stronger unrestricted W1
+  filler-image theorem separately corroborates the image calculation.
 - **The exact W1 `d = 2` certificate (`verify §5`).** Eliminating the fillers leaves
   two residuals on the positive data: a homogeneous one that is a nonzero multiple
   of the **controlling combination**
@@ -314,15 +327,14 @@ instantiated for the band-3 exotic residual: the `+1` there is this slope.
 - exceptional `r` loci in the degree-3 AP `d = 1` family, beyond the six values
   individually checked; generic rational elimination does not classify every
   possible rank or denominator specialization;
-- the **uniform-in-free-degree** closure. `d = 1` has a generic-`r` theorem plus
-  six direct specializations; selected
-  instances at `d = 2, 3, 4` are proved. For W1, the slope residual is direct at
-  `d = 1,3,4` while `d = 2` carries the controlling combination `w`; the other
-  `d = 2` cases are only infeasibility decisions. No single closed-form certificate
-  uniform in `d` is extracted here. This is the same status frontier as the classical sibling's
-  leading-coefficient loci (`classical-cube-closure.md` §7, `99fe6ee`) — the
-  tropical skeleton (§4) reduces the problem but does not carry the uniform-`d`
-  proof in closed form.
+- the **uniform-in-free-degree** closure for AP specializations other than the
+  separately closed normalized W1 datum. `d = 1` has a generic-`r` theorem plus
+  six direct specializations; selected instances at `d = 2, 3, 4` are proved.
+  The finite calculations in this memo do not supply a certificate uniform in
+  `d`; W1 is closed instead by the later boundary-evaluation argument. This is
+  otherwise the same status frontier as the classical sibling's leading-coefficient
+  loci (`classical-cube-closure.md` §7, `99fe6ee`) — the tropical skeleton (§4)
+  reduces the problem but does not carry a general uniform-`d` proof.
 - **all non-AP realizable exotic tops at `deg a₃ ≥ 6`**. In the verifier's
   bounded normalized-root window (integer roots, `0` included, remaining roots
   in `1..14`, equivalently max root `≤ 14`), exactly 22 occur at degree 6
@@ -332,7 +344,8 @@ instantiated for the band-3 exotic residual: the `+1` there is this slope.
 **NOT claimed:** a full band-3 theorem; any DC1/JC2 statement (no counterexample
 is produced, consistent with DC1, [EXO] §5); closure of the entire degree-3
 `d = 1` parameter family, including unchecked exceptional `r` loci; closure of
-the `b₂ ≠ 0` half uniform in free degree; the non-AP higher-degree exotic sector.
+the `b₂ ≠ 0` half uniform in free degree outside normalized W1; the non-AP
+higher-degree exotic sector.
 
 ## 9. Relation to the induction and to astar-band3
 
@@ -340,10 +353,11 @@ the `b₂ ≠ 0` half uniform in free degree; the non-AP higher-degree exotic se
 top killed downstream?" — the open question this memo advances. Theorem 1 answers
 it generically in `r` for the degree-3 AP family at `d = 1`, with six direct
 specializations but unchecked exceptional loci left open; selected per-instance
-proofs cover W1/W2 plus AP `r=1,−1,3` at
-`d = 2`, W1 at `d = 3,4`, and AP top degrees `3,6,9` at `d = 1`. These are exact advances toward the exotic
-gatekeeper, not a completed band-3 induction rung: uniform free degree and all
-higher-degree non-AP tops remain open. No DC1/JC2 or full-band-3 conclusion is
+proofs cover W1/W2 plus AP `r=1,−1,3` at `d = 2`, W1 at `d = 3,4`, and AP top
+degrees `3,6,9` at `d = 1`. The separate W1 theorem closes the normalized W1
+datum at arbitrary coefficient degree. These are exact advances toward the exotic
+gatekeeper, not a completed band-3 induction rung: uniform free degree for the
+remaining AP parameters and all higher-degree non-AP tops remain open. No DC1/JC2 or full-band-3 conclusion is
 claimed.
 
 ## 10. Verification

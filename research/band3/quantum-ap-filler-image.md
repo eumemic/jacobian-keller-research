@@ -5,8 +5,11 @@
 This note classifies only the unrestricted polynomial image of one linear filler
 map. It does not prove a full cascade obstruction. In an application to the
 Band-3 cascade, the cascade-produced residual target `E-R` still has to be tested
-for membership in this image. Thus the theorem below does not close Band 3,
-DC1, or JC2, and it constructs no Weyl pair or counterexample.
+for membership in this image. The later normalized-W1 theorem performs that
+target test only at `r=0`, under `Q_4=Q_3=Q_2=Q_1=0` and genuine Weyl membership,
+and excludes `Q_0=1`; the target test remains open in the other generalities.
+Thus the theorem below does not close Band 3, DC1, or JC2, and it constructs no
+Weyl pair or counterexample.
 
 Exact finite certificates and proof regressions are in
 [`verify_quantum_ap_filler_image.py`](verify_quantum_ap_filler_image.py).
