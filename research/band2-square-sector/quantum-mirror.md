@@ -1,11 +1,12 @@
-# Quantum mirror: the resistant constant-$h$ branch of band 2 is empty
+# Quantum mirror: emptiness of the gauged $h=1$, $\kappa\mu s\ne0$ branch
 
-**INDEPENDENTLY DERIVED AND MACHINE-VERIFIED — NOT PEER REVIEWED**
+**INDEPENDENTLY DERIVED AND HOSTILE-AUDITED — EXACT CHECKS — NOT PEER REVIEWED**
 
-QUANTUM MIRROR assault, M5 campaign. This memo **closes** the quantum resistant
-branch left open by
-`research/band2-m5-partial/quantum-shifted-square-sector-partial.md`
-(the "unresolved candidate branch $h=1,\ \kappa\mu s\ne0$", memo §6, §8).
+This memo closes the exact quantum candidate branch
+$h=1,\ \kappa\mu s\ne0$ left open by the historical snapshot of
+`research/band2-m5-partial/quantum-shifted-square-sector-partial.md` at commit
+`91a053a` (memo §6, §8). It does not claim closure of the whole constant-$h$
+sector.
 
 ## Verdict
 
@@ -16,25 +17,24 @@ branch left open by
 > (with genuine Weyl memberships $E\mid u,v$ and $E(E-1)\mid s,w$) is **EMPTY**.
 > No such pair $[D,X]=1$ exists, at any degree.
 
-Consequently this branch yields **no DC1 counterexample candidate**: the sole
-resistant locus of the constant-$h$ quantum square sector contains no pair at
-all, so there is nothing to test for $A_1$-generation. The two-sided
-constant-$h$ square sector reduces to the tame $s=0$ families already recorded
-upstream (the swapped-shear and $Z$-generator families), which are genuine
-$[D,X]=1$ pairs that **do** generate $A_1$.
+Consequently no pair in this gauged $h=1$, $\kappa\mu s\ne0$ branch can be a
+DC1 counterexample candidate. This does not classify the remaining
+constant-$h$ quantum sector, establish a quantum tame classification or
+exclusion, or address other gauges or branches.
 
-This is a genuine advance over the audited partial cascade
-(`research/band2-m5-partial/quantum-shifted-square-sector-partial.md`), which
-left the entire branch open. The corresponding **classical** resistant branch
-**A\*** was likewise left open by the audited
-`research/band2-m5-partial/classical-square-sector-partial.md`; it is closed in
-parallel, by a different (integrated first-integral) route, in the sibling memo
-`classical-Astar.md` (same directory). The quantum closure here rests on an
-extra rigidity that integer shifts provide and differentiation does not
-(Lemma R, $S=2\deg\phi$); see §5.
+At commit `91a053a`, the audited partial cascade left this exact quantum branch
+open. The corresponding **classical** resistant branch **A\*** was also open in
+that historical snapshot; it is closed by a different (integrated
+first-integral) route in the sibling memo `classical-Astar.md`. Historical
+statements here refer to that commit and are not claims about the current
+contents of the upstream paths. The quantum closure here rests on an extra
+rigidity that integer shifts provide and differentiation does not (Lemma R,
+$S=2\deg\phi$); see §5.
 
-Everything below is checked exactly by `verify_quantum_mirror.py`
-(ends `ALL QUANTUM MIRROR CHECKS PASSED`).
+The exact verifier emits 49 `PASS` assertions for the displayed identities and
+representative case-closer instances, followed by one aggregate bounded-grid
+check, and ends `ALL QUANTUM MIRROR CHECKS PASSED`. The script supports the
+proof but does not supply its arbitrary-degree completeness.
 
 ## 1. Setup and conventions
 
@@ -51,21 +51,31 @@ Branch data ($h=1$, so $a_2=1$; audited positive cascade):
 $$a_1=p,\ a_0,\ a_{-1}=u,\ a_{-2}=s,\qquad
 b_2=0,\ b_1=\kappa,\ b_0=B,\ b_{-1}=v,\ b_{-2}=w=\mu s,$$
 memberships $E\mid u,v$ and $E(E-1)\mid s,w$; $T$ denotes $f\mapsto f^{[1]}$.
-Write $P=\deg p$, $V=\deg v$, $S=\deg s\ (\ge2)$, $U=\deg u$, $A_0=\deg a_0$.
+Write $S=\deg s\ge2$. Degrees $V=\deg v$, $U=\deg u$,
+$A_0=\deg a_0$, and $\Phi=\deg\phi$ are used only when those polynomials are
+nonzero; zero-polynomial cases are dispatched explicitly. For the split below,
+$P=0$ means that $p$ is constant, including $p=0$, while $P=\deg p\ge1$ means
+that $p$ is nonconstant.
 
 ## 2. Three exact arbitrary-degree integrals (`verify` §1)
 
 These make the audited "positive cascade" fully explicit as closed identities.
 
 - **Midpoint** (ladder 2): $\;B^{[1]}+B=\kappa p+\gamma.$ Since $T+1$ is
-  invertible on $\mathbb C[E]$, $B$ is determined; $\deg B=P$,
-  $\operatorname{lc}(B)=\kappa\operatorname{lc}(p)/2$.
+  invertible on $\mathbb C[E]$, $B$ is determined. If $P\ge1$, then
+  $\deg B=P$ and $\operatorname{lc}(B)=\kappa p_P/2$; if $P=0$, then $B$ is
+  constant and may be zero.
 - **Ladder-1 integral** (from $Q_1=0$, using
   $p(B^{[1]}-B)=\tfrac1\kappa(T-1)(B^2-\gamma B)$):
   $$\boxed{\;\kappa a_0-(v^{[1]}+v)-\tfrac1\kappa\bigl(B^2-\gamma B\bigr)=A\in\mathbb C.\;}$$
-  Hence $A_0=\deg a_0=\max(V,2P)$ with $\operatorname{lc}(a_0)$ the leading
-  coefficient of the RHS (see below). This is the quantum replacement for the
-  classical $a_0=\tfrac{p^2}4+\tfrac{2hv}\kappa-A$.
+  Cancellation gives only $\deg a_0\le\max(V,2P)$ in general. More precisely,
+  for $P\ge1$: if $v=0$ or $V<2P$, then $A_0=2P$ and
+  $\operatorname{lc}(a_0)=p_P^2/4$; if $V>2P$, then $A_0=V$ and
+  $\operatorname{lc}(a_0)=2v_V/\kappa$; if $V=2P$, the top coefficient is
+  $p_P^2/4+2v_V/\kappa$ and may cancel. For $P=0$, nonzero $v$ gives
+  $A_0=V$, whereas $v=0$ leaves $a_0$ constant and possibly zero. This is the
+  quantum replacement for the classical
+  $a_0=\tfrac{p^2}4+\tfrac{2hv}\kappa-A$.
 - **Central telescoping** (from $Q_0=1$): $Q_0=(T-1)G$ with
   $$G=w^{[1]}+w+p^{[-1]}v-\kappa u,\qquad (T-1)G=1\ \Rightarrow\ G=E+c_0.$$
   Point conditions $s(0)=s(1)=v(0)=0$ (so $w(0)=w(1)=0$, and $u(0)=0$ is then
@@ -80,7 +90,7 @@ are determined; and the only remaining equations are $Q_{-1}=Q_{-2}=Q_{-3}=0$
 
 ## 3. Structural leading-coefficient lemmas (`verify` §2)
 
-Set $\phi:=\mu u-v$ and $\Phi:=\deg\phi$.
+Set $\phi:=\mu u-v$; when $\phi\ne0$, write $\Phi:=\deg\phi$.
 
 - **Lemma R (quantum rigidity).** $Q_{-3}=s^{[-1]}\phi-s\phi^{[-2]}$. If
   $\phi\ne0$ the coefficient of $E^{S+\Phi-1}$ equals $s_S\,\phi_\Phi\,(2\Phi-S)$;
@@ -88,8 +98,10 @@ Set $\phi:=\mu u-v$ and $\Phi:=\deg\phi$.
   $$\boxed{\,S=2\Phi\,}\qquad(\phi\ne0).$$
   (Leading coefficients: $s_S=\operatorname{lc}s\ne0$, $\phi_\Phi=\operatorname{lc}\phi\ne0$.)
 - **Lemma B.** $Q_{-2}=s\,\Psi+(v^{[-1]}u-u^{[-1]}v)$ with
-  $\Psi=\mu(a_0-a_0^{[-2]})+(B^{[-2]}-B)$; the bracket has degree $\le U+V-1$
-  and $E^{U+V-1}$-coefficient $(U-V)\,u_U v_V$ (so it drops when $U=V$).
+  $\Psi=\mu(a_0-a_0^{[-2]})+(B^{[-2]}-B)$. If $u,v\ne0$, the bracket has
+  degree $\le U+V-1$ and $E^{U+V-1}$-coefficient
+  $(U-V)\,u_Uv_V$ (so it drops when $U=V$); if either polynomial is zero,
+  the bracket is zero.
 - **Lemma C.** $Q_{-1}=\mu\bigl(s^{[1]}p-p^{[-2]}s\bigr)+\kappa(s-s^{[1]})
   +v(a_0-a_0^{[-1]})+u(B^{[-1]}-B)$; the first bracket has degree $S+P-1$ with
   $E^{S+P-1}$-coefficient $(S+2P)\,s_S p_P$ (nonzero when $P\ge1$).
@@ -122,18 +134,26 @@ $\Psi=0$, i.e. $\mu(a_0-a_0^{[-2]})=B-B^{[-2]}$.
 
 ### 4.2 Case $\phi\ne0$: $S=2\Phi$ (Lemma R)
 
-Central term-degrees in $\kappa u=\mu(s^{[1]}+s)+p^{[-1]}v-E$ are $S,\ P+V,\ 1$.
+First dispatch the zero case omitted from the degree notation. If $v=0$, then
+$(\star)$ gives $\deg u=S$, hence $\deg\phi=S$; Lemma R would give $S=2S$,
+impossible because $S\ge2$. Thus below $v\ne0$, and $V$ is defined. The
+central term-degrees in
+$\kappa u=\mu(s^{[1]}+s)+p^{[-1]}v-E$ are at most $S$, $P+V$, and $1$;
+coincident top terms may cancel.
 
-**Sub-case $P=0$** ($p=p_0$ const, $B$ const, $A_0=V$):
+**Sub-case $P=0$** ($p=p_0$ const and $B$ const; here $A_0=V$):
 - $V<S$: top of $\kappa u$ is the $s$-term, $U=S$, $\deg(\mu u)=S>V$, so
   $\Phi=S$ and $S=2S$ — contradiction.
-- $V=S$: $U=S$; in $Q_{-2}$ the bracket coefficient at $E^{2S-1}$ vanishes
-  ($U=V$, Lemma B) while $s\Psi$ contributes $4\mu S\,s_S v_S/\kappa\ne0$
-  (Lemmas D, ladder-1). So $Q_{-2}\ne0$ — contradiction.
-- $V>S$: $U=V$; $\phi_V=v_V(\mu p_0-\kappa)/\kappa$. If $\mu p_0\ne\kappa$ then
-  $\Phi=V$, $S=2V>2S$ — contradiction. If $\mu p_0=\kappa$ then
-  $\phi=\tfrac\mu\kappa(\mu(s^{[1]}+s)-E)$ has degree $S$, so $\Phi=S$ and
-  $S=2S$ — contradiction.
+- $V=S$: here $U\le S$. The bracket in Lemma B has no
+  $E^{2S-1}$ contribution: if $U<S$ its degree is smaller, while if
+  $U=S=V$ its displayed leading coefficient vanishes. Meanwhile $s\Psi$
+  contributes $4\mu S\,s_Sv_S/\kappa\ne0$ (Lemmas D and the ladder-1
+  integral). Thus $Q_{-2}\ne0$ — contradiction.
+- $V>S$: use the cancellation-safe identity
+  $$\kappa\phi=\mu^2(s^{[1]}+s)-\mu E+(\mu p_0-\kappa)v.$$
+  If $\mu p_0\ne\kappa$, the unique degree-$V$ term gives $\Phi=V$, and
+  $S=2V>2S$ — contradiction. If $\mu p_0=\kappa$, the remaining right side
+  has degree $S$, so $\Phi=S$ and $S=2S$ — contradiction.
 
 **Sub-case $P\ge1$** (split on $P+V$ vs $S$, using $\Phi\le\max(U,V)$):
 - $P+V>S$: $U=P+V$ (unique top), $\Phi=P+V>V$, so $S=2(P+V)>S$ — contradiction.
@@ -178,19 +198,24 @@ work — a rigidity available only in the difference (quantum) setting.
 
 ## 6. Machine verification (`verify_quantum_mirror.py`)
 
-- §0 — $Q_m$ reproduce audited tail equations (general $h$); gauge $Q_4=Q_3=0$.
+The script emits 49 exact `PASS` assertions plus one aggregate bounded-grid
+check:
+
+- §0 — $Q_m$ reproduce the historical tail equations at commit `91a053a`
+  (general $h$); gauge $Q_4=Q_3=0$.
 - §1 — midpoint rewrite, ladder-1 integral, central telescoping, $c_0=0$,
   automatic $E\mid u$.
-- §2 — Lemmas R, B, C, D as exact leading-coefficient identities (several
-  degrees each).
-- §3 — every case leaf of §4: the $\phi=0$ collapse, $P=0$ cases (a)/(b),
-  $Q_{-2}$ $T_1$-dominance, and the locus-$L$ kill (clean value $5\kappa p_P^4/8$).
-- §4 — bounded-degree **exhaustive emptiness** by Gröbner + Rabinowitsch
-  saturation of $\kappa\mu\ne0$ and $s\ne0$, over a grid
-  ($\deg p\le2,\ \deg v\le3,\ \deg s\le4$ and more); all EMPTY. A separate
-  extended sweep (not in the fast verifier) confirms EMPTY up to
-  $\deg p\le3,\ \deg v\le4,\ \deg s\le6$, including the minimal instance of
-  locus $L$ ($S=6,V=4,P=2$).
+- §2 — Lemmas R, B, C, D as exact leading-coefficient identities at several
+  representative degrees.
+- §3 — exact representative checks for the $\phi=0$ collapse, the $P=0$
+  closers, $Q_{-2}$ $T_1$-dominance, and the locus-$L$ kill (clean value
+  $5\kappa p_P^4/8$).
+- §4 — Gröbner + Rabinowitsch saturation of $\kappa\mu\ne0$ and $s\ne0$ for
+  each of the 21 listed bounded coefficient profiles; all are `EMPTY`.
+
+The bounded grid is corroboration only and is exhaustive only within those
+listed profiles. Arbitrary-degree completeness rests on the written case split
+in §4, not on the computation.
 
 ## 7. Aside: the general-$h$ central telescoping (recorded separately)
 
@@ -207,17 +232,19 @@ general-$h$ potential does **not** have a one-line closed form — the staggered
 shifts $h^{[i]}h^{[j]}$ mix, exactly as the audited memo warned. Extracting a
 canonical $G$ and reading off the nonconstant-$h$ divisibility (the analogue of
 "$h\mid t+e$", i.e. "nonconstant $h$ is affine") is the natural next step; it is
-**not** needed for, and lies beyond, the constant-$h$ closure proved here.
+**not** needed for, and lies beyond, the gauged $h=1$, $\kappa\mu s\ne0$ branch
+proved here.
 
 ## 8. Status of claims
 
 - **Proved, arbitrary degree:** the three integrals of §2; Lemmas R, B, C, D;
   the emptiness theorem of §4 (structural, not degree-bounded).
 - **Corroboration only:** the bounded Gröbner sweeps of §6.4.
-- **Out of scope:** $\kappa=0$; the shifted-square sector with *nonconstant* $h$
-  (the audited "nonconstant $h$ affine" lemma remains open — Lemma R and the
-  $Q_{-1}$ mechanism here are stated for $h=1$); non-square sectors; any global
-  DC1/JC2 statement. This memo closes exactly one branch: the resistant
-  constant-$h$ one.
+- **Out of scope and still open here:** $\kappa=0$; $s\ne0,\mu=0$;
+  $s=0,w\ne0$; the shifted-square sector with *nonconstant* $h$ (the
+  historical "nonconstant $h$ affine" lemma remains open); quantum band 1;
+  $a_2=0$ and its orientation/case bridge; non-square sectors; and any global
+  DC1/JC2 statement. This memo closes exactly the gauged
+  $h=1$, $\kappa\mu s\ne0$ branch.
 - **No counterexample exists in this branch** (it is empty), so no
-  $A_1$-generation test arises here.
+  $A_1$-generation test arises here. No quantum tame exclusion is claimed.

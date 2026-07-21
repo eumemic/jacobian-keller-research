@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-verify_catalog.py  --  M5 band-2 square-sector campaign, verification+catalog certificate.
+verify_catalog.py  --  M5 band-2 square-sector exact checks and bounded catalog.
 
 Run:  uv run --with sympy python research/band2-square-sector/verify_catalog.py
 
 This single script is the reproducible backing for:
   * upstream-verification.md   (trust-but-verify of the classical & quantum partial cascades)
-  * tame-catalog.md            (systematic tame band-2 catalog + branch residence)
+  * tame-catalog.md            (bounded tame band-2 catalog + branch residence)
 
 Frozen conventions (M4 memo):
   classical  {G,F} = G_xi F_x - G_x F_xi,  tau = x*xi,  {xi,x}=1  (Keller = {G,F}=1)
@@ -266,7 +266,7 @@ ok(all(sp.expand(full.get(m, 0) - (1 if m == 0 else 0)) == 0 for m in range(-4, 
    "explicit quantum boundary family: [D,X]=1, u=const (fails E|u, polar)")
 
 print("="*72)
-print("SECTION 4  TASK 1 core: symbolic proof no tame band-2 pair reaches A*")
+print("SECTION 4  generic single-quadratic-shear normal form avoids A*")
 print("="*72)
 al, be, ga, de, aa, bb, cc, dd, mu, nu = sp.symbols("al be ga de a b c d mu nu")
 X1 = al*x + be*xi; Xi1 = ga*x + de*xi
@@ -325,7 +325,7 @@ entry("E4 A2[[1,1],[1,2]] o P(X^2) o A1[[1,1],[0,1]]", 1*Sc[0] + 1*Sc[1], 1*Sc[0
        'gauged_b_minus2': 0, 'branch': 'B0'})
 
 print("="*72)
-print("SECTION 6  bounded enumeration confirming no tame band-2 pair in A*")
+print("SECTION 6  bounded enumeration: no sampled band-2 pair in A*")
 print("="*72)
 SL2 = [(u, v), (v, -u), (2*u, v/2), (u/2, 2*v), (u + v, v), (u, u + v),
        (u - v, v), (u, -u + v), (2*u + v, u + v), (u + v, u + 2*v)]
@@ -372,7 +372,7 @@ print(f"  enumerated {len(all_pairs)} distinct tame pairs; {nsq} band-2 square-s
 print(f"  branch tally: {tally}")
 print(f"  both raw negative extremes nonzero: {both_nonzero}; gauge collapses b_(-2)->0 in {gauge_work}")
 ok(astar == 0 and tally.get('B0', 0) == nsq and nsq > 0,
-   "enumeration: every band-2 square-sector tame pair is B0; ZERO in A*")
+   "bounded enumeration: every sampled band-2 square-sector pair is B0; ZERO in A*")
 ok(both_nonzero > 0 and gauge_work == both_nonzero,
    "gauge does real work: all pairs with both raw extremes nonzero collapse to w=0 (B0)")
 # two-quadratic-shear sweep
@@ -388,14 +388,14 @@ for g1 in QUAD:
                     if p['in_Astar']:
                         two_astar += 1
 ok(two_astar == 0 and two > 0, f"two-quadratic-shear sweep: {two} band-2 square pairs, none in A*")
-# cubic shears never reach square sector
+# Tested affine-cubic-affine words do not reach the square sector.
 cub = (u, v + u**3); cub_sq = 0
 for a1 in SL2:
     for a2m in SL2:
         F, G = apply_gen(apply_gen(apply_gen((x, xi), a1), cub), a2m)
         if is_band2(F) and is_band2(G) and sp.expand(band_decomp(F).get(2, 0)) != 0:
             cub_sq += 1
-ok(cub_sq == 0, "cubic-shear words never yield a band-2 square-sector pair")
+ok(cub_sq == 0, "tested affine-cubic-affine sweep yields no band-2 square-sector pair")
 
 print("="*72)
 if FAILS:
@@ -403,5 +403,5 @@ if FAILS:
     for fl in FAILS:
         print("  -", fl)
     raise SystemExit("verify_catalog.py FAILED: " + "; ".join(FAILS))
-print("tameInAStar = FALSE  (no tame band-2 pair lands in classical branch A*)")
+print("Astar hits = 0 in the generic single-shear class and stated bounded sweeps")
 print("ALL CATALOG CHECKS PASSED")

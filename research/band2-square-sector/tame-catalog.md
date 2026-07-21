@@ -1,30 +1,37 @@
-# Tame band-2 catalog and the strategic A\* question
+# Tame band-2 catalog and the classical A\* question
 
-**EXACT SYMPY — PROVED WITHIN STATED BOUNDS — NOT A FULL CLASSIFICATION**
+**EXACT SYMPY — GENERIC NORMAL-FORM IDENTITY + BOUNDED ENUMERATION — NOT A FULL CLASSIFICATION**
 
 Backing script: `verify_catalog.py` (Sections 4–6). All arithmetic exact.
 
-## Strategic headline: `tameInAStar = FALSE`
+## Strategic headline for the checked class
 
-**No tame band-2 pair lands in the classical resistant branch A\*.**
+**The generic single-quadratic-shear normal form, and every word in the stated
+bounded enumeration, avoids the classical resistant branch A\*.**
 
-A\* is the branch that both upstream memos leave open: after the gauge that kills
-`b_2` (`G→G−λF`, `λ=b_2/a_2`), a pair sits in A\* iff
+A\* is the classical branch left open by the historical partial memo at commit
+`91a053a`: after the gauge that kills `b_2` (`G→G−λF`, `λ=b_2/a_2`), a pair sits
+in A\* iff
 
 ```
 a_2 = h² ≠ 0,   h constant,   κ ≠ 0,   gauged b_{−2} ≠ 0,   a_{−2} ≠ 0.
 ```
 
-Every band-2 tame pair with `a_2≠0` instead has **gauged `b_{−2}=0`**, i.e. it lives
-in branch **B0**. It is never in A0, never in A, hence never in A\*.
+Every pair in the displayed single-quadratic-shear normal form instead has
+**gauged `b_{−2}=0`**, so it lives in branch **B0** rather than A\*. The bounded
+word enumeration below found the same behavior in every sampled square-sector
+case. No quantum statement is intended.
 
 ### Why (the mechanism — this is the load-bearing fact)
 
-A band-2 tame automorphism with nonzero nonlinear part has the normal form
+Consider the generic single-quadratic-shear normal form
 
 ```
 Φ = A₂ ∘ S ∘ A₁,   A₁,A₂ affine symplectic (SL₂),   S a single quadratic shear.
 ```
+
+The identity below is rigorous for all parameters in this class. Reduction of
+an arbitrary unbounded tame word to this form is not claimed here.
 
 Write `A₁·(x,ξ)=(X,Ξ)` with `X=αx+βξ`, `Ξ=γx+δξ` (linear, weight ±1). Take
 `S=P(μX²)` (the `Q(νΞ²)` case is identical by symmetry). Then the post-shear pair is
@@ -51,65 +58,50 @@ The **same** ratio `λ=d/b` controls both extremes, because both come from the s
 gauged b_{−2} = b_{−2} − λ·a_{−2} = 0    (identically, for all parameters).
 ```
 
-A\* asks for `b_{−2}` to **survive** the gauge that kills `b_2`. For a single-shear
-tame pair that is structurally impossible: the two extremes share one origin.
+A\* asks for `b_{−2}` to **survive** the gauge that kills `b_2`. In the displayed
+affine–single-quadratic-shear–affine class that is structurally impossible: the
+two extremes share one origin.
 `verify_catalog.py` §4 proves `gauged b_{−2} ≡ 0` symbolically for fully generic
 `α,β,γ,δ,a,b,c,d,μ` (and `ν`).
 
 Two corollaries fall out of the same normal form (`verify_catalog.py` §4, §6):
 
-- **`h` is always constant.** `a_2=bμα²` has no `τ`-dependence, so a tame band-2
-  square-sector pair is *automatically* in the constant-`h` sector. (Nonconstant `h`
-  needs a `x³ξ`-type weight-2 term of total degree 4, which a quadratic shear cannot
-  produce, and higher-degree shears leave band 2 — §6 confirms cubic shears never
-  reach the square sector.)
-- **`κ≠0` is forced.** Using `ad−bc=1`, the gauged `b_1` equals `−α/b` (P-shear) or
-  `γ/a` (Q-shear); since `a_2≠0` forces `α≠0` (resp. `γ≠0`), gauged `b_1=κh≠0`. So the
-  `κ=0` branch contains **no** tame square-sector pair — consistent with the memo's
-  separate proof that `κ=0` admits no genuine polynomial pair with `a_2≠0`.
+- **`h` is constant in this normal form.** `a_2=bμα²` has no `τ`-dependence.
+  The bounded sweep in §6 also found no cubic-shear word in the square sector;
+  that observation is not an unbounded classification.
+- **`κ≠0` in this normal form.** Using `ad−bc=1`, the gauged `b_1` equals
+  `−α/b` (P-shear) or `γ/a` (Q-shear); since `a_2≠0` forces `α≠0` (resp.
+  `γ≠0`), gauged `b_1=κh≠0`.
 
-### Completeness of the normal form (why this covers all tame pairs)
+### Scope of the normal-form argument
 
-Grade `ℂ[x,ξ]` by weight `w(x^mξ^n)=m−n`; multiplication adds weights and band-2 =
-weights in `[−2,2]`. Affine maps keep linear forms in band 1. A degree-`d` shear
-applied to a weight-`±1` argument produces weight up to `d`; to stay in band 2 the
-shear must be degree ≤ 2, and its argument must be a genuine linear form. After one
-quadratic shear the two coordinates are `X` (still weight `±1`) and `Ξ+μX²` (band 2);
-any further degree-≥2 shear needs a weight-`±1` argument, but the only such direction
-preserved is `X`, and shearing along it merely augments `μX²` — no new structure.
-Hence every nonaffine band-2 tame pair reduces to `A₂∘S∘A₁`. This structural argument
-is backed empirically in §6 by a bounded enumeration (below): length-≤3 words and all
-two-quadratic-shear words produce only B0.
+Grade `ℂ[x,ξ]` by weight `w(x^mξ^n)=m−n`; multiplication adds weights and band 2
+means weights in `[−2,2]`. This grading motivates the single-quadratic-shear
+model, but it is not by itself a proof that every arbitrarily long tame word
+reduces to that model. The exact claim here is therefore limited to the generic
+normal form above and the bounded sweeps below.
 
 ### Bounds under which this is proved
 
-- **Rigorous for all parameters:** the normal-form identity `gauged b_{−2}≡0` (§4).
+- **Rigorous for all parameters in the displayed class:** the normal-form identity
+  `gauged b_{−2}≡0` (§4).
 - **Enumerated:** words of length ≤ 3 over 10 affine SL₂ generators + 16 quadratic
-  shears → 7874 distinct tame pairs, **1120** band-2 square-sector, **all B0, 0 in A\***.
-  Of these, **186** have *both* raw `a_{−2}≠0` and raw `b_{−2}≠0` (they "look like" A\*
-  before gauging) and in **all 186** the gauge collapses `b_{−2}` to 0. A separate
-  two-quadratic-shear sweep gives 56 more band-2 square pairs, none in A\*. Cubic
-  shears never reach the square sector.
-- **Not claimed:** exhaustion over unbounded composition length as a *formal* proof;
-  that rests on the weight-grading completeness argument plus the enumeration.
+  shears produced 7,874 distinct tame pairs, including **1,120** band-2
+  square-sector pairs, all B0 and none in A\*. Of these, **186** have both raw
+  negative extremes nonzero, and in all 186 the gauge collapses `b_{−2}` to zero.
+  A separate two-quadratic-shear sweep gives 56 more band-2 square pairs, none in
+  A\*. The tested affine–cubic-shear–affine words never reach the square sector.
+- **Not claimed:** exhaustion over unbounded composition length, exclusion of all
+  classical tame automorphisms from A\*, or any quantum tame result.
 
-### Strategic consequence for closing A\*
+### Strategic consequence
 
-In dimension 2 every polynomial automorphism is tame (Jung–van der Kulk). A band-2
-Keller pair is a polynomial map with unit Jacobian; if it is an automorphism it is
-tame, and we have just shown tame ⇒ B0. Therefore:
-
-> **A\* (and A0) contain no automorphisms.** Any pair actually sitting in A\* would be a
-> polynomial map with unit Jacobian that is *not* an automorphism — i.e. a Jacobian
-> Conjecture counterexample, in band 2, constant-`h` square sector.
-
-This tells the campaign how to spend effort on the resistant branch:
-
-- **Do not** search for a tame witness in A\* — there is none. Closing A\* is *not* a
-  "classify the tame members" task (the way B0 is); it is an **emptiness** task.
-- Proving A\* empty (in the constant-`h` square sector) is **exactly equivalent** to
-  ruling out a JC2 counterexample there. Conversely a nonempty A\* *is* a JC2
-  counterexample. That is the real stake of the upstream "resistant branch."
+The exact mechanism shows why a witness search restricted to a single quadratic
+shear cannot reach A\*. The bounded enumeration suggests the same obstruction
+persists more broadly, but this memo does not promote that evidence to an
+unbounded tame-word theorem. The independent written proof in
+`classical-Astar.md` establishes that A\* itself is empty; this catalog is not
+the completeness argument for that theorem.
 
 ## The catalog
 
@@ -123,17 +115,19 @@ Square data per entry (reduced gauge; `w` = gauged `b_{−2}`, `s = a_{−2}`,
 | E3 | memo family (5.1), `h=1,e=0,c₁=1,κ=2` | `(x+ξ)²−ξ/2` | `2x+2ξ` | `{−2,−1,0,2}` / `{−1,1}` | `1` | `0` | `2` | `τ²` | `0` | `0` | **B0** | no |
 | E4 | `A₂[[1,1],[1,2]] ∘ P(X²) ∘ A₁[[1,1],[0,1]]` | `x²+2xξ+x+ξ²+2ξ` | `2x²+4xξ+x+2ξ²+3ξ` | `{−2..2}` / `{−2..2}` | `1` | `2` | `−1` | `τ²` | `2τ²` | `0` | **B0** | no |
 
-**E4 is the decisive entry.** It is a genuine two-sided band-2 Keller pair with *both*
-negative extremes present before gauging (`a_{−2}=τ²`, `b_{−2}=2τ²`), the exact profile
-that would be A\* — except `b_{−2}=λ·a_{−2}=2·τ²`, so the forced gauge `G→G−2F` sends
-`b_{−2}→0`. It is B0. The 186 enumerated "both-extremes" pairs all behave this way.
+**E4 illustrates the gauge mechanism.** It is a genuine two-sided band-2 Keller
+pair with both negative extremes present before gauging (`a_{−2}=τ²`,
+`b_{−2}=2τ²`), the raw profile associated with A\*. But
+`b_{−2}=λ·a_{−2}=2·τ²`, so the gauge `G→G−2F` sends `b_{−2}→0`; the pair is B0.
+The 186 enumerated both-extremes examples behave the same way.
 
-E3 reproduces the upstream canonical family (5.1) (constant `h`, `e=0`): tame, B0,
-`b_{−2}=0` by construction — the tame family the memos already knew lives in B0. E2 is
-the minimal one-sided square-sector pair. E1 is the affine baseline (out of the square
-sector, `a_2=0`).
+E3 reproduces the canonical family (5.1) from the partial memo snapshot at commit
+`91a053a` (constant `h`, `e=0`): tame, B0, and `b_{−2}=0` by construction. E2 is
+the minimal one-sided square-sector pair. E1 is the affine baseline (out of the
+square sector, `a_2=0`).
 
-Branch tally over the whole enumeration: **B0 : 1120,  A0 : 0,  A : 0,  A\* : 0.**
+Branch tally within the stated enumeration:
+**B0 : 1120, A0 : 0, A : 0, A\* : 0.**
 
 ## Reproduce
 
@@ -141,6 +135,7 @@ Branch tally over the whole enumeration: **B0 : 1120,  A0 : 0,  A : 0,  A\* : 0.
 uv run --with sympy python research/band2-square-sector/verify_catalog.py
 ```
 
-Section 4 = symbolic A\*-exclusion proof; Section 5 = the four catalog entries above;
-Section 6 = the bounded enumeration and the "gauge does real work" diagnostic
-(186/186 collapse). The script ends `ALL CATALOG CHECKS PASSED`.
+Section 4 proves the gauge identity for the generic single-shear normal form;
+Section 5 checks the four catalog entries above; Section 6 runs the bounded
+enumeration and the 186/186 gauge-collapse diagnostic. The script ends
+`ALL CATALOG CHECKS PASSED`.

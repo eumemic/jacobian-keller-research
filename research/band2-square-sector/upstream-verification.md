@@ -3,23 +3,28 @@
 **INDEPENDENT RE-VERIFICATION — EXACT SYMPY — NOT A CLASSIFICATION CERTIFICATE**
 
 This memo records an independent, from-scratch symbolic re-derivation of every
-load-bearing identity in the two upstream partial cascades
+load-bearing identity in the following two partial cascades **as frozen at commit
+`91a053a`**:
 
 - `research/band2-m5-partial/classical-square-sector-partial.md`
 - `research/band2-m5-partial/quantum-shifted-square-sector-partial.md`
 
-against the frozen conventions of `research/band2-classical-proved/M4_proof_memo.md`.
-All checks are reproduced by `verify_catalog.py` (Sections 1–3), run with exact
-arithmetic. No arbitrary-degree exhaustion is claimed; this verifies the identities
-the memos actually assert, not the resistant branches they explicitly leave open.
+The audit uses the conventions frozen in
+`research/band2-classical-proved/M4_proof_memo.md` at that same commit. All checks
+are reproduced by `verify_catalog.py` (Sections 1–3), run with exact arithmetic.
+No arbitrary-degree exhaustion is claimed; this verifies identities in the
+historical snapshots, not the branches they left open then. It does not track
+later rewrites or follow-up results at those current paths.
 
 ## Verdict (report defects loudly)
 
-**No defects were found in either partial-cascade memo.** Every equation, integration,
-reduction, family construction, and membership statement I re-derived independently
-matches the upstream text exactly. Both memos are also honest about their gaps
-(the classical A\* / quantum `h=1, κμs≠0` resistant branches), and those honestly-labelled
-gaps are genuine — I did not close them and neither did they.
+**No defects were found in either partial-cascade snapshot at commit `91a053a`.**
+Every checked equation, integration, reduction, family construction, and membership
+statement re-derived independently matches that historical text. These are exact
+identity and regression checks, not an arbitrary-degree classification certificate.
+At that commit, the classical A\* branch and the distinct quantum `h=1, κμs≠0`
+branch were left open. This identity audit neither closed them nor claims that they remain open in
+later follow-up documents.
 
 The only sign defects on record in this campaign are those the checker-audit
 (`research/band2-m5-partial/checker-audit.md`) found in the **supplied M5 checker**,
@@ -79,14 +84,15 @@ consequence. The staggered-shift tail equations (4.1)-(4.6) are reproduced verba
 from the commutator, including the `κh^{[−2]}s` / `κs^{[1]}h` type terms that are
 easy to mis-shift by hand.
 
-## What is *not* verified (unchanged open status)
+## What is *not* verified by this historical-snapshot audit
 
-- The classical resistant branch **A\*** (`h` const, `κ≠0`, gauged `b_{−2}≠0`,
-  `a_{−2}≠0`) and the quantum counterpart `h=1, κμs≠0` remain open. My verification
-  confirms the *identities and reductions*; it does not solve or exclude those
-  branches at arbitrary degree. (But see `tame-catalog.md`: no *tame* pair reaches
-  A\*, which reframes what closing A\* means.)
-- No JC2 / DC1 claim. No completeness / exhaustion claim.
+- At commit `91a053a`, the classical resistant branch **A\*** (`h` constant,
+  `κ≠0`, gauged `b_{−2}≠0`, `a_{−2}≠0`) and the distinct quantum branch
+  `h=1, κμs≠0` were open. This document confirms only the identities and
+  reductions in that snapshot; it does not solve or exclude either branch at
+  arbitrary degree. Later follow-up results are documented separately.
+- No JC2 / DC1 claim. No completeness / exhaustion claim. No quantum tame
+  classification or exclusion.
 
 ## Reproduce
 
@@ -94,6 +100,8 @@ easy to mis-shift by hand.
 uv run --with sympy python research/band2-square-sector/verify_catalog.py
 ```
 
-Sections 1–3 are the classical+quantum re-verification above; the script prints a
-`PASS` line per row and aborts with a `DEFECTS FOUND` block if any identity fails.
-It currently passes all rows and ends `ALL CATALOG CHECKS PASSED`.
+Sections 1–3 are the classical and quantum historical-snapshot re-verification
+above. The catalog verifier prints a `PASS` line per checked row, aborts with a
+`DEFECTS FOUND` block if an identity fails, and ends `ALL CATALOG CHECKS PASSED`.
+This accounting is separate from `verify_quantum_mirror.py` and its 49 exact
+`PASS` assertions plus one aggregate bounded-grid check.
