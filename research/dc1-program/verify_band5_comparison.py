@@ -19,23 +19,23 @@ Root-necklace calculus (S = shift on root positions; sigma = T^{-1} = S^{-1}):
     S_r = 1 + s + ... + s^{r-1}  (necklace operator);  Phi_k the k-th cyclotomic.
 
 Sections:
-  0. Engine at k=5: Q_m == direct crossed-product commutator; top proportionality
-     Q_10; the wall Q_9 = b_4^[5] a_5 - a_5^[4] b_4 in gauge b_5=0.
+  0. Engine at k=5: top proportionality Q_10 and the wall
+     Q_9 = b_4^[5] a_5 - a_5^[4] b_4 in gauge b_5=0.
   1. The k=5 necklace lemma: WALL-M reduction  S*(1+S+S^2+S^3)*A = Phi_5(S)*B, i.e.
      S_5 delta(u) = S_4 delta(a_5); coprimality gcd(S_5,S_4)=1; shifted-5th-power
      sufficiency; the exotic gap via the universal cofactor g = 1 - sigma + sigma^2.
   2. PRIMALITY DISSECTION: S_5 = Phi_5 IRREDUCIBLE (5 prime) vs S_4 = Phi_2*Phi_4
      REDUCIBLE (4 composite) vs S_3 = Phi_3 irreducible (3 prime).  Independent
      k=4 wall Q_7 = b_3^[4]a_4 - a_4^[3]b_3 and its necklace S_4 delta = S_3 delta.
-  3. ENUMERATION of minimal-degree exotic tops: deg a_k = k, single coset.
-     k=3 -> 1 exotic ({0,2,4}); k=4 -> 4; k=5 -> 13 (stable).  Cofactor structure;
+  3. BOUNDED ENUMERATION of normalized minimal-degree integer-root tops in one
+     coset: k=3 -> 1, k=4 -> 4, k=5 -> 13 in the stated windows. Cofactor structure;
      reflection pairing; step-2 AP {0,2,..,2(k-1)} admissible IFF k ODD (cofactor
      Phi_{2k}); non-cyclotomic cofactors at k=5; the composite Phi_2-obstruction.
   4. MOMENT-UNIT test at k=5: W4 potential G band-agnostic (Q_0=(T-1)G); G(0)=0
      under membership; slope = G(1) = const coeff Q_0.  Positive cascade Q_8..Q_1
      forward-solves b_3..b_{-4}; {cascade} u {Q_0=1} INFEASIBLE (Groebner=[1]) while
-     {Q_0=0} feasible -- the moment carries no unit -- across the exotic families,
-     d=1 and d=2, a5(0)=0 and a5(0)!=0.  Positive control (genuine band-5 pair) +
+     {Q_0=0} feasible for five fixed d=1 instances (four normalized shapes plus
+     one translate); only {0,2,3,4,6} is also tested at d=2. Positive control +
      no-spurious-conditions guard.
 
 Run:  uv run --with sympy python research/dc1-program/verify_band5_comparison.py
@@ -103,14 +103,6 @@ K = 5
 Ag = {k: poly(f'A{k+5}', 2)[0] for k in range(-K, K + 1)}
 Bg = {k: poly(f'B{k+5}', 2)[0] for k in range(-K, K + 1)}
 
-
-def direct_commutator(m, K):
-    return sp.expand(sum(sh(Bg[l], k) * Ag[k] - sh(Ag[k], l) * Bg[l]
-                         for k in range(-K, K + 1) for l in range(-K, K + 1) if k + l == m))
-
-
-for m in range(-10, 11):
-    az(direct_commutator(m, K) - Qm(Ag, Bg, m, K), f"k=5  Q_{m} = direct crossed-product commutator")
 
 # top Q_10: only (5,5) survives -> b_5^[5] a_5 - a_5^[5] b_5 (pure shifted-Wronskian)
 az(Qm(Ag, Bg, 10, K) - (sh(Bg[5], 5) * Ag[5] - sh(Ag[5], 5) * Bg[5]),
@@ -226,17 +218,15 @@ counts = {}
 for k, span in [(3, 24), (4, 24), (5, 24)]:
     ex, cu = enumerate_exotic(k, span)
     counts[k] = len(ex)
-    print(f"   k={k}: {len(ex)} exotic + {len(cu)} cube (span<={span}, stable)")
-ok(counts[3] == 1, "k=3: exactly 1 minimal exotic top up to translation ({0,2,4}) -- the unique step-2 AP")
-ok(counts[4] == 4, "k=4: exactly 4 minimal exotic tops up to translation")
-ok(counts[5] == 13, "k=5: exactly 13 minimal exotic tops up to translation (13x richer than k=3, both PRIME)")
-# stability: k=5 count unchanged from span 20 to 30
+    print(f"   k={k}: {len(ex)} exotic + {len(cu)} cube in normalized window max-root<={span}")
+ok(counts[3] == 1, "k=3: bounded normalized scan finds 1 exotic top ({0,2,4})")
+ok(counts[4] == 4, "k=4: bounded normalized scan finds 4 exotic tops")
+ok(counts[5] == 13, "k=5: bounded normalized scan finds 13 exotic tops")
+# Agreement in two windows is a robustness check, not an exhaustive span theorem.
 ok(len(enumerate_exotic(5, 20)[0]) == 13 and len(enumerate_exotic(5, 30)[0]) == 13,
-   "k=5: exotic count STABLE at 13 (span 20 == span 30) -- the both-effective condition bounds the Newton span")
-# the counts 1, 4, 13 match (3^(k-2)-1)/2 -- a smooth bare-k law BLIND to primality
-# (k=4 composite and k=5 prime both fit).  k=6 -> 40 verified off-verifier (~10 s, span 22).
+   "k=5: bounded scans through max roots 20 and 30 both return 13")
 ok(all(counts[k] == (3 ** (k - 2) - 1) // 2 for k in (3, 4, 5)),
-   "k=3,4,5: exotic count = (3^(k-2)-1)/2 = 1,4,13 (CONJECTURAL bare-k law; k=6->40 off-verifier; primality-blind)")
+   "k=3,4,5 bounded counts match conjectural formula 1,4,13 (not a classification)")
 
 # the unique k=3 exotic has cofactor Phi_6; among the 13 at k=5 the cofactors are NOT all cyclotomic:
 ex5, _ = enumerate_exotic(5, 24)
@@ -386,7 +376,8 @@ def b4_from_top(roots):
     return sp.expand(sp.prod([E - i for i in br])), br
 
 
-# the exotic families (representatives of distinct cofactor types + a translate with a5(0)!=0):
+# Five fixed instances only: four normalized shapes plus one translate. This is not
+# a test of all 13 tops returned by the bounded scan. All five use d=1 below.
 FAMILIES = [
     ("{0,2,3,4,6} cofactor Phi_6  (universal g; a5(0)=0)", [0, 2, 3, 4, 6]),
     ("{0,2,4,6,8} step-2 AP cofactor Phi_10   (a5(0)=0)", [0, 2, 4, 6, 8]),

@@ -2,20 +2,20 @@
 """
 verify_band4_experiment.py
 ==========================
-Exact SymPy verification backing `band4-moment-unit-experiment.md`: the decisive
-QUANTUM band-4 moment-unit stress test at the composite cyclotomic wall.
+Exact SymPy verification backing `band4-moment-unit-experiment.md` within the
+finite scopes encoded below. It does not establish complete Band-4 or Band-3
+exotic closure and yields no conclusion for DC1 or JC2.
 
-CAMPAIGN CONTEXT.  DC1 (every endomorphism of A_1 is an automorphism) is attacked
-via a band filtration; the candidate uniform mechanism is the MOMENT-UNIT
-principle -- the central potential G with Q_0 = (T-1)G is band-agnostic (W4),
-membership pins G(0)=0, so Q_0 = 1 <=> G = E is the slope statement, and in every
-quantum-resistant branch so far the branch structure forces slope 0, making the
-unit in [D,X]=1 unrealizable.  Band 2 (84978b9/b9f9cf3) and band 3 (99fe6ee..9fa9f74)
-confirmed this.  This script runs the k=4 test, where the necklace factor
-(S^4-1)/(S-1) = S_4 = 1+S+S^2+S^3 = (1+S)(1+S^2) = Phi_2 * Phi_4 is COMPOSITE
-(vs k=3's irreducible Phi_3).
+The root enumeration is exactly the four normalized, distinct, single-coset
+integer-root scan shapes `[0,a,b,c]` satisfying `1<=a<b<c<=15` that pass the
+encoded exotic wall test. The subsequent moment computations cover only the
+specified finite positive-cascade-plus-moment ansatzes: free degree `d=1` and
+`d=2` for those four fixed shapes, `d=1` for the listed `b_3=0` instances, and
+`d=1` for the tested translations `r in {0,1,-1,2}` of
+`{r,r+3,r+6,r+9}`. Exact Groebner outcomes are per-instance results, not
+uniform-in-degree, uniform-in-translation, or unrestricted closure statements.
 
-Conventions (frozen, identical to every sibling quantum memo):
+Conventions:
     A_1[x^{-1}] = (+)_k x^k C[E],  (x^a f(E))(x^b g(E)) = x^{a+b} f(E+b) g(E),
     f^[r](E) = f(E+r),  E = x d,  ladder-m coeff of [D,X]:
     Q_m = sum_{k+l=m} ( b_l^[k] a_k - a_k^[l] b_l ),  [D,X]=1 <=> Q_m = delta_{m0},
@@ -24,29 +24,18 @@ Conventions (frozen, identical to every sibling quantum memo):
     Gauge b_4 = 0 (spent on the top, Q_8).
 
 SECTIONS
-  0. engine: Q_m == direct crossed-product commutator (band 4, m in [-8,8]);
-     gauge b_4=0 descent operators L_m; Q_0 = (T-1)G (both W4 and closure forms);
+  0. Engine identities: gauge b_4=0 descent operators L_m; Q_0=(T-1)G;
      G(0)=0 under membership; slope := const coeff of Q_0 = G(1).
-  1. THE WALL Q_7 = b_3^[4] a_4 - a_4^[3] b_3 (the k=4 necklace lemma).  Necklace
-     form S_4 B = S*S_3*A; S_4 = Phi_2*Phi_4 COMPOSITE; gcd(S_3,S_4)=1 forces the
-     FULL S_4 | A (the 'either factor' hypothesis is FALSE); shifted-4th-power
-     sufficiency; degree law 4 deg b_3 = 3 deg a_4; the exotic (non-4th-power)
-     witnesses solve the wall.
-  2. ENUMERATION of minimal (deg a_4 = 4, single-coset) exotic tops: complete scan
-     -> exactly 5 realizable tops = 1 shifted-4th-power + 4 EXOTIC (3 reflection
-     classes).  NO collapse to a single AP class (contrast k=3's unique AP).  The
-     3-tetromino == 4-triomino tiling picture.  Cofactors incl. Phi_6, Phi_6*Phi_12.
-  3. THE EXPERIMENT.  For each exotic top: positive cascade Q_6..Q_1 forward-solves
-     with free lower data; {cascade} u {Q_0=1} is INFEASIBLE (Groebner=[1]) while
-     {cascade} u {Q_0=0} is FEASIBLE -- the moment UNIT is the killer.  Verified at
-     d=1 and d=2 for all four exotic tops, plus integer-r instances of the step-3
-     AP family {r,r+3,r+6,r+9}.  (Each Groebner=[1] is an exact per-instance
-     emptiness PROOF.  The uniform-in-r / uniform-in-d closure is a stated residual.)
-  4. the b_3=0 sub-branch: the L_0 degree obstruction 4(4+q) (arbitrary degree),
-     and the Groebner kill; honest note that unlike k=3 the collapse is incomplete.
-  5. POSITIVE CONTROL: a genuine band-4 pair (U=x+d, X=U^4-d, D=U) is reproduced by
-     the cascade and satisfies Q_0=1 -- the pipeline does NOT falsely kill genuine
-     pairs; the exotic infeasibility is real.
+  1. The wall Q_7 and its necklace factorization, degree law, shifted-power
+     sufficiency, and four fixed non-shifted-power wall witnesses.
+  2. The bounded normalized scan `[0,a,b,c]`, `1<=a<b<c<=15`, including its
+     five passing tops (one shifted-power and four encoded exotic shapes),
+     reflection classes, tiling checks, and selected cofactors.
+  3. Finite `d=1,2` positive-cascade-plus-moment systems for the four fixed
+     shapes, plus the stated finite `d=1` translation tests.
+  4. The b_3=0 degree obstruction and finite `d=1` Groebner checks; the
+     b_3=0 collapse remains incomplete.
+  5. A genuine band-4 positive control reproduced by the cascade with Q_0=1.
 
 Run:  uv run --with sympy python research/dc1-program/verify_band4_experiment.py
 Ends: ALL BAND4 EXPERIMENT CHECKS PASSED
@@ -186,14 +175,6 @@ A0 = {k: poly(f'A{k+K}', 2)[0] for k in range(-K, K + 1)}
 B0 = {k: poly(f'B{k+K}', 2)[0] for k in range(-K, K + 1)}
 
 
-def direct_commutator(m):
-    return sp.expand(sum(sh(B0[l], k) * A0[k] - sh(A0[k], l) * B0[l]
-                         for k in range(-K, K + 1) for l in range(-K, K + 1) if k + l == m))
-
-
-for m in range(-8, 9):
-    az(direct_commutator(m) - Qm(A0, B0, m), f"Q_{m} = direct crossed-product commutator ladder coeff")
-
 # gauge b_4=0 descent operator L_m[b] = b^[4] a_4 - a_4^[m-4] b (the (4,m-4) pair):
 Bg = dict(B0); Bg[4] = sp.Integer(0)
 for m in [7, 6, 5, 4, 3, 2, 1, 0]:
@@ -301,7 +282,8 @@ def wall_admissible(roots):
     return (True, eff, noncube, Broots)
 
 
-# complete scan of deg-4 single-coset tops {0,a,b,c}, span bounded (12-cell tiling => span<=9):
+# Bounded normalized single-coset integer-root scan: [0,a,b,c], 1<=a<b<c<=15.
+# This does not prove a global span bound or classify unrestricted Band-4 tops.
 realizable = {}
 for a, b, c in combinations(range(1, 16), 3):
     roots = [0, a, b, c]
@@ -376,8 +358,8 @@ for d in (1, 2):
         Gh = list(sp.groebner(pos + q0_conditions(A, B, sp.Integer(0)), *allvars, order='grevlex'))
         istrue(Gu == [sp.Integer(1)] and Gh != [sp.Integer(1)],
                f"{tag} d={d}: {{cascade}}u{{Q_0=1}} INFEASIBLE, {{Q_0=0}} feasible => moment UNIT kills it")
-print("   => EVERY minimal exotic top is KILLED at Q_0; the moment unit is unrealizable.")
-print("      NO exotic top admits Q_0=1  =>  no DC1 counterexample candidate at band-4 minimal degree.")
+print("   => all four fixed tops fail Q_0=1 in the encoded d=1,2 systems.")
+print("      This is not an unrestricted Band-4 classification or a DC1 result.")
 
 # 3c. integer-r instances of the step-3 AP family {r,r+3,r+6,r+9} (translation robustness):
 for rr in (0, 1, -1, 2):

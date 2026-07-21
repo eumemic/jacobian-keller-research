@@ -22,11 +22,11 @@ Sections:
   5. Geometric degree engine: identity->1, (u^2,v)->2, (u^3,v)->3, wild
      Artin-Schreier (u, v - v^p)->p; the wild map has Jac = 1 (a Keller map that
      is NOT an automorphism -- the exact loophole P2 isolates).
-  6. Tame-obstruction verdict logic: the full truth table
-     (automorphism / possibly-wild / tame; the degree-2 EXCLUSION).
+  6. Conditional verdict logic: the full truth table
+     (automorphism / possibly-wild / candidate; never theorem-level exclusion).
   7. Degree bound independent of p: deg_{u,v} psi_p <= bideg(X,D) across primes.
-  8. End-to-end: tame candidates NOT excluded; a synthetic degree-2 tame-prime
-     map IS excluded (exercising the exclusion path the sieve exists to fire).
+  8. End-to-end: sampled tame pairs remain inconclusive; a synthetic degree-2
+     pipeline input is labeled a non-theorem obstruction candidate.
 
 Run:  uv run --with sympy python research/dc1-program/verify_charp_sieve.py
 Ends: ALL CHARP SIEVE CHECKS PASSED
@@ -38,7 +38,9 @@ from sieve_dc1_candidate import (
     elt, w_mul, w_add, w_comm, w_pow, X_STD, D_STD,
     reduce_mod_p, is_central_mod_p, central_to_uv,
     induced_center_map, jacobian_mod_p, geometric_degree,
-    tame_obstruction_verdict, sieve_candidate, BridgeFailure, CANDIDATES,
+    reconcile_elimination_degrees, tame_obstruction_verdict,
+    aggregate_obstruction_verdicts, aggregate_prime_entries, sieve_candidate,
+    BridgeFailure, CANDIDATES,
 )
 
 u, v = sp.symbols('u v')
@@ -157,6 +159,23 @@ ok(geometric_degree(u, v, 5)[0] == 1, "geom.deg(identity) = 1")
 ok(geometric_degree(u**2, v, 5)[0] == 2, "geom.deg((u^2, v)) = 2")
 ok(geometric_degree(u**3, v, 7)[0] == 3, "geom.deg((u^3, v)) = 3")
 ok(geometric_degree(u + v**2, v, 5)[0] == 1, "geom.deg((u+v^2, v)) = 1 (total deg 2 but automorphism)")
+# Pure reconciliation regression: missing or inconsistent readings cannot produce
+# a degree, while equal readings do.
+ok(reconcile_elimination_degrees(2, 3) is None,
+   "reconcile elimination degrees: (2,3) -> None")
+ok(reconcile_elimination_degrees(None, 2) is None,
+   "reconcile elimination degrees: (None,2) -> None")
+ok(reconcile_elimination_degrees(2, 2) == 2,
+   "reconcile elimination degrees: (2,2) -> 2")
+# Keep real resultant pipelines in coverage: (u^2,v) is a synthetic pipeline test,
+# not a Weyl/Keller candidate. A constant map has only zero-degree resultants and
+# therefore no positive geometric-degree reading.
+d_real, det_real = geometric_degree(u**2, v, 5)
+ok(d_real == 2 and det_real["available"] and det_real["consistent"],
+   "actual elimination pipeline obtains consistent degree 2")
+d_missing, det_missing = geometric_degree(0, 0, 5)
+ok(d_missing is None and not det_missing["available"] and not det_missing["consistent"],
+   "actual degenerate resultant pipeline returns no geometric degree")
 for p in (3, 5, 7):
     d, _ = geometric_degree(u, v - v**p, p)
     ok(d == p, f"geom.deg(Artin-Schreier (u, v - v^{p})) = {p}")
@@ -167,27 +186,58 @@ for p in (3, 5, 7):
 print("\n" + "=" * 70)
 print("6. Tame-obstruction verdict truth table")
 print("=" * 70)
+LOCAL_EVIDENCE = {
+    "weyl_relation_verified": True,
+    "denominator_good_prime_verified": True,
+    "center_powers_central_verified": True,
+    "jac_is_one": True,
+    "degree_consistent": True,
+}
+# Direct calls are safe: absent evidence and an explicitly failed Jacobian gate are
+# inconclusive and cannot become candidates or exclusions.
+ver = tame_obstruction_verdict(2, 5)
+ok(ver["excluded"] is False and ver["regime"] == "unverified-local-evidence"
+   and ver["obstruction_candidate"] is False,
+   "direct verdict without gate evidence is inconclusive")
+ver = tame_obstruction_verdict(2, 5, jac_is_one=False)
+ok(ver["excluded"] is False and ver["regime"] == "non-keller"
+   and ver["obstruction_candidate"] is False,
+   "direct verdict with jac_is_one=False is inconclusive")
+truthy_nonboolean_evidence = dict(LOCAL_EVIDENCE,
+                                  weyl_relation_verified="unverified")
+ver = tame_obstruction_verdict(2, 5, **truthy_nonboolean_evidence)
+ok(ver["excluded"] is False and ver["regime"] == "unverified-local-evidence"
+   and ver["obstruction_candidate"] is False,
+   "truthy non-boolean evidence cannot bypass an explicit verification gate")
 # automorphism: never excluded
 for p in (3, 5, 7):
-    ver = tame_obstruction_verdict(1, p)
+    ver = tame_obstruction_verdict(1, p, **LOCAL_EVIDENCE)
     ok(ver["excluded"] is False and ver["regime"] == "automorphism", f"verdict(d=1, p={p}) = automorphism, not excluded")
-# tame degree 2 with p > 2: EXCLUDED
+# degree 2 with p > 2: non-theorem obstruction candidate, never excluded
 for p in (3, 5, 7, 11):
-    ver = tame_obstruction_verdict(2, p)
-    ok(ver["excluded"] is True and ver["regime"] == "tame", f"verdict(d=2, p={p}) = EXCLUDED (tame Kummer)")
+    ver = tame_obstruction_verdict(2, p, **LOCAL_EVIDENCE)
+    ok(ver["excluded"] is False and ver["regime"] == "tame-candidate"
+       and ver["obstruction_candidate"] is True,
+       f"verdict(d=2, p={p}) = non-theorem OBSTRUCTION_CANDIDATE")
 # degree 2 at p = 2: NOT excluded (p <= d, possibly wild)
-ver = tame_obstruction_verdict(2, 2)
+ver = tame_obstruction_verdict(2, 2, **LOCAL_EVIDENCE)
 ok(ver["excluded"] is False and ver["regime"] == "possibly-wild", "verdict(d=2, p=2) = possibly-wild, NOT excluded")
 # degree p at p (the Artin-Schreier degree): possibly-wild, not excluded
 for p in (3, 5, 7):
-    ver = tame_obstruction_verdict(p, p)
+    ver = tame_obstruction_verdict(p, p, **LOCAL_EVIDENCE)
     ok(ver["excluded"] is False and ver["regime"] == "possibly-wild", f"verdict(d={p}, p={p}) = possibly-wild")
 # tame degree 3 with p > 3: NOT excluded by the degree screen (S_3 monodromy allowed)
-ver = tame_obstruction_verdict(3, 7)
-ok(ver["excluded"] is False and ver["regime"] == "tame", "verdict(d=3, p=7) = tame, not excluded by degree screen")
-# undefined degree
-ver = tame_obstruction_verdict(None, 5)
+ver = tame_obstruction_verdict(3, 7, **LOCAL_EVIDENCE)
+ok(ver["excluded"] is False and ver["regime"] == "tame-candidate",
+   "verdict(d=3, p=7) = conditional tame regime, inconclusive")
+# undefined or inconsistent degree
+ver = tame_obstruction_verdict(None, 5, **LOCAL_EVIDENCE)
 ok(ver["excluded"] is False and ver["regime"] == "undefined", "verdict(d=None) = inconclusive")
+inconsistent_evidence = dict(LOCAL_EVIDENCE, degree_consistent=False)
+ver = tame_obstruction_verdict(2, 5, **inconsistent_evidence)
+ok(ver["excluded"] is False and ver["regime"] == "unverified-local-evidence"
+   and ver["obstruction_candidate"] is False,
+   "inconsistent eliminations suppress the obstruction verdict")
 
 # =====================================================================
 print("\n" + "=" * 70)
@@ -216,17 +266,66 @@ for name in ("identity", "shear d->d+x^2", "rotation", "band2 X=x+d^2", "composi
 rep = sieve_candidate(*CANDIDATES["half-shear"], (2, 3, 5, 7), name="half-shear", verbose=False)
 ok(rep["primes"][2]["status"] == "skipped", "half-shear: p=2 skipped (denominator)")
 
-# The exclusion path fires on a synthetic tame-prime degree-2 map (the object the
-# sieve exists to reject). No genuine [D,X]=1 pair yields this -- that IS P2 --
-# so we exercise the verdict engine directly on a hand-supplied center map.
-d_syn, _ = geometric_degree(u**2, v, 5)      # a genuine geometric-degree-2 map
-ver = tame_obstruction_verdict(d_syn, 5)
-ok(ver["excluded"] is True, "synthetic degree-2 center map at p=5: EXCLUDED (exclusion path fires)")
+# Synthetic pipeline input only: (u^2,v) is not a genuine Weyl candidate and does
+# not prove a theorem. It exercises the non-theorem candidate label.
+d_syn, det_syn = geometric_degree(u**2, v, 5)
+ver = tame_obstruction_verdict(d_syn, 5, **dict(LOCAL_EVIDENCE,
+                                                degree_consistent=det_syn["consistent"]))
+ok(ver["excluded"] is False and ver["obstruction_candidate"] is True,
+   "synthetic degree-2 pipeline test: non-theorem OBSTRUCTION_CANDIDATE")
 
-# a synthetic 'candidate' whose center map is degree 2 would be excluded end-to-end;
-# demonstrate the aggregate flag by monkey-checking the aggregate rule directly:
-fake_report_excluded = any(tame_obstruction_verdict(2, p)["excluded"] for p in (5, 7, 11))
-ok(fake_report_excluded is True, "aggregate rule: a degree-2 map is excluded at tame primes 5,7,11")
+# Aggregation cannot upgrade absent/failed gate evidence to either candidate or
+# theorem-level exclusion.
+unsafe_inputs = [
+    tame_obstruction_verdict(2, 5),
+    tame_obstruction_verdict(2, 7, jac_is_one=False),
+]
+unsafe_aggregate = aggregate_obstruction_verdicts(unsafe_inputs)
+ok(unsafe_aggregate["excluded"] is False
+   and unsafe_aggregate["obstruction_candidate"] is False
+   and unsafe_aggregate["mixed_or_incomplete_local_evidence"] is True,
+   "production aggregate: absent or failed gate evidence remains inconclusive")
+# Even fully explicit local evidence can only produce a non-theorem candidate.
+local_candidates = [tame_obstruction_verdict(2, p, **LOCAL_EVIDENCE)
+                    for p in (5, 7, 11)]
+local_aggregate = aggregate_obstruction_verdicts(local_candidates)
+ok(local_aggregate["excluded"] is False
+   and local_aggregate["obstruction_candidate"] is True
+   and local_aggregate["mixed_or_incomplete_local_evidence"] is False,
+   "production aggregate: explicit local evidence yields candidates, never exclusions")
+for unsafe in unsafe_inputs:
+    mixed_aggregate = aggregate_obstruction_verdicts([local_candidates[0], unsafe])
+    ok(mixed_aggregate["excluded"] is False
+       and mixed_aggregate["obstruction_candidate"] is False
+       and mixed_aggregate["mixed_or_incomplete_local_evidence"] is True,
+       "production aggregate: one candidate cannot override failed or missing local evidence")
+partial_evidence_candidate = dict(local_candidates[0])
+partial_evidence_candidate["local_evidence"] = {
+    "weyl_relation_verified": True,
+}
+partial_aggregate = aggregate_obstruction_verdicts([partial_evidence_candidate])
+ok(partial_aggregate["excluded"] is False
+   and partial_aggregate["obstruction_candidate"] is False
+   and partial_aggregate["mixed_or_incomplete_local_evidence"] is True,
+   "production aggregate: a partial evidence dictionary cannot preserve a candidate")
+# Whole-candidate aggregation must not silently discard an attempted prime whose
+# bridge failed. Denominator primes are intentionally outside the good-prime domain.
+failed_prime_aggregate = aggregate_prime_entries([
+    {"status": "ok", "verdict": local_candidates[0]},
+    {"status": "bridge-failure", "reason": "synthetic regression"},
+])
+ok(failed_prime_aggregate["excluded"] is False
+   and failed_prime_aggregate["obstruction_candidate"] is False
+   and failed_prime_aggregate["mixed_or_incomplete_local_evidence"] is True,
+   "production aggregate: a bridge failure suppresses a candidate")
+skipped_prime_aggregate = aggregate_prime_entries([
+    {"status": "ok", "verdict": local_candidates[0]},
+    {"status": "skipped", "reason": "denominator prime"},
+])
+ok(skipped_prime_aggregate["excluded"] is False
+   and skipped_prime_aggregate["obstruction_candidate"] is True
+   and skipped_prime_aggregate["mixed_or_incomplete_local_evidence"] is False,
+   "production aggregate: denominator primes are skipped outside the good-prime domain")
 
 # =====================================================================
 print("\n" + "=" * 70)

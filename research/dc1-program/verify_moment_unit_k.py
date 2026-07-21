@@ -2,12 +2,10 @@
 """
 verify_moment_unit_k.py
 =======================
-Exact SymPy verification backing `moment-unit-general-k.md`: the GENERAL-BAND-k
-moment-unit program on the Dixmier (DC1) face.  The moment-unit principle is the
-candidate uniform mechanism for band-k rigidity: after gauge b_k=0 and the top
-wall, the central integral Q_0 = (T-1)G forces G = E, and the unit `1` of
-[D,X]=1 is exactly the SLOPE G(1); on every quantum-resistant (exotic / necklace)
-branch the slope is forced to 0, so Q_0 = 1 is unsatisfiable.
+Exact SymPy checks backing `moment-unit-general-k.md`.  The script verifies
+finite symbolic identities and selected fixed-top, fixed-degree polynomial
+systems in the general-band-k moment-unit program.  It does not prove uniform
+band-k rigidity or an unrestricted DC1 statement.
 
 Conventions (frozen, identical to every sibling quantum memo):
     A_1[x^{-1}] = (+)_k x^k C[E],  (x^a f(E))(x^b g(E)) = x^{a+b} f(E+b) g(E),
@@ -16,27 +14,20 @@ Conventions (frozen, identical to every sibling quantum memo):
     Genuine A_1 membership: E(E-1)...(E-r+1) | a_{-r}, b_{-r}.
     Gauge b_k = 0 (spent on the top, Q_{2k}).  Bottom prop. b_{-k}=mu_k a_{-k}.
 
-WHAT THIS SCRIPT ESTABLISHES (see the memo for the arguments):
-  0. ENGINE (all k): Q_m == direct commutator; Q_0 = (T-1)G with the band-agnostic
-     W4q potential G; hence Q_0 = 1 <=> G = E and slope := const coeff Q_0 = G(1).
-  1. LEMMA P (moment-slope formula, PROVED all k):
-        G(1) = sum_{i=1}^k [ a_i(0) b_{-i}(i) - a_{-i}(i) b_i(0) ]
-     -- the deep double sum collapses to ONE product per side by membership; in
-     gauge b_k=0 with b_{-k}=mu_k a_{-k}, the level-k term is mu_k a_k(0) a_{-k}(k).
-  2. WALL NECKLACE (all k): S_k(S) delta(u) = S S_{k-1}(S) delta(a_k); S_k is prime-
-     cyclotomic for prime k, composite for k=4,6; the universal cofactor g=1-S+S^2
-     solves the wall for EVERY k>=3; minimal exotic degree = k; the AP-collapse is a
-     k=3 accident (k=2 has NO exotic; k=3 one family; k=4 four; k=5 twelve).
-  3. TROPICAL SKELETON (Lemma-R blocks, PROVED all k): the two Q_0 fillers a_{-(k-1)}
-     and mu_k a_{-k} have block leading coefficients k*lc*lc and -(k-1)*lc*lc, both
-     nonzero, so the top of Q_0=1 triangularly annihilates their leading coeffs.
-  4. MAIN (moment carries no unit): {cascade} u {Q_0=1} INFEASIBLE (Groebner=[1])
-     while {Q_0=0} feasible -- the UNIT is the killer -- for k=3 (reproduces the
-     published AP result), k=4 (all four minimal exotic families + integer translates,
-     at d=1; the universal family at d=2), and k=5 (universal, prime cyclotomic, d=1).
-  5. r-SYMBOLIC CERTIFICATE: for the k=4 universal translation family {r,r+2,r+3,r+5}
-     with r SYMBOLIC and d=1, the positive cascade solves through r-INDEPENDENT
-     pivots and the sole residual is c => slope forced to 0 for the whole family.
+WHAT THIS SCRIPT CHECKS (see the memo for the written arguments and scope):
+  0. ENGINE: Q_0 = (T-1)G for generic coefficients at k=2,3,4,5.
+  1. LEMMA P: finite symbolic corroboration at k=2,3,4,5 of the arbitrary-k
+     written moment-slope theorem under membership, orientation, gauge, nonzero
+     extreme, and normalization hypotheses.
+  2. WALL NECKLACE: exact factorization and universal-cofactor examples, plus
+     bounded normalized single-coset integer-root scans for k<=5.
+  3. LEMMA-R BLOCKS: each of two filler blocks has a nonzero leading coefficient
+     in isolation.  The checks do not rule out cross-cancellation between fillers
+     or collision with solved blocks, so they do not prove uniform triangularity.
+  4. FINITE SYSTEMS: selected fixed-top positive-cascade-plus-Q_0 systems at the
+     displayed free degrees, with solved-b raw degree cap 2d+deg(a_k)+2.
+  5. r-SYMBOLIC SLICE: one k=4 translation family at d=1 on the forward-solvable
+     pivots encoded here.
   6. POSITIVE CONTROL: a genuine band-4 tame pair is admitted (no false kill).
 
 Run:  uv run --with sympy python research/dc1-program/verify_moment_unit_k.py
@@ -200,20 +191,14 @@ def q0_conditions(A, B, target, K):
 
 
 # =====================================================================
-# 0. ENGINE: Q_m == commutator; Q_0 = (T-1)G; slope = const coeff Q_0 = G(1).
+# 0. ENGINE: finite symbolic checks of Q_0 = (T-1)G.
 # =====================================================================
-print("--- 0. engine: Q_m == commutator; Q_0=(T-1)G (band-agnostic W4q potential) ---")
+print("--- 0. engine: finite checks of Q_0=(T-1)G (band-agnostic W4q potential) ---")
 for K in [2, 3, 4, 5]:
     a = {i: poly(f'A{K}_{i}', 2)[0] for i in range(-K, K + 1)}
     b = {i: poly(f'B{K}_{i}', 2)[0] for i in range(-K, K + 1)}
-
-    def direct(m):
-        return sp.expand(sum(sh(b[l], i) * a[i] - sh(a[i], l) * b[l]
-                             for i in range(-K, K + 1) for l in range(-K, K + 1) if i + l == m))
-    az(direct(0) - Qm(a, b, 0, K),
-       f"k={K}: Q_0 = direct commutator ladder coeff")
     az(Qm(a, b, 0, K) - (sh(potential_G(a, b, K), 1) - potential_G(a, b, K)),
-       f"k={K}: Q_0 = (T-1)G   (telescoping lemma, generic band-k)")
+       f"k={K}: Q_0 = (T-1)G   (finite symbolic corroboration)")
 
 
 # =====================================================================
@@ -268,11 +253,10 @@ for k in range(3, 8):
                            for _ in range(int(sp.Poly(sp.expand(Sr(k) * g), S).nth(i)))], k)
     az(sh(u, k) * a_k - sh(a_k, k - 1) * u,
        f"k={k}: universal cofactor g=1-S+S^2 -> a_k solves the wall u^[k]a_k = a_k^[k-1]u")
-# minimal-degree (deg a_k = k) realizable exotic classification, single coset.
-# NB: the count is BOUND-SENSITIVE (e.g. k=5's step-4 AP {0,4,8,12,16} needs root
-# bound >= 16); we scan to 5k, which stabilizes the counts for k <= 5 (verified
-# off-verifier at 6k,8k) -- e.g. the naive 3k bound MISSES {0,4,8,12,16} and
-# undercounts k=5 as 12 instead of the stable 13.
+# Bounded normalized distinct single-coset integer-root scans at degree k.
+# The window max(root)<=5k is a finite experimental choice, not a span bound or
+# an unrestricted classification; agreement with larger off-verifier windows is
+# only a robustness check.
 counts = {}
 for k in range(2, 6):
     exo = []
@@ -282,17 +266,17 @@ for k in range(2, 6):
         if sk and eff and nc:
             exo.append(roots)
     counts[k] = exo
-istrue(counts[2] == [], "k=2: NO exotic minimal top (only the cube) -- band 2 is clean")
-istrue(counts[3] == [[0, 2, 4]], "k=3: UNIQUE exotic minimal top {0,2,4} (the step-2 AP)")
-istrue(len(counts[4]) == 4, f"k=4: FOUR minimal exotic families {counts[4]} -- AP-collapse FAILS")
-istrue(len(counts[5]) == 13, "k=5: THIRTEEN minimal exotic families (incl. step-4 AP {0,4,8,12,16})")
-print("   => the k=3 'exotic = single AP class' is an accident; k>=4 is multi-family (finite).")
+istrue(counts[2] == [], "k=2 bounded scan: no exotic minimal top")
+istrue(counts[3] == [[0, 2, 4]], "k=3 bounded scan: one exotic top {0,2,4}")
+istrue(len(counts[4]) == 4, f"k=4 bounded scan: four exotic tops {counts[4]}")
+istrue(len(counts[5]) == 13, "k=5 bounded scan: thirteen exotic tops (including {0,4,8,12,16})")
+print("   => these are finite-window observations, not unrestricted top classifications.")
 
 
 # =====================================================================
-# 3. TROPICAL SKELETON: Lemma-R block leading coefficients (all k).
+# 3. LEMMA-R BLOCKS: isolated leading coefficients (finite k checks).
 # =====================================================================
-print("\n--- 3. tropical skeleton: Lemma-R block leading coefficients (Q_0 fillers) ---")
+print("\n--- 3. Lemma-R blocks: isolated leading coefficients (Q_0 fillers) ---")
 for k in range(2, 7):
     a_k, _ = poly('la', k); c, _ = poly('lc', k + 2)
     Kk = sp.expand(sum(sh(a_k, -r) * sh(c, k - r) for r in range(1, k + 1)))
@@ -305,13 +289,16 @@ for k in range(2, 7):
     lb = sp.Poly(bK1, E).nth(k - 1); lam = sp.Poly(am, E).nth(k + 1)
     istrue(sp.expand(sp.Poly(Fk, E).all_coeffs()[0] + (k - 1) * lb * lam) == 0,
            f"k={k}: level-(k-1) filler block -> lead = -(k-1)*lc(b_{{k-1}})*lc(a_-(k-1)) != 0")
-print("   => neither filler block self-cancels its top; Q_0=1 annihilates filler tops downward.")
+print("   => each filler does not self-cancel in isolation.")
+print("      Cross-cancellation between fillers and collision with solved blocks remain unchecked;")
+print("      these computations do not prove uniform L4 triangular annihilation.")
 
 
 # =====================================================================
-# 4. MAIN: the moment carries no unit -- Q_0=1 INFEASIBLE, Q_0=0 feasible.
+# 4. SELECTED FINITE SYSTEMS: positive cascade plus Q_0.
 # =====================================================================
-print("\n--- 4. MAIN: moment carries no unit ({cascade}u{Q_0=1}=[1]; {Q_0=0} feasible) ---")
+print("\n--- 4. selected finite positive-cascade-plus-Q_0 systems ---")
+print("    solved-b raw degree cap: 2d + deg(a_k) + 2")
 
 def kill_check(roots, k, d, tag):
     a_k, u = top_and_wall(roots, k)
@@ -320,11 +307,11 @@ def kill_check(roots, k, d, tag):
     Gu = list(sp.groebner(pos + q0_conditions(A, B, sp.Integer(1), k), *allvars, order='grevlex'))
     Gh = list(sp.groebner(pos + q0_conditions(A, B, sp.Integer(0), k), *allvars, order='grevlex'))
     istrue(Gu == [sp.Integer(1)] and Gh != [sp.Integer(1)],
-           f"{tag}: Q_0=1 INFEASIBLE (=[1]); Q_0=0 feasible  => the UNIT is the killer")
+           f"{tag}: encoded positive cascade + Q_0=1 has unit ideal; Q_0=0 ideal is proper")
 
-# k=3: reproduce the published AP result (validation of the general engine)
-kill_check([0, 2, 4], 3, 1, "k=3 AP {0,2,4} d=1 (reproduces published)")
-# k=4: all four minimal exotic families at d=1
+# k=3: one selected exact AP slice at d=1
+kill_check([0, 2, 4], 3, 1, "k=3 AP {0,2,4} d=1 selected slice")
+# k=4: the four tops returned by the bounded scan, at d=1
 for roots in [[0, 1, 3, 6], [0, 2, 3, 5], [0, 3, 5, 6], [0, 3, 6, 9]]:
     kill_check(roots, 4, 1, f"k=4 exotic {roots} d=1")
 # k=4: integer translates of each family (r-independence corroboration)

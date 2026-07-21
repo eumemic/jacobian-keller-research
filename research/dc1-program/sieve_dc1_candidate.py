@@ -8,10 +8,9 @@ DC1 asks: is every endomorphism of the first Weyl algebra A_1 = C<x,d | [d,x]=1>
 an automorphism?  An endomorphism is a pair (X, D) with [D, X] = 1 (it is
 automatically injective since A_1 is simple; only surjectivity is in question).
 
-This module implements the Tsuchimoto / Belov-Kanel-Kontsevich (BKK) *central
-reduction bridge* and the *tame cyclic obstruction* of the archived provisional
-result P2 (archive-import/provisional/dixmier-band-program/dc1-opening.md), as a
-computable screen:
+This module implements a prototype central-reduction pipeline and a conditional
+tame-obstruction candidate screen.  The geometric theorem needed to turn the
+screen into an exclusion theorem is not established here:
 
   Given a pair (X, D) with rational (or integer) coefficients and [D, X] = 1,
   for each prime p not dividing a denominator:
@@ -27,12 +26,10 @@ computable screen:
        elimination resultants;
     6. emit the tame-obstruction verdict.
 
-The sharp mechanized consequence of P2 is:  a genuine char-0 counterexample phi
-reduces, for almost all p, to a tame Keller endomorphism psi_p of geometric
-degree d (bounded independently of p), and for p > d the tame cyclic obstruction
-forbids  d = 2  and forces the monodromy pair (G, H) to satisfy  H ->> G^ab.
-Any candidate whose center map has geometric degree 2 (for the relevant p > 2)
-is therefore EXCLUDED.
+If a future finite tame-extension theorem establishes all required geometric and
+reduction hypotheses, a verified degree-2 center map at p > 2 would be an
+OBSTRUCTION_CANDIDATE.  This module does not establish that theorem, so no output
+is a theorem-level exclusion.
 
 CONVENTIONS
 -----------
@@ -46,9 +43,9 @@ The center of A_1 tensor F_p is  Z = F_p[x^p, d^p]  (proved in charp-sieve.md):
 a normal-ordered monomial x^i d^j is central iff p | i and p | j.  Hence a
 central element maps bijectively to a polynomial in u = x^p, v = d^p.
 
-NOTHING here proves DC1.  The sieve SCREENS candidates: it can EXCLUDE a
-hypothetical counterexample, or fail to exclude it (which is not a proof of
-automorphy).  Bounded prime sweeps are corroboration only.
+NOTHING here proves DC1.  The prototype only reports non-theorem obstruction
+candidates or inconclusive outcomes; it never excludes a hypothetical
+counterexample.  Bounded prime sweeps are corroboration only.
 
 Run the self-demo:   uv run --with sympy python sieve_dc1_candidate.py
 """
@@ -218,15 +215,19 @@ def _u_degree_mod_p(res, keepvar, p):
     return deg if deg >= 0 else None
 
 
+def reconcile_elimination_degrees(du, dv):
+    """Return a positive common degree, or None if missing, zero, or different."""
+    return du if du is not None and dv is not None and du == dv and du > 0 else None
+
+
 def geometric_degree(P, Q, p):
     """
     Geometric degree d = [F_p(u,v):F_p(P,Q)] via elimination resultants.
 
-    Returns (d, detail) where detail records the two eliminations. The value is
-    the degree in the remaining variable of Res(P-a, Q-b) with coefficients
-    reduced mod p; for a tame (generically etale) Keller map with no vertical
-    asymptotes the two eliminations agree and equal d. A mismatch is reported and
-    flags an edge case for hand inspection (returned d = max, flagged).
+    Returns (d, detail) where detail records the two eliminations. A geometric
+    degree is returned only when both elimination degrees are available and agree.
+    Missing or inconsistent eliminations return d=None and require hand inspection;
+    this routine never substitutes the maximum of inconsistent values.
     """
     Pa, Qb = sp.Poly(sp.expand(P) - a, v), sp.Poly(sp.expand(Q) - b, v)
     rv = sp.resultant(Pa, Qb)                        # eliminate v -> poly in u
@@ -234,79 +235,140 @@ def geometric_degree(P, Q, p):
     ru = sp.resultant(Pa2, Qb2)                      # eliminate u -> poly in v
     dv = _u_degree_mod_p(rv, u, p)
     du = _u_degree_mod_p(ru, v, p)
-    consistent = (dv == du)
-    d = None
-    if dv is not None and du is not None:
-        d = max(dv, du)
-    elif dv is not None:
-        d = dv
-    elif du is not None:
-        d = du
-    return d, {"elim_v_deg_u": dv, "elim_u_deg_v": du, "consistent": consistent}
+    available = (dv is not None and du is not None and dv > 0 and du > 0)
+    d = reconcile_elimination_degrees(du, dv)
+    consistent = d is not None
+    return d, {"elim_v_deg_u": dv, "elim_u_deg_v": du,
+               "available": available, "consistent": consistent}
 
 
 # =====================================================================
 # 4. The tame cyclic obstruction verdict  (the P2 screen).
 # =====================================================================
-def tame_obstruction_verdict(d, p):
-    """
-    Apply the P2 tame cyclic obstruction to a Keller center map of geometric
-    degree d over F_p. Returns a dict of flags + a human verdict.
+def tame_obstruction_verdict(
+        d, p, *, weyl_relation_verified=False,
+        denominator_good_prime_verified=False,
+        center_powers_central_verified=False, jac_is_one=None,
+        degree_consistent=None, global_good_reduction_established=False,
+        external_theorem_established=False):
+    """Return a non-theorem verdict for the conditional tame-obstruction screen.
 
-    Facts encoded (see charp-sieve.md for statements and provenance):
-      * d = 1  : psi_p is an automorphism -> consistent with (though not a proof
-                 of) phi being an automorphism; the candidate is NOT excluded.
-      * p <= d : the covering degree is not prime to p, so a WILD Artin-Schreier
-                 subcover is possible; the tame obstruction does NOT apply at
-                 this prime. Screen inconclusive here (need a larger prime).
-      * p >  d : every subextension is tame; the cyclic obstruction applies.
-                   - d = 2 is IMPOSSIBLE (a degree-2 extension is cyclic/Kummer;
-                     the squarefree-pullback + Kummer step forbids it). EXCLUDE.
-                   - d prime with cyclic (Galois) monodromy is IMPOSSIBLE.
-                   - general d: monodromy (G,H) must satisfy H ->> G^ab
-                     (no nontrivial abelian subcover).  Degree checks below are
-                     the sharp mechanized part; full monodromy is not computed.
+    Every local gate defaults to unverified.  A degree-2 result can be labeled an
+    OBSTRUCTION_CANDIDATE only when the caller explicitly supplies all local
+    evidence.  Global good reduction and the external theorem are recorded but are
+    not established or consumed as theorem-level exclusion evidence by this code.
     """
-    flags = {"d": d, "p": p}
+    local_evidence = {
+        "weyl_relation_verified": weyl_relation_verified is True,
+        "denominator_good_prime_verified": denominator_good_prime_verified is True,
+        "center_powers_central_verified": center_powers_central_verified is True,
+        "jacobian_one_verified": jac_is_one is True,
+        "consistent_elimination_degree_verified": degree_consistent is True,
+    }
+    flags = {
+        "d": d,
+        "p": p,
+        "excluded": False,
+        "obstruction_candidate": False,
+        "local_evidence": local_evidence,
+        "global_good_reduction_established": global_good_reduction_established,
+        "external_theorem_established": external_theorem_established,
+    }
+    if jac_is_one is False:
+        flags["regime"] = "non-keller"
+        flags["verdict"] = "INCONCLUSIVE: induced center map does not have Jacobian exactly one."
+        return flags
+    missing = [name for name, verified in local_evidence.items() if not verified]
+    if missing:
+        flags["regime"] = "unverified-local-evidence"
+        flags["missing_local_evidence"] = missing
+        flags["verdict"] = ("INCONCLUSIVE: obstruction screening requires explicit verified "
+                            "local evidence for " + ", ".join(missing) + ".")
+        return flags
     if d is None:
         flags["regime"] = "undefined"
-        flags["verdict"] = "INCONCLUSIVE: geometric degree undefined (non-dominant?)"
-        flags["excluded"] = False
+        flags["verdict"] = ("INCONCLUSIVE: both elimination degrees must be available "
+                            "and equal before assigning a geometric degree.")
         return flags
     if d == 1:
         flags["regime"] = "automorphism"
-        flags["excluded"] = False
-        flags["verdict"] = ("psi_p is an AUTOMORPHISM (deg 1): consistent with phi "
-                            "being an automorphism; NOT a DC1 counterexample witness; "
-                            "NOT excluded, NOT proven.")
+        flags["verdict"] = ("INCONCLUSIVE FOR DC1: the sampled center map has degree 1; "
+                            "this is consistent with automorphy but does not prove it.")
         return flags
     if p <= d:
         flags["regime"] = "possibly-wild"
-        flags["excluded"] = False
-        flags["verdict"] = (f"deg {d} >= p={p}: covering degree not prime to p; a WILD "
-                            "Artin-Schreier subcover is possible; tame obstruction does "
-                            "NOT apply here. Inconclusive at this prime (use p > d).")
+        flags["verdict"] = (f"INCONCLUSIVE: degree {d} is not prime to p={p}; an "
+                            "Artin-Schreier-type wild quotient is not ruled out.")
         return flags
-    # p > d : tame regime, obstruction applies.
-    flags["regime"] = "tame"
+    flags["regime"] = "tame-candidate"
     if d == 2:
-        flags["excluded"] = True
-        flags["verdict"] = (f"EXCLUDED: geometric degree 2 with p={p} > 2. A degree-2 "
-                            "extension is cyclic (Kummer); the squarefree-pullback + "
-                            "tame Kummer obstruction forbids a Keller center map of "
-                            "degree 2. No such char-0 endomorphism exists.")
-        return flags
-    flags["excluded"] = False
-    flags["verdict"] = (f"tame degree {d} (p={p} > d): degree-2 exclusion passes; the "
-                        "candidate must additionally satisfy the monodromy condition "
-                        "H ->> G^ab (no abelian subcover). Full monodromy is not "
-                        "computed by this sieve; not excluded by the degree screen.")
+        flags["obstruction_candidate"] = True
+        flags["verdict"] = (f"OBSTRUCTION_CANDIDATE (non-theorem): degree 2 at p={p}>2 with "
+                            "all local prerequisites verified. Global good reduction and "
+                            "the external finite tame-extension theorem remain unestablished.")
+    else:
+        flags["verdict"] = (f"INCONCLUSIVE: degree {d} at p={p}>d is a conditional tame "
+                            "regime; full monodromy and the required global geometry are "
+                            "unavailable.")
     return flags
 
 
 # =====================================================================
 # 5. Whole-candidate sieve.
 # =====================================================================
+def aggregate_obstruction_verdicts(verdicts):
+    """Aggregate local verdicts without upgrading mixed evidence.
+
+    A candidate label requires at least one local candidate and no sampled local
+    failure or missing prerequisite. Any mixed set remains inconclusive.
+    """
+    verdicts = list(verdicts)
+    required_local_evidence = {
+        "weyl_relation_verified",
+        "denominator_good_prime_verified",
+        "center_powers_central_verified",
+        "jacobian_one_verified",
+        "consistent_elimination_degree_verified",
+    }
+    candidate_flags = [
+        verdict.get("obstruction_candidate", False) is True
+        and verdict.get("excluded", False) is False
+        for verdict in verdicts
+    ]
+    all_local_evidence_verified = [
+        set(verdict.get("local_evidence", {})) == required_local_evidence
+        and all(verdict["local_evidence"][key] is True
+                for key in required_local_evidence)
+        for verdict in verdicts
+    ]
+    no_local_failure = all(
+        verified and verdict.get("regime") not in {
+            "non-keller", "unverified-local-evidence", "undefined"
+        }
+        for verdict, verified in zip(verdicts, all_local_evidence_verified)
+    )
+    return {
+        "excluded": False,
+        "obstruction_candidate": bool(verdicts) and any(candidate_flags) and no_local_failure,
+        "mixed_or_incomplete_local_evidence": bool(verdicts) and not no_local_failure,
+    }
+
+
+def aggregate_prime_entries(prime_entries):
+    """Aggregate requested-prime entries, failing closed on attempted reductions.
+
+    Denominator primes are outside the good-reduction domain and are skipped. Any
+    other entry without a complete verified verdict counts as incomplete evidence.
+    """
+    verdicts = []
+    for entry in prime_entries:
+        status = entry.get("status")
+        if status == "skipped":
+            continue
+        verdicts.append(entry.get("verdict", {}) if status == "ok" else {})
+    return aggregate_obstruction_verdicts(verdicts)
+
+
 def sieve_candidate(X, D, primes, name="candidate", verbose=True):
     """
     Screen a pair (X, D) [dicts over Q with [D,X]=1] against P2 over `primes`.
@@ -338,33 +400,45 @@ def sieve_candidate(X, D, primes, name="candidate", verbose=True):
             report["primes"][p] = entry
             continue
         J = jacobian_mod_p(P, Q, p)
+        jac_is_one = (sp.expand(J - 1) == 0)
         d, ddetail = geometric_degree(P, Q, p)
-        verdict = tame_obstruction_verdict(d, p)
+        verdict = tame_obstruction_verdict(
+            d, p,
+            weyl_relation_verified=comm_ok,
+            denominator_good_prime_verified=(p not in bad),
+            center_powers_central_verified=True,
+            jac_is_one=jac_is_one,
+            degree_consistent=ddetail["consistent"],
+            global_good_reduction_established=False,
+            external_theorem_established=False,
+        )
         entry.update({
             "status": "ok",
-            "P": P, "Q": Q, "jacobian": J, "jac_is_one": (sp.expand(J - 1) == 0),
+            "P": P, "Q": Q, "jacobian": J, "jac_is_one": jac_is_one,
             "geom_degree": d, "degree_detail": ddetail,
+            "local_checks": verdict["local_evidence"],
+            "global_good_reduction_established": False,
+            "external_theorem_established": False,
             "verdict": verdict,
         })
         report["primes"][p] = entry
 
     report["screen_degrees"] = sorted({e.get("geom_degree") for e in report["primes"].values()
                                        if e.get("status") == "ok"} - {None})
-    report["excluded"] = any(e.get("verdict", {}).get("excluded")
-                             for e in report["primes"].values() if e.get("status") == "ok")
-    if report["excluded"]:
-        report["verdict"] = ("EXCLUDED by the tame cyclic obstruction at some tame prime "
-                             "(see per-prime verdicts).")
+    aggregate = aggregate_prime_entries(report["primes"].values())
+    report.update(aggregate)
+    degs = report["screen_degrees"]
+    if report["obstruction_candidate"]:
+        report["verdict"] = ("OBSTRUCTION_CANDIDATE (non-theorem) at a sampled prime. "
+                             "The external finite tame-extension theorem and its geometric "
+                             "and reduction hypotheses are not established here.")
+    elif degs == [1]:
+        report["verdict"] = ("INCONCLUSIVE FOR DC1: every valid sampled center map has "
+                             "geometric degree 1. This is consistent with automorphy but "
+                             "does not prove it.")
     else:
-        degs = report["screen_degrees"]
-        if degs == [1]:
-            report["verdict"] = ("NOT EXCLUDED: reduces to an automorphism of A^2 at every "
-                                 "sampled prime (geom degree 1). Consistent with DC1; this "
-                                 "is a screen, not a proof of automorphy.")
-        else:
-            report["verdict"] = (f"NOT EXCLUDED by the degree screen; sampled geometric "
-                                 f"degrees {degs}. Higher/other obstructions (monodromy) "
-                                 "not mechanized here.")
+        report["verdict"] = (f"INCONCLUSIVE: sampled geometric degrees {degs}; no "
+                             "theorem-level exclusion is implemented.")
     if verbose:
         _print_report(report)
     return report
@@ -400,6 +474,9 @@ def _print_report(report):
             print(f"  p={p:>3}: psi_p = ( u -> {e['P']},   v -> {e['Q']} )")
             print(f"        Jac = {e['jacobian']}  (=1 ? {e['jac_is_one']});  "
                   f"geom.deg = {e['geom_degree']}  [{v['regime']}]")
+            print(f"        local checks = {e['local_checks']}")
+            print("        global good reduction established = "
+                  f"{e['global_good_reduction_established']}")
             print(f"        -> {v['verdict']}")
     print("-" * 72)
     print(f"  SCREEN VERDICT: {report['verdict']}")
