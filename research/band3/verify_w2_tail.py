@@ -24,17 +24,19 @@ analysis needed before, because every other exotic top died upstream.  It:
      solvable (tame shifted cube), roots {0,1,2,4} fail (gate fires).  The
      membership-minimal a_-3 = (E)_3 is itself Phi_3, so the bottom base is TAME:
      the bottom wall does NOT independently force W2 exotic;
-  6. re-derives (does NOT cite) the pivot facts: Im Phi(W2) = D*F[E],
-     D = E(E-1)(E+1), and E-R in Im Phi  <=>  R(1)=1 AND R(-1)=-1 (R(0)=0 auto);
+  6. checks finite regressions for the pivot fact Im Phi(W2) = D*F[E],
+     D = E(E-1)(E+1), whose arbitrary-degree triangular proof is in
+     quantum-ap-filler-image.md, and verifies the resulting criterion
+     E-R in Im Phi  <=>  R(1)=1 AND R(-1)=-1 (R(0)=0 auto);
   7. re-derives the cascade constraint R(1)+R(-1)=0 and R=0 at d=1 from the
      solved positive cascade (=> slope R(1)=0 != 1 at d=1);
-  8. the COMBINED SYSTEM feasibility.  At d=1 the full DC1-face system
+  8. bounded separate-feasibility checks.  At d=1 the full DC1-face system
      (positive cascade + Q_0=1 + negative tail Q_-1..Q_-5 + membership) is the
-     UNIT IDEAL, and a Groebner DECOMPOSITION localizes the infeasibility:
+     UNIT IDEAL, while:
         (a) positive cascade + Q_0=1  (no tail)   = unit ideal   [slope kills],
-        (b) positive cascade + negative tail       = PROPER ideal [tail feasible],
-     so the negative tail is NOT an independent obstruction; W2 lives or dies by
-     the single slope scalar.  The tail non-obstruction is reconfirmed at d=2;
+        (b) positive cascade + negative tail       = PROPER ideal [tail feasible].
+     The tail subsystem without Q_0=1 remains feasible at d=2.  These bounded
+     checks do not imply that the tail is globally non-obstructing;
   9. a genuine positive-control pair (X=U^3-d/kappa, D=kappa U) passes every
      Q_m=0 including the whole tail, and its a_-3 = c1^3 (E)_3 passes the bottom
      gate -- validating the tail machinery against a real Weyl pair;
@@ -319,7 +321,7 @@ print("   NOTE: the bottom's forced roots {0,1,2} are the CONSECUTIVE (tame) cub
 print("   exotic step-2 AP; the bottom wall does NOT independently force W2 exotic.")
 
 # =====================================================================
-print("\n--- 6. pivot facts re-derived (NOT cited): Im Phi(W2)=D*F[E]; E-R<->R(1)=1,R(-1)=-1 ---")
+print("\n--- 6. pivot fact: degree-free triangular argument plus finite regressions; E-R criterion ---")
 # =====================================================================
 def k3(cc):
     return sp.expand(sum(sh(a3_w2, j - 3) * sh(cc, j) for j in range(3)))
@@ -331,13 +333,18 @@ def h2(vv):
 
 check(all(sp.rem(k3(falling(3) * E**j), D, E) == 0 and sp.rem(h2(falling(2) * E**j), D, E) == 0
           for j in range(8)),
-      "Im Phi(W2) subset D*F[E], D=E(E-1)(E+1): every basis filler divisible by D")
-# reverse inclusion: the quotient map is triangular (B(V)=(2-E)V-(E+2)V^[1], lc -2, deg n->n+1)
+      "finite regression j=0..7: W2 basis fillers are divisible by D=E(E-1)(E+1)")
+# Reverse inclusion is degree-free: for symbolic n, the two degree-(n+1) terms in
+# B(E^n) contribute -1 each, while every remaining binomial term has lower degree.
+# Thus deg B(E^n)=n+1 with leading coefficient -2 for every n>=0, triangularly
+# reducing each positive-degree quotient target to a constant.  These finite cases
+# are implementation regressions for that written argument.
 for n in range(4):
     Bn = sp.expand((2 - E) * E**n - (E + 2) * sh(E**n, 1))
     check(sp.Poly(Bn, E).degree() == n + 1 and sp.Poly(Bn, E).LC() == -2,
-          f"reverse inclusion: B(E^{n}) has degree {n + 1}, leading coeff -2 (triangular)")
-# explicit preimage of 1 (filler-image memo sec 4): surjective onto F[E], so Im Phi = D*F[E]
+          f"finite regression: B(E^{n}) has degree {n + 1}, leading coeff -2")
+# An explicit preimage reaches the remaining constant quotient, completing the
+# degree-free triangular proof that Im Phi=D*F[E].
 Cpre = sp.expand(-sp.Rational(1, 15) - sp.Rational(2, 15) * E)
 Vpre = sp.expand(-sp.Rational(11, 20) - sp.Rational(11, 10) * E - sp.Rational(1, 5) * E**3)
 check_zero(k3(falling(3) * Cpre) - h2(falling(2) * Vpre) - D,
@@ -405,10 +412,10 @@ check(not is_unit_ideal(pos1nz + tail_eqs, freevars1),
       "d=1 decomposition (b): positive cascade + negative tail = PROPER ideal [tail FEASIBLE]")
 check(not is_unit_ideal(pos1nz, freevars1),
       "d=1 sanity: positive cascade alone is a proper ideal (no false kill)")
-print("   => at d=1 the ENTIRE W2 infeasibility is the single slope scalar Q_0=1;")
-print("      the negative tail imposes NO obstruction beyond it.")
+print("   => at d=1 the slope equation already makes the combined system infeasible;")
+print("      after omitting it, the tail subsystem remains feasible.")
 
-# reconfirm tail non-obstruction at d=2 (the rank-drop degree where codim Im Phi jumps to 3)
+# Recheck separate tail-subsystem feasibility at d=2 (the rank-drop degree).
 A2, B2, pos2, data2 = build_cascade(*W2, 2)
 freevars2 = (data2["ca2"] + data2["ca1"] + data2["ca0"] + data2["cam1"]
              + data2["cam2"] + data2["cam3"] + [data2["mu3"]] + data2["kernels"])
@@ -417,7 +424,7 @@ tail2 = []
 for m in (-1, -2, -3, -4, -5):
     tail2 += scalar_coeffs(q_m(A2, B2, m))
 check(not is_unit_ideal(pos2nz + tail2, freevars2),
-      "d=2: positive cascade + negative tail = PROPER ideal (tail still non-obstructing)")
+      "d=2: positive cascade + negative tail = PROPER ideal without Q_0=1")
 
 # =====================================================================
 print("\n--- 9. positive-control genuine pair: whole tail satisfied; bottom gate passed ---")
@@ -464,7 +471,8 @@ print("   (When w2-decisive.md supplies positive data with slope R(1)=1 at some 
 print("    as extra_constraints; a PROPER ideal there would be a candidate DC1 pair -> escalate.)")
 
 print("\nBOUNDED sections: 5 (concrete necklaces), 7 (d=1), 8 (d=1,2 Groebner).")
-print("PROVED arbitrary-degree: 0-4, 6 (structural identities / reflection / criteria).")
-print("No Weyl pair and no counterexample is constructed.  W2 arbitrary-degree status: OPEN,")
-print("gated entirely by the moment slope R(1)=1 (the decisive sibling's question).")
+print("PROVED arbitrary-degree: 0-4 and the written triangular pivot argument in 6;")
+print("finite computations in 6 are regressions for that argument.  No Weyl pair or")
+print("counterexample is constructed.  W2 arbitrary-degree status: OPEN: central completion")
+print("reduces to R(1)=1, but the full negative tail remains a necessary joint condition.")
 print("ALL W2 TAIL CHECKS PASSED")

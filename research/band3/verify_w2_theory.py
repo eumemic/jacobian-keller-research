@@ -11,8 +11,9 @@ membership  (E)_j = E(E-1)...(E-j+1) | a_{-j}, b_{-j};  W2 = AP member r=-4:
 a_3 = E(E+2)(E+4), b_2 = E(E+3).
 
 Sections
-  0. PIVOT FACT (re-verified, not cited): Im Phi(W2) = E(E-1)(E+1) F[E] EXACTLY,
-     the cascade constraint R(1)+R(-1)=0, and  E-R in Im Phi <=> slope R(1)=1.
+  0. PIVOT FACT: the degree-free triangular proof in quantum-ap-filler-image.md
+     gives Im Phi(W2)=E(E-1)(E+1)F[E]; this file checks finite regressions, the
+     cascade constraint R(1)+R(-1)=0, and E-R in Im Phi <=> slope R(1)=1.
   1. TASK 1 -- REFLECTION TRANSPORT: the quantum Fourier automorphism phi
      (x -> -partial, E -> -E-1) maps W2's TOP-wall problem to a BOTTOM-wall
      problem, NOT to the r'=-1 top-wall problem.  The anchor stays at 0; the
@@ -21,7 +22,7 @@ Sections
   2. TASK 2 -- COMMON-ROOT-AT-0 CENSUS: wall-admissible tops via the necklace
      cofactor S_k delta(u)=S_{k-1} delta(a); the canonical general-k escape hatch
      (step-(k-1)/step-k AP, unique common root at the anchor); band 3 is uniquely
-     W2; the band-4 analogue degenerates the same way (Im Phi principal).
+     W2; a finite band-4 regression suggests analogous principal-image behavior.
   3. TASK 3 -- POINT ANNIHILATORS COMPLETE AT W2: Im Phi(W2) is the principal
      squarefree ideal (E(E-1)(E+1)); its whole dual is point functionals, so
      {ev_-1, ev_0, ev_1} is complete (dim = codim = 3): NO non-point annihilator.
@@ -87,7 +88,7 @@ def H2(v, u=b2w2):
 
 
 # =====================================================================
-print("=== 0. PIVOT FACT (independently re-verified): Im Phi(W2) = E(E-1)(E+1) F[E] ===")
+print("=== 0. PIVOT FACT: finite regressions for Im Phi(W2) = E(E-1)(E+1) F[E] ===")
 # =====================================================================
 ok(sp.expand(sh(b2w2, 3) * a3w2 - sh(a3w2, 2) * b2w2) == 0,
    "W2 solves the Q_5 top wall  b_2(E+3)a_3 = a_3(E+2)b_2")
@@ -98,15 +99,16 @@ imgs = []
 for j in range(9):
     imgs += [K3(falling(3) * E**j), H2(falling(2) * E**j)]
 ok(all(sp.div(sp.Poly(g, E), Dp)[1].is_zero for g in imgs),
-   "Im Phi(W2) subset (D):  every basis filler divisible by D=E(E-1)(E+1)")
-# (ii) surjectivity Im Phi = (D):  images/D span F[E]:
+   "finite regression j=0..8: W2 basis fillers are divisible by D=E(E-1)(E+1)")
+# (ii) finite surjectivity regression; the degree-free triangular proof is in
+# quantum-ap-filler-image.md Section 4.
 quos = [sp.div(sp.Poly(g, E), Dp)[0].as_expr() for g in imgs]
 N = 10
 Msur = sp.Matrix([[sp.Poly(sp.expand(q), E).coeff_monomial(E**i) for i in range(N + 1)]
                   for q in quos])
 ok(Msur.rank() == N + 1,
-   f"Im Phi(W2) = (D) EXACTLY:  images/D span F[E] up to deg {N} (rank {N+1})")
-# (iii) annihilators of (D) are exactly ev_-1, ev_0, ev_1:
+   f"finite regression: images/D span F[E] up to deg {N} (rank {N+1})")
+# (iii) given the proved ideal equality, its annihilators are ev_-1, ev_0, ev_1:
 pc = [sp.symbols(f"pp_{i}") for i in range(6)]
 pp = sum(pc[i] * E**i for i in range(6))
 rem = sp.rem(sp.Poly(pp, E), Dp).as_expr()
@@ -297,8 +299,9 @@ for gd, note in [({0: 1, 2: -1, 3: 1}, "band-4 exotic g=1-sig^2+sig^3")]:
     ok(len(common) >= 2,
        f"{note}: common roots {common} (>=2) -> nonzero common root stays a live obstruction (not a hatch)")
 
-# 2e. the band-4 hatch DEGENERATES like W2: Im Phi is a principal ideal whose
-#     generator has the anchor 0 as a root; E-R in Im Phi reduces to a slope.
+# 2e. finite band-4 regression: sampled images share a squarefree gcd whose
+#     roots include the anchor, and sampled quotients span the tested degree window.
+#     Unlike W2, no degree-free triangular proof is supplied here.
 def im_phi_gen(a, u, k, maxj=12, Ndeg=14):
     def Kk(c):
         return sp.expand(sum(sh(a, j - k) * sh(c, j) for j in range(k)))
@@ -325,12 +328,12 @@ a4 = sp.expand(sp.prod(E + 3 * i for i in range(4)))
 u4 = sp.expand(sp.prod(E + 4 * i for i in range(3)))
 D4, incl4, surj4 = im_phi_gen(a4, u4, 4)
 ok(incl4 and surj4 and sp.expand(D4 - E * (E - 1)) == 0,
-   "band-4 hatch: Im Phi = principal ideal (E(E-1)); anchor 0 is a root; codim 2")
+   "band-4 finite regression: sampled images have gcd E(E-1) and sampled quotients span through degree 14")
 ok(sp.gcd(D4, sp.diff(D4, E)) == 1,
-   "band-4 hatch generator squarefree => point annihilators complete there too; E-R in Im Phi <=> R(1)=1")
+   "band-4 finite regression: sampled gcd E(E-1) is squarefree (no arbitrary-degree image/gate theorem claimed)")
 D3, incl3, surj3 = im_phi_gen(a3w2, b2w2, 3, maxj=10, Ndeg=12)
 ok(incl3 and surj3 and sp.expand(D3 - D) == 0,
-   "W2 reproduced by the same generic routine: Im Phi = (E(E-1)(E+1)) (independent recompute)")
+   "W2 finite regression reproduces gcd D and quotient spanning through degree 12 (degree-free equality proved separately)")
 
 
 # =====================================================================
@@ -345,7 +348,7 @@ Vand = sp.Matrix([[1, x, x**2] for x in (-1, 0, 1)])
 ok(Vand.det() != 0,
    f"lambda -> (lambda(1),lambda(E),lambda(E^2)) iso to F^3; Vandermonde(ev_-1,ev_0,ev_1) det={Vand.det()}!=0")
 print("   => Ann(Im Phi(W2)) = span{ev_-1, ev_0, ev_1} EXACTLY: point basis COMPLETE (dim=codim=3).")
-print("      No extra functional exists to pair E-R nontrivially; W2 lives/dies by R(1)=1 alone.")
+print("      The filler quotient is decided by R(1)=1; the full negative tail remains jointly necessary.")
 
 # Contrast: the SINGLE block Im L_K(W2) is NOT an ideal, so its point annihilators
 # can undercount (the lambda-general-k W1 caveat 4 vs 6); only the SUM collapses to (D).
@@ -357,13 +360,14 @@ ok(LK.rank() != LK.col_join(Eg).rank(),
    "Im L_K(W2) alone is NOT an ideal (E*g escapes its span): the ideal collapse is special to Im Phi")
 
 # =====================================================================
-print("\n=== 4. SYNTHESIS -- the slope gate R(1)=1 is ACHIEVABLE (re-verified) ===")
+print("\n=== 4. SYNTHESIS -- radical test plus the explicit slope-one family ===")
 # =====================================================================
-# The sibling W2-DECISIVE found R(1) becomes a free modulus at raw degree d=3,
-# but its verifier crashes on a downstream slice-display formula.  We INDEPENDENTLY
-# re-verify the decisive claim using the correct left-nullspace compatibility
-# conditions (its build_cascade) and a Rabinowitsch radical-membership test:
-#   R(1) in sqrt(I)  <=>  R(1) forced to 0 on the positive-cascade variety.
+# The sibling W2-DECISIVE proves R(1) becomes a free modulus at raw degree d=3
+# by an explicit family R(1)=-(8/9)am1_3, hence attains 1 at am1_3=-9/8.
+# Here the Rabinowitsch test independently checks only whether R(1) is forced to
+# zero on the positive-cascade variety:
+#   R(1) in sqrt(I)  <=>  R(1) forced to 0 on that variety.
+# Its failure does not by itself prove surjectivity or value-one achievability.
 mu3 = sp.symbols("mu3")
 
 
@@ -428,21 +432,24 @@ ok(forced_zero(sp.expand(R2.subs(E, 1)), c2),
    "CONTROL d=2: R(1) in sqrt(I) -> forced to 0 (matches committed cokernel certificate)")
 c3, R3 = build_cascade(3)
 ok(not forced_zero(sp.expand(R3.subs(E, 1)), c3),
-   "DECISIVE d=3: R(1) NOT in sqrt(I) -> a FREE MODULUS, so slope R(1)=1 is ACHIEVABLE")
+   "d=3: R(1) NOT in sqrt(I) -> R(1) is not forced to zero (no achievability inference)")
 ok(forced_zero(sp.expand(R3.subs(E, 1) + R3.subs(E, -1)), c3),
    "d=3: R(1)+R(-1)=0 still holds (proved cascade constraint; consistent with (1,-1))")
-print("   => the slope obstruction does NOT close W2.  Reflection (Task 1), the non-point")
-print("      route (Task 3), and now the moment slope all FAIL to close W2.  What remains is")
-print("      the COMBINED feasibility (positive cascade + slope=1 + negative tail Q_-1..Q_-6 +")
-print("      membership) -- the live frontier owned by the sibling flanks; no full candidate")
-print("      pair has yet been assembled and [D,X]=1-verified, so no counterexample is claimed.")
+# Load-bearing value-one proof: verify_w2_decisive.py constructs an exact family
+# R(1)=-(8/9)am1_3 and specializes am1_3=-9/8. The principal verdict verifier
+# independently reconstructs that specialized datum and checks Q_4..Q_0 exactly.
+print("   => Rabinowitsch proves only that the slope is not forced to zero.  The explicit")
+print("      W2-DECISIVE family R(1)=-(8/9)am1_3, at am1_3=-9/8, proves R(1)=1 achievable.")
+print("      The combined system is nevertheless exactly UNIT at raw cap d=3 on both tail")
+print("      branches (w2-verdict); only higher-cap and arbitrary-degree feasibility remain open.")
 
 print("\n--- SUMMARY -------------------------------------------------------------")
 print(" Task 1: reflection does NOT close W2 (top->bottom, anchor fixed at 0); silence genuine.")
-print(" Task 2: one canonical escape hatch per band k>=3 (step-(k-1)/step-k AP); band 3 = W2;")
-print("         both k=3,4 hatches degenerate Im Phi to a principal ideal reducing to slope R(1)=1.")
-print(" Task 3: point annihilators COMPLETE at W2 (Im Phi a squarefree principal ideal); no")
-print("         extra functional -- the non-point route does NOT close W2.")
-print(" Task 4: slope R(1)=1 ACHIEVABLE at d=3 (independently re-verified) -> W2 not closed by")
-print("         the slope either; the band-k hatches inherit the same (now-open) R(1)=1 gate.")
+print(" Task 2: a canonical hatch family exists for every k>=3 (step-(k-1)/step-k AP);")
+print("         band 3 is W2.  Band-4 principal-image/gate behavior is finite evidence only.")
+print(" Task 3: point annihilators COMPLETE in the W2 filler quotient; no extra functional")
+print("         there.  The full negative tail remains jointly necessary.")
+print(" Task 4: Rabinowitsch says R(1) is not forced to zero; the explicit W2-DECISIVE")
+print("         family proves R(1)=1 achievable.  No uniform higher-band gate is claimed.")
+print(" Frontier: FULL d=3 is exactly UNIT on both branches; higher cap and arbitrary degree OPEN.")
 print("\nALL W2 THEORY CHECKS PASSED")

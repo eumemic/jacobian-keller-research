@@ -2,11 +2,11 @@
 
 **INDEPENDENTLY DERIVED AND MACHINE-VERIFIED — NOT PEER REVIEWED — BAND-SCOPED**
 
-QUANTUM MIRROR assault, band 3, the **last wall**: the full `Q_m` system BELOW
-the fillers for **W2**, the `r=-4` member of the band-3 exotic AP family. Every
-other exotic top died upstream (the symbolic-`r` `lambda_r` theorem closes
-`r != -4` at arbitrary degree; `quantum-ap-lambda.md`, commit `d8189fc`), so no
-prior exotic analysis ever needed the negative tail. This memo owns it.
+QUANTUM MIRROR assault, band 3: the full `Q_m` system below the fillers for
+**W2**, the `r=-4` member of the normalized degree-3 exotic AP family. Every other
+member of that AP family dies upstream by the symbolic-`r` `lambda_r` theorem
+(`quantum-ap-lambda.md`, commit `d8189fc`); higher-degree and non-AP Band-3 tops
+remain open. This memo studies the negative tail for W2.
 
 W2 datum, gauge `b_3 = 0`, quantum band-3 conventions
 (`Q_m = sum_(k+l=m)[b_l^[k] a_k - a_k^[l] b_l]`, membership
@@ -34,16 +34,20 @@ in-file**, not merely cited.
 >   (b) positive cascade + negative tail       = PROPER IDEAL -- the tail FEASIBLE.
 > ```
 >
-> **The negative tail imposes no obstruction beyond the moment slope.** W2 lives
-> or dies by the single scalar `R(1)=1`, and the tail is not it. This is
-> reconfirmed at `d=2` (the rank-drop degree where `codim Im Phi` jumps to 3).
+> **At the tested raw caps `d=1,2`, the negative-tail subsystem is feasible without
+> the moment equation.** This bounded separate-feasibility statement does not say
+> the tail is compatible with slope one. The later bounded verdict
+> [`w2-verdict.md`](w2-verdict.md) proves the encoded slope+tail conjunction empty
+> at raw cap `d=3` and reports an optional exact check at `d=4`; arbitrary degree
+> remains open.
 >
 > The bottom mirrors the top structurally — `Q_-5` is the reflected wall obeying
 > the same `Phi_3(S)=1+S+S^2` necklace criterion — but with one decisive
 > asymmetry: the membership-forced roots `{0,1,2}` of `a_-3` are the
 > **consecutive (tame) cube**, `= Phi_3` itself, not an exotic step-2 AP. **The
-> bottom wall does NOT independently force W2 exotic;** the exotic obstruction
-> lives entirely on the top, in the slope.
+> bottom wall does not independently force W2 exotic.** Separate tail feasibility
+> at `d=1,2` does not imply that the tail creates no obstruction to slope-one
+> compatibility.
 
 ## 1. The complete negative-tail system (arbitrary degree, machine-checked)
 
@@ -190,25 +194,24 @@ Gröbner over `Q` (verify §7–§8):
 | 1 | full (cascade + `Q_0=1` + tail + membership) | unit (infeasible) |
 | 2 | positive cascade + tail | **proper — tail feasible** |
 
-At `d=1` the positive cascade forces `R=0` (single branch), so `R(1)=0 != 1` and
-the slope alone is the entire obstruction; the tail is simultaneously satisfiable
-with a nondegenerate positive solution (an explicit two-parameter `a_-2` family
-survives). At `d=2`, where `codim Im Phi` jumps `2 -> 3` (`r=-4` is the unique
-rank-drop locus), the tail is **still** non-obstructing. These are **bounded
-computations** at `d=1,2`; they do not prove tail non-obstruction at arbitrary
-degree.
+At `d=1` the positive cascade forces `R=0` (single branch), so the slope equation
+alone already makes the combined system infeasible; after omitting that equation,
+the tail is satisfiable with a nondegenerate positive solution (an explicit two-
+parameter `a_-2` family survives). At `d=2`, where `codim Im Phi` jumps `2 -> 3`
+(`r=-4` is the unique rank-drop locus), the tail subsystem without the moment
+equation remains feasible. These are **bounded separate-feasibility computations**
+at `d=1,2`; they do not prove that the tail is compatible with slope one at those
+caps or at arbitrary degree.
 
 ## 6. Escalation readiness
 
 `verify §10` ships `run_full_system(top, d, extra_constraints)`, which builds the
-full combined system at cap `d` and reports feasibility. When the decisive
-sibling (`research/band3/w2-decisive.md`) supplies positive data achieving the
-slope `R(1)=1` at some degree, pass it as `extra_constraints`: a **proper** ideal
-there would be a candidate DC1 pair, triggering the escalation protocol
-(direct `[D,X]=1` crossed-product check; the char-`p` sieve
-`../dc1-program/sieve_dc1_candidate.py`; the `A_1`-generation test). The harness
-self-tests infeasible at `d=1`. As of this writing `w2-decisive.md` has not
-landed and no slope-`1` point is available, so no candidate is asserted.
+full combined system at cap `d` and reports feasibility. The later decisive memo
+supplies an exact slope-`1` point, and [`w2-verdict.md`](w2-verdict.md) subsequently
+checks the full fiber: unit at raw cap `d=3` on both branches in committed SymPy,
+and reported/optionally reproduced unit at `d=4` with msolve. Thus no candidate is
+available at those tested caps. The harness here still self-tests only its stated
+low-cap cases; it did not itself prove the later verdict.
 
 ## 7. Honest ledger — proved vs bounded
 
@@ -228,7 +231,7 @@ landed and no slope-`1` point is available, so no candidate is asserted.
   `{0,1,2,3,4,5}` solvable, `{0,1,2,4}` gated (§3, verify §5).
 - `R=0` and `R(1)+R(-1)=0` at `d=1` from the solved cascade (verify §7).
 - The full-system unit-ideal + slope/tail Gröbner decomposition at `d=1`, and
-  tail non-obstruction at `d=2` (verify §8).
+  separate tail-subsystem feasibility without `Q_0=1` at `d=2` (verify §8).
 
 **Explicit exceptional loci.** The `mu_3` gauge is unavailable on `a_-3=0`
 (separate vanishing branch). If the filler forces `C=0` (`b_-3=0`), `E-R` must lie
@@ -236,10 +239,12 @@ in `Im L_H` alone (codimension 4), a strictly stronger condition; likewise
 `mu_3=0` collapses `b_-3=0` with `a_-3` possibly nonzero — each a separate branch
 of the tail, not covered by the `mu_3 != 0`, `a_-3 != 0` main line above.
 
-**Open / not claimed.** Arbitrary-degree tail non-obstruction (only `d=1,2`
-here); the moment slope `R(1)=1` question itself (the decisive sibling's domain,
-the sole gate on W2); the arbitrary-degree status of W2; all of Band 3, DC1, JC2.
-No Weyl pair and no counterexample is constructed. In unrestricted degree
+**Open / not claimed.** Arbitrary-degree tail feasibility (only `d=1,2` here);
+combined feasibility beyond the self-contained exact raw cap `d=3` in the bounded
+verdict; exact `QQ` raw cap `d=4` unless the optional run is completed;
+arbitrary-degree W2; higher-degree/non-AP Band-3 tops, DC1, and JC2. The moment
+slope itself is achievable by the later `w2-decisive.md`, but is incompatible with
+the encoded tail at raw cap `d=3`. No Weyl pair or counterexample is constructed. In unrestricted degree
 `Im L_K intersect Im L_H` remains infinite-dimensional
 (`../dc1-program/two-filler-cross-cancellation.md`); nothing here weakens that.
 

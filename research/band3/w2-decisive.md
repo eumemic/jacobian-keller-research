@@ -37,24 +37,26 @@ verified as exact polynomial identities: the positive cascade
 central identity `G = E`, hence `Q_0 = 1`. Because the solution is a set of
 concrete polynomials of bounded degree, it is valid at **every `d >= 3`**.
 
-Consequently the band-3 exotic sector survives past the slope. Only the negative
-tail `Q_-1..Q_-6 = 0` now stands between W2 and a DC1 counterexample candidate.
-This note imposes **no** negative-tail equation and constructs **no** Weyl pair.
+Consequently this normalized W2 datum survives the slope test. This note imposes
+no negative-tail equation and constructs no Weyl pair. The later bounded verdict
+[`w2-verdict.md`](w2-verdict.md) proves the encoded slope+tail conjunction empty at
+raw cap `d=3` and reports/optionally reproduces the exact result at `d=4`; higher
+raw caps and arbitrary degree remain open.
 
 Exact certificate: [`verify_w2_decisive.py`](verify_w2_decisive.py) (ends
 `ALL W2 DECISIVE CHECKS PASSED`).
 
-## 0. The pivot fact, re-derived (not cited)
+## 0. The pivot fact and finite regressions
 
-`Im Phi(W2) = E(E-1)(E+1) F[E]` **exactly**. Write `D = E(E-1)(E+1)`. Two facts,
-both machine-checked here (not merely quoted from
-[`quantum-ap-filler-image.md`](quantum-ap-filler-image.md)):
-
-- **Subset.** Every basis filler `K_3[(E)_3 E^j]`, `H_2[(E)_2 E^j]` is divisible
-  by `D`.
-- **Equality.** At each truncation `deg <= N` (`N = 9,10,11`), the image rank
-  equals `dim(D*F[E])_{<=N} = N-2` and the image lies inside `D*F[E]`; the
-  codimension stabilizes at `3 = deg D`. Hence `Im Phi = D*F[E]`.
+`Im Phi(W2) = E(E-1)(E+1) F[E]` **exactly**. Write `D = E(E-1)(E+1)`. The
+degree-free proof is the triangular quotient argument in
+[`quantum-ap-filler-image.md`](quantum-ap-filler-image.md) §4: every basis filler
+is divisible by `D`; the quotient operator maps `E^n` to degree `n+1` with
+leading coefficient `-2`; and an explicit preimage supplies the constant `1`.
+This memo's verifier performs finite regressions at `N=9,10,11`: the image lies
+inside `D*F[E]` and has the full `D`-multiple rank at each tested truncation.
+Those scans check the implementation but are not, by themselves, the
+arbitrary-degree proof.
 
 Because `Q_0=(T-1)G`, `(T-1)E=1`, and membership gives `G(0)=0`, the unit equation
 `Q_0=1` is equivalent to `G=E`, i.e. `E - R in Im Phi(W2)`. Therefore
@@ -64,8 +66,10 @@ Q_0 = 1   <=>   E - R in D*F[E]   <=>   D | (E-R)   <=>   R(0)=0, R(1)=1, R(-1)=
 ```
 
 with `R(0)=0` automatic from membership. The proved cascade constraint
-`R(1)+R(-1)=0` (below) is **consistent** with `(R(1),R(-1))=(1,-1)`; W2 lives or
-dies on whether the positive cascade can produce `R(1)=1`.
+`R(1)+R(-1)=0` (below) is **consistent** with `(R(1),R(-1))=(1,-1)`. Thus the
+central-completion question in the W2 filler quotient reduces to whether the
+positive cascade can produce `R(1)=1`; the full negative tail remains jointly
+necessary.
 
 ## 1. The structural reduction: R(1) is the moment slope Q_0(0)
 
@@ -137,31 +141,37 @@ universal — different base slices give `-8/9, 16/9, -4/9, ...` — so `R(1)` i
 genuine bilinear functional of the free data, nonzero for generic data. The single
 structural law that *is* uniform:
 
-> **Slope law (W2).** On the positive-cascade variety, the moment slope
-> `R(1) = Q_0(0)` is a nonconstant linear functional of the degree-`(d+1)` leading
-> data of `a_-1`. It vanishes identically for `d <= 2` (that leading datum does not
-> exist) and is surjective onto `F` for `d >= 3`. The only relation the positive
-> cascade + membership place on the slope pair is `R(1)+R(-1)=0`; they do **not**
-> pin `R(1)`.
+> **Certified slope threshold (W2).** At raw cap `d<=2`, the encoded positive
+cascade and membership force `R(1)=0`. At `d=3`, the displayed exact family makes
+`R(1)` a nonzero scalar multiple of its free parameter `am1_3`, so every target
+in `F` is achieved on that family; the associated slope pair obeys
+`R(1)+R(-1)=0`. Because this concrete family fits every larger cap unchanged,
+slope achievability persists for all `d>=3`. This proves existence/surjectivity by
+embedding, not a classification of every higher-cap component or a claim that the
+highest-degree datum at each larger cap is the only slope modulus.
 
-**Why the degree threshold is `3`.** `am1_3` is the `E^4`-coefficient of `a_-1`. At
-`d <= 2` the free polynomial `am1_raw` has degree `<= 2`, so `a_-1` has degree
-`<= 3` and this modulus is absent — the slope collapses to `0`. At `d >= 3` it
-appears, is unconstrained by the cascade compatibilities (which only tie the lower
-coefficients of `a_-1` to the `a`-tower), and drives `R(1)` to any target.
+**Why the first certified escape occurs at `3`.** `am1_3` is the
+`E^4`-coefficient of `a_-1`. At `d<=2`, `am1_raw` has degree `<=2` and the exact
+low-cap ideal forces the slope to zero. At `d=3`, the displayed family exposes
+`am1_3` as a free parameter and drives `R(1)` to any target. The same bounded
+datum embeds in every larger raw cap.
 
 **Why the `r`-uniform functional method left this open (honest reconciliation).**
 The committed certificate ([`quantum-ap-lambda.md`](quantum-ap-lambda.md) §5e)
 observed that its `r`-shifted elimination pins the alternating combination
-`R(1)+R(-1)` to `0` but leaves `R(1) = R(r+5)` a nonzero free modulus. That memo
-deliberately works in `r`-shifted evaluation variables treated as *independent*
-(the mechanism that makes the `r != -4` obstruction degree-free), and so discards
-the absolute-node coupling near `E=0`. At `r=-4` the wall node `r+4` **coincides
-with the membership anchor `E=0`** (the "common-root-at-0" geometry): the relaxation
-is exactly too weak to see whether the slope is pinned. This note resolves the
-question in the *actual* polynomial system — where the coupling is present — and
-finds the slope genuinely free. The two statements agree; nothing in the committed
-work is contradicted (it explicitly left `r=-4` open and reduced it to this slope).
+`R(1)+R(-1)` to `0` while leaving a nonzero symbolic normal form for
+`R(1) = R(r+5)`. That calculation proves only that this relaxed certificate does
+not force `R(1)=0`; it does not by itself prove a free modulus or value-one
+achievability in the actual polynomial cascade. The memo deliberately works in
+`r`-shifted evaluation variables treated as *independent* (the mechanism that
+makes the `r != -4` obstruction degree-free), and so discards the absolute-node
+coupling near `E=0`. At `r=-4` the wall node `r+4` **coincides with the membership
+anchor `E=0`** (the "common-root-at-0" geometry): the relaxation is exactly too
+weak to see whether the slope is pinned. This note resolves the question in the
+*actual* polynomial system — where the coupling is present — and its explicit
+family proves the slope genuinely free. The two statements agree; nothing in the
+committed work is contradicted (it explicitly left `r=-4` open and reduced it to
+this slope).
 
 ## 4. The explicit R(1)=1 solution (positive sector + fillers, verified)
 
@@ -205,32 +215,34 @@ and `Q_0=1`) is achievable at **every `d >= 3`**, not just `d = 3`.
 
 ## 4b. Where this sits among the sibling flanks (synthesis)
 
-Two sibling memos landed at the same commit and make the slope the *sole* decider:
+Two sibling memos delimit what this slope computation does and does not decide:
 
 - [`w2-theory.md`](w2-theory.md) proves `Im Phi(W2)` is the **principal squarefree
   ideal `(D)`**, so its cokernel is semisimple and its entire dual is the three
-  point functionals `{ev_-1, ev_0, ev_1}` — **no non-point annihilator exists**.
-  It also proves **reflection does not close W2** (the Fourier `phi` fixes the
-  anchor at `0` and reverses the band, sending W2's degree-3 top to a degree-6
-  bottom). Hence there is no hidden functional and no symmetry shortcut: W2 lives
-  or dies *purely* on `R(1)=1`. This note supplies that scalar: **`R(1)=1` is
-  achievable.**
+  point functionals `{ev_-1, ev_0, ev_1}` — **no non-point annihilator in that
+  quotient remains**. It also proves the tested reflection does not close W2 (the
+  Fourier `phi` fixes the anchor at `0` and reverses the band, sending W2's
+  degree-3 top to a degree-6 bottom). Thus `R(1)=1` completely decides the filler
+  quotient, not the full Weyl-pair system. This note supplies that scalar:
+  **`R(1)=1` is achievable.**
 - [`w2-negative-tail.md`](w2-negative-tail.md) shows the negative tail, taken alone
-  with the positive cascade, is a **proper** (feasible) ideal at `d=1,2` — the slope
-  was the only obstruction there — and ships an escalation harness
-  `run_full_system` awaiting a slope-`1` point.
+  with the positive cascade, is a **proper** (feasible) ideal at `d=1,2`; this
+  separate feasibility does not imply compatibility with slope one. It also ships
+  the `run_full_system` escalation harness.
 
-Together the census in `w2-theory.md` §3 makes W2 the band-3 instance of a
-canonical **step-`(k-1)`/step-`k` hatch** per band `k >= 3`, each reducing to the
-*same* gate `R(1)=1`. So the achievability shown here is the template result: if it
-generalizes, every such hatch is a live candidate.
+The census in `w2-theory.md` §3 places W2 in a canonical
+step-`(k-1)`/step-`k` common-root family that exists for every `k>=3`. A finite
+band-4 regression has analogous sampled gcd/rank behavior, but no arbitrary-degree
+slope-gate theorem there. Uniqueness of one hatch per band, reduction of all
+hatches to one gate, and a uniform induction role are conjectural.
 
 ## 5. Handoff to the negative-tail agent
 
-What is now handed to `W2-TAIL` (the `Q_-1..Q_-6` search):
+What this slope computation handed to `W2-TAIL` (the `Q_-1..Q_-6` search):
 
 - The **positive sector + central `Q_0=1`** is solved, explicitly, at `R(1)=1`
-  (§4). The negative tail is the *only* remaining gate.
+  (§4). The negative tail was therefore the remaining jointly necessary subsystem
+  to test; the later bounded verdict finds the conjunction empty at raw cap `d=3`.
 - The remaining freedom for the tail: (i) the `R(1)=1` fiber of positive data at
   `d>=3` (fix `am1_3=-9/8`, the other free moduli remain), (ii) the **filler
   kernel** — `Phi` has a 1-parameter kernel in `(C,V)` at each degree, so `b_-3`,
@@ -246,9 +258,9 @@ What is now handed to `W2-TAIL` (the `Q_-1..Q_-6` search):
 
 ## 5b. The combined slope+tail probe (escalation status)
 
-With `R(1)=1` now achievable, the only remaining gate to a DC1 candidate pair is
-the negative tail. Using the sibling harness structure (positive cascade + `Q_0=1`
-+ `Q_-1..Q_-5` + membership), the combined DC1-face feasibility was probed:
+Once `R(1)=1` was shown achievable, the negative tail remained jointly necessary
+for a DC1 candidate pair. Using the sibling harness structure (positive cascade +
+`Q_0=1` + `Q_-1..Q_-5` + membership), the combined DC1-face feasibility was probed:
 
 - **`d=2` control:** the full combined ideal is the **unit ideal** (infeasible),
   reproducing [`w2-negative-tail.md`](w2-negative-tail.md) — as it must, since the
@@ -258,16 +270,17 @@ the negative tail. Using the sibling harness structure (positive cascade + `Q_0=
   tail `Q_-1..Q_-5` is **infeasible on both branches**: `a_-3 != 0` (with
   `b_-3 = mu_3 a_-3`) and `a_-3 = 0` (with `b_-3` a free `(E)_3`-filler). So this
   particular slope-`1` datum is not a candidate pair.
-- **Full-fiber `d=3`** (all slope-`1` positive data free, only `Q_0=1` enforcing the
-  slope, plus the whole tail) is a large Gröbner computation; its verdict is the
-  proper hand-off to `W2-TAIL` and is not asserted here.
+- **Full-fiber `d=3`** was not asserted by this memo. The later bounded verdict
+  [`w2-verdict.md`](w2-verdict.md) checks exact rational multiplier identities
+  directly against all 62 freshly reconstructed FULL equations and proves the
+  full encoded ideal is unit over `QQ` on both branches.
 
-The honest reading: the slope is achievable, but the negative tail is **not
-automatically** satisfiable at the same point — the tail agent's "no obstruction
-beyond the slope" (bounded to `d=1,2`, where the slope itself was the only live
-constraint) is *not* established to mean simultaneous slope+tail feasibility at
-`d=3`. Whether some slope-`1` datum (at `d=3` or higher) clears the tail is the
-open escalation question. **No candidate counterexample pair is asserted.**
+The updated reading: the slope is achievable, but the tail's separate
+feasibility at `d=1,2` never implied compatibility with slope one. The bounded
+verdict proves no encoded solution at raw cap `d=3` on either branch. Its exact
+`d=4` result is externally reported and optionally reproducible; without a
+completed optional run, exact `QQ` raw cap `d=4` and arbitrary degree remain open.
+No candidate counterexample pair is asserted.
 
 ## 6. Sanity controls (no false kills)
 
@@ -283,8 +296,10 @@ open escalation question. **No candidate counterexample pair is asserted.**
 **Proved (exact algebra):**
 - `Im Phi(W2) = E(E-1)(E+1)F[E]` exactly; `Q_0=1 <=> R(1)=1, R(-1)=-1`.
 - `R(1) = Q_0(0) = G(1)` (structural reduction).
-- Slope forced to `0` at `d <= 2`; slope a free modulus at `d = 3` (radical-ideal
-  certificate, both directions).
+- Slope forced to `0` at `d <= 2`; at `d = 3` the displayed exact one-parameter
+  family makes the slope a free modulus and reaches `R(1)=1`. The independent
+  Rabinowitsch check establishes only the corresponding forced-zero/non-forced-zero
+  flip.
 - An **explicit** positive-cascade + membership + fillers datum with `Q_0 = 1`
   (`R(1) = 1`), verified as polynomial identities, hence a valid solution at
   **every `d >= 3`**.
@@ -294,9 +309,11 @@ open escalation question. **No candidate counterexample pair is asserted.**
 `d >= 3`. This is the `r = -4` specialization of the lambda-wave escape hatch:
 the common wall root sits at the membership anchor `E = 0`.
 
-**Not proved / out of scope.** The negative tail `Q_-1..Q_-6 = 0` (handed to
-`W2-TAIL`); any Weyl pair or DC1/JC2 counterexample; the non-AP `deg a_3 >= 6`
-exotic tops; anything outside band 3. In unrestricted degree
+**Not proved by this memo / remaining scope.** The negative tail was not imposed
+here. The later bounded verdict excludes encoded full solutions at raw cap
+`d=3`; exact `d=4` is externally reported and optionally reproducible. Unverified
+exact `QQ` cap `d=4`, arbitrary-degree W2, any Weyl pair or DC1/JC2 counterexample,
+higher-degree/non-AP Band-3 tops, and anything outside Band 3 remain open. In unrestricted degree
 `Im L_K intersect Im L_H` remains infinite-dimensional
 ([`../dc1-program/two-filler-cross-cancellation.md`](../dc1-program/two-filler-cross-cancellation.md));
 nothing here weakens that.

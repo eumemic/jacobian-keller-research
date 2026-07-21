@@ -135,8 +135,8 @@ check_zero((E.subs(E, r + 3) - E.subs(E, r + 4) + E.subs(E, r + 5) - E.subs(E, 0
 # =====================================================================
 print("\n--- 1. filler annihilation: Im Phi(r) subset ker(lambda_r) for ALL r ---")
 # =====================================================================
-# Generic polynomial C,V with membership built in => the identity holds for every
-# admissible filler c=(E)_3 C, v=(E)_2 V of ANY coefficient degree, symbolic r.
+# Generic degree-5 C,V with membership built in provide a symbolic-r regression.
+# The adjacent nodewise formulas are the degree-free proof for arbitrary fillers.
 Cgen = poly("C", 5)
 Vgen = poly("V", 5)
 cfill = sp.expand(falling(3) * Cgen)
@@ -154,7 +154,7 @@ check_zero(lam_r(k3(cfill)),
 check_zero(lam_r(h2(vfill)),
            "lambda_r(H_2[(E)_2 V]) = 0 for generic V, symbolic r")
 check_zero(lam_r(k3(cfill) - h2(vfill)),
-           "Im Phi(r) = { K_3[(E)_3 C] - H_2[(E)_2 V] } subset ker(lambda_r)")
+           "generic degree-5 regression: Phi(r) lies in ker(lambda_r)")
 # displayed boundary-value formulas (a_3(r+j), b_2(r+j) are r-independent):
 kc = k3(cfill)
 hv = h2(vfill)
@@ -328,7 +328,7 @@ def h2_w2(vv):
 check(all(sp.Poly(k3_w2(falling(3) * E**j), E).rem(sp.Poly(D, E)).is_zero
           and sp.Poly(h2_w2(falling(2) * E**j), E).rem(sp.Poly(D, E)).is_zero
           for j in range(6)),
-      "Im Phi(-4) subset D*F[E], D=E(E-1)(E+1): every basis filler divisible by D")
+      "finite regression j=0..5: W2 basis fillers are divisible by D=E(E-1)(E+1)")
 # annihilators of D*F[E] are exactly ev_0, ev_1, ev_-1 (a poly is in D*F[E] iff it
 # vanishes at 0,1,-1).  ev_0(E-R)=-R(0)=0 already.
 
@@ -354,15 +354,18 @@ check_zero(mu_EmR.subs(Rm1s, -R1s) - (be - ga) * (1 - R1s),
            "every Im Phi(-4) annihilator sends E-R to (beta-gamma)(1-R(1))")
 
 # 5e. The r-shifted certificate that PINS lambda_r(R) for r!=-4 does NOT pin R(1)
-#     at r=-4: R(1)=R(r+5) keeps a nonzero free modulus after the same solve.
+#     at r=-4: its relaxed shifted-evaluation normal form for R(1)=R(r+5) is
+#     nonzero.  This proves only that this certificate does not force R(1)=0; it
+#     does not prove value-one achievability or a free modulus in the actual
+#     polynomial cascade.  The explicit W2-DECISIVE family supplies that proof.
 R1_reduced = sp.factor(sp.rem(R_off(5).subs(subs), relation, a2o(1)))
 lam_eight_reduced = sp.rem(lam_eight.subs(subs), relation, a2o(1))
 check(R1_reduced != 0 and bool(R1_reduced.free_symbols),
-      "the certificate leaves R(1)=R(r+5) as a NONZERO free modulus (no pin)")
+      "the relaxed certificate leaves a nonzero symbolic R(1) normal form (no value-one inference)")
 check(sp.expand(lam_eight_reduced) == 0 and R1_reduced != 0,
-      "contrast: the alternating combination lambda_r(R) is pinned to 0, but R(1) alone is not")
-print("   => at r=-4 the obstruction reduces to the moment-unit condition slope=1,")
-print("      which the functional method does NOT resolve; see 5f.")
+      "contrast: the alternating combination lambda_r(R) is pinned to 0, but this certificate does not pin R(1)")
+print("   => at r=-4 central completion requires the moment-unit slope=1,")
+print("      which this functional certificate does NOT resolve; see W2-DECISIVE.")
 
 # 5f. Finite-degree closure at r=-4 (bounded degree only).  The committed
 #     verify_quantum_exotic_cokernel.py certifies W2 infeasibility at d=1,2:
@@ -420,6 +423,8 @@ print("   Arbitrary-degree closure at r=-4 remains OPEN (a moment-unit / DC1 que
 
 print("\nScope: closes the step-2 AP exotic family a_3=(E-r)(E-r-2)(E-r-4), b_2=(E-r-1)(E-r-4)")
 print("at ARBITRARY coefficient degree for every r != -4 (unique exceptional locus r=-4 = W2,")
-print("reduced to the moment unit and closed only at d<=2).  Non-AP deg>=6 exotic tops are out")
+print("where central completion reduces to the moment unit).  W2 is exactly excluded by the")
+print("combined slope+tail certificate at raw cap d=3, but remains open at arbitrary degree.")
+print("Non-AP deg>=6 exotic tops are out")
 print("of scope.  No Weyl pair or counterexample is constructed.")
 print("ALL QUANTUM AP LAMBDA CHECKS PASSED")

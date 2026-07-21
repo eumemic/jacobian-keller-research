@@ -12,14 +12,17 @@ quantum band-3 conventions
 
 The committed lambda-wave (commit d8189fc, quantum-ap-lambda.md) closes every AP
 member r != -4 at ARBITRARY degree by the functional
-lambda_r(f)=f(r+3)-f(r+4)+f(r+5)-f(0), lambda_r(E-R)=r+4.  At r=-4 the functional
-degenerates and the whole question collapses to ONE scalar: the moment slope R(1).
-Because Im Phi(W2) = E(E-1)(E+1) F[E] EXACTLY (re-verified below),
+lambda_r(f)=f(r+3)-f(r+4)+f(r+5)-f(0), lambda_r(E-R)=r+4.  At r=-4 that
+functional degenerates, and the central-completion question reduces to the moment
+slope R(1).  The arbitrary-degree equality Im Phi(W2)=E(E-1)(E+1)F[E] follows
+from the triangular proof in quantum-ap-filler-image.md; finite regressions below
+check this implementation.
 
     Q_0 = 1  <=>  E - R in Im Phi(W2)  <=>  D | (E-R)  <=>  R(1)=1 and R(-1)=-1,
 
-with R(0)=0 automatic and R(1)+R(-1)=0 the proved cascade constraint.  So W2
-lives or dies by whether the positive cascade can produce slope R(1)=1.
+with R(0)=0 automatic and R(1)+R(-1)=0 the proved cascade constraint.  Thus
+central completion in the W2 filler quotient reduces to whether the positive cascade
+can produce slope R(1)=1.  The full negative tail remains jointly necessary.
 
 VERDICT (this script, exact arithmetic over QQ):
   * d=1: R = 0, so R(1)=0.                                    (forced -> Q_0=1 infeasible)
@@ -32,10 +35,9 @@ VERDICT (this script, exact arithmetic over QQ):
   Q_0=1 -- all as EXACT polynomial identities.  These are degree-cap-agnostic
   polynomials, hence a valid solution for EVERY d>=3.
 
-  Consequence: the slope obstruction does NOT close W2.  The band-3 exotic sector
-  survives past R(1); only the negative tail Q_-1..Q_-6 now stands between W2 and a
-  DC1 counterexample candidate.  This script imposes NO negative-tail equation and
-  constructs NO Weyl pair.
+  Consequence: the slope obstruction alone does NOT close W2.  The full negative
+  tail Q_-1..Q_-6 must still be imposed jointly with the positive cascade and slope.
+  This script imposes NO negative-tail equation and constructs NO Weyl pair.
 
 Run:  uv run --with sympy python research/band3/verify_w2_decisive.py
 Ends: ALL W2 DECISIVE CHECKS PASSED
@@ -130,15 +132,15 @@ check_zero(R_gen.subs(E, 0), "R(0)=0 from membership (a_-1(0)=b_-1(0)=b_-2(0)=b_
 
 
 # =====================================================================
-print("\n--- 1. PIVOT FACT: Im Phi(W2) = E(E-1)(E+1) F[E] EXACTLY ---")
+print("\n--- 1. PIVOT FACT regression: finite truncations match E(E-1)(E+1) F[E] ---")
 # =====================================================================
-# Phi(C,V) = K_3[(E)_3 C] - H_2[(E)_2 V].  (i) subset D*F[E]; (ii) equality by
-# rank-matching against the D-multiple lattice at each finite truncation; the
-# codimension stabilizes at 3 = deg D.  Hence E-R in Im Phi <=> D | (E-R).
+# The arbitrary-degree equality follows from the triangular quotient proof in
+# quantum-ap-filler-image.md Section 4.  Here we check inclusion and finite ranks
+# against the D-multiple lattice as implementation regressions.
 sub_ok = all(sp.rem(sp.Poly(k3(falling(3) * E**j), E), sp.Poly(D, E)).as_expr() == 0
              and sp.rem(sp.Poly(h2(falling(2) * E**j), E), sp.Poly(D, E)).as_expr() == 0
              for j in range(8))
-check(sub_ok, "Im Phi(W2) subset D*F[E]: every basis filler divisible by D=E(E-1)(E+1)")
+check(sub_ok, "finite regression j=0..7: W2 basis fillers are divisible by D=E(E-1)(E+1)")
 
 
 def coeffvec(f, N):

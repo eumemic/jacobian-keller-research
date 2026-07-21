@@ -20,9 +20,12 @@ slope. The exact certificate is
 [`verify_quantum_ap_lambda.py`](verify_quantum_ap_lambda.py) (ends
 `ALL QUANTUM AP LAMBDA CHECKS PASSED`).
 
-It does **not** close `r=-4` at arbitrary degree, the non-AP `deg a_3 >= 6`
-exotic tops, W2 beyond `d<=2`, all of Band 3, DC1, or JC2, and it constructs no
-Weyl pair or counterexample.
+It does **not** close `r=-4` at arbitrary degree, higher-degree/non-AP Band-3
+tops, DC1, or JC2, and it constructs no Weyl pair or counterexample. A later
+bounded verdict, [`w2-verdict.md`](w2-verdict.md), excludes the encoded W2
+combined system at raw cap `d=3`; an exact `d=4` exclusion is externally reported
+and optionally reproducible. Neither enlarges this theorem's arbitrary-degree
+scope.
 
 ## 0. Convention and the family
 
@@ -83,10 +86,10 @@ K_3[c](r+3)=3 c(r+4),   K_3[c](r+4)=3 c(r+4)-3 c(r+6),      K_3[c](r+5)=-3 c(r+6
 H_2[v](r+3)=-2 v(r+4),  H_2[v](r+4)=-2 v(r+4)-2 v(r+5),     H_2[v](r+5)=-2 v(r+5),
 ```
 
-so the alternating values cancel block by block. Hence
-`lambda_r(K_3[(E)_3 C]) = 0` and `lambda_r(H_2[(E)_2 V]) = 0` for **generic**
-`C,V` of any degree (checked symbolically in `r`). This is exactly the
-inclusion of the unrestricted image theorem
+so the alternating values cancel block by block for `C,V` of arbitrary degree.
+The verifier checks these identities symbolically in `r` on generic degree-5
+polynomials; the displayed nodewise calculation is the degree-free proof. This is
+exactly the inclusion of the unrestricted image theorem
 [`quantum-ap-filler-image.md`](quantum-ap-filler-image.md):
 
 ```text
@@ -175,8 +178,9 @@ jumps to codimension three,
 Im Phi(-4) = D * F[E],   D = E(E-1)(E+1)
 ```
 
-(`quantum-ap-filler-image.md`, re-checked: every W2 basis filler is divisible by
-`D`). The annihilators of `D*F[E]` are exactly `ev_0, ev_1, ev_-1`, and
+(`quantum-ap-filler-image.md`, by its degree-free triangular proof; the lambda
+verifier performs a finite basis regression only). The annihilators of `D*F[E]`
+are exactly `ev_0, ev_1, ev_-1`, and
 `ev_0(E-R)=-R(0)=0` automatically. The `r=-4` specialization of the Section-2
 certificate still rigorously gives
 
@@ -195,10 +199,12 @@ R(1) = G(1) = slope = Q_0(0).
 Thus `E-R in Im Phi(-4)` is equivalent to `R(1)=1`, i.e. the moment slope equals
 `1` — which is **consistent** with `Q_0=1` (then `Q_0(0)=1`). The functional
 method that annihilates the `r != -4` obstruction therefore produces no
-contradiction at `r=-4`: the `r`-shifted certificate pins the alternating
-combination `R(1)+R(-1)` to `0` but leaves `R(1)` itself a nonzero free modulus
-(checked). The arbitrary-degree closure at `r=-4` reduces to the moment-unit
-slope question and is left **open** here.
+contradiction at `r=-4`: its relaxed shifted-evaluation normal form pins the
+alternating combination `R(1)+R(-1)` to `0` but does not force `R(1)` itself to
+zero. That non-forcing statement alone does not prove value-one achievability or
+a free modulus in the actual polynomial cascade; the explicit family in
+[`w2-decisive.md`](w2-decisive.md) supplies that proof. The arbitrary-degree
+closure at `r=-4` remains **open**.
 
 **Finite-degree closure at `r=-4`.** The positive cascade forces the slope
 `R(1)=0 != 1` at `d=1` (reproduced compactly in the verifier), and W2 is
@@ -210,17 +216,20 @@ arbitrary-degree obstruction at `r=-4`.
 
 ## 5. Combined statement and scope
 
-**Proved here (arbitrary coefficient degree, characteristic zero):** the band-3
-degree-3 exotic branch with `b_2 != 0` in the step-2 AP class `{r,r+2,r+4}` is
-empty — no cascade with the positive wall conditions, genuine Weyl membership,
-and `Q_0=1` — for **every `r != -4`**. The obstruction is the single explicit
-functional `lambda_r(f)=f(r+3)-f(r+4)+f(r+5)-f(0)`, with
+**Proved here (arbitrary coefficient degree, characteristic zero):** the
+**normalized degree-3 step-2 AP exotic family** with `b_2 != 0` and top
+`{r,r+2,r+4}` is empty — no cascade with the positive wall conditions, genuine
+Weyl membership, and `Q_0=1` — for **every `r != -4`**. This is not an
+arbitrary-degree exclusion of every Band-3 exotic top. The obstruction is the
+single explicit functional `lambda_r(f)=f(r+3)-f(r+4)+f(r+5)-f(0)`, with
 `Im Phi(r) subset ker(lambda_r)` and `lambda_r(E-R)=r+4 != 0`.
 
-**Explicit exceptional locus:** `r=-4` (the W2 member). There the functional
-degenerates; the obstruction reduces to the moment-unit slope `= 1`, which the
-functional method does not resolve. W2 is closed at `d<=2` by finite computation
-only; its arbitrary-degree status is open.
+**Explicit exceptional locus within this normalized AP family:** `r=-4` (W2).
+There the functional degenerates and does not resolve the moment-unit slope. W2
+is closed at raw caps `d<=2` by earlier finite computation; the later bounded
+verdict excludes the encoded combined system at raw cap `d=3`, while exact `d=4`
+is externally reported and optionally reproducible. Its arbitrary-degree status
+remains open.
 
 **Out of scope / not proved:** the non-AP `deg a_3 >= 6` exotic tops; scalar or
 orientation reductions of any datum; the arbitrary-degree `r=-4` case; all of

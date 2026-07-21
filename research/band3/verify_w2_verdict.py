@@ -16,43 +16,47 @@ b_-3/a_-3 to be (-3)-periodic hence constant when a_-3 != 0):
     branch A:  a_-3 = (E)_3 * am3_raw (generic),  b_-3 = mu3 * a_-3
     branch B:  a_-3 = 0,                          b_-3 = (E)_3 * bm3_raw (free filler)
 
-VERDICT (this file, exact over QQ): INFEASIBLE at d=3 AND d=4, BOTH branches --
-the combined system is the UNIT IDEAL.  So no slope-1 datum clears the tail at
-raw degree cap 3 or 4.  The band-3 exotic DC1 CONSTRUCTION ROUTE dies at bounded
-degree; NO counterexample pair materializes.
+SELF-CONTAINED VERDICT (this file, exact over QQ): INFEASIBLE at d=3, BOTH
+branches -- exact identities checked directly against the freshly reconstructed
+FULL systems prove that both ideals are UNIT. Optional msolve runs can additionally
+reproduce the reported d=4 exact-QQ and mod-65003 results. If msolve is absent
+those checks are explicit SKIP, not successes.
 
-SCOPE (honest):  this is a BOUNDED-degree kill (d in {3,4}).  It does NOT prove
-W2 dead at arbitrary degree -- that remains open and now requires a structural
-(degree-free) argument, not this finite search.  See w2-verdict.md.
+SCOPE (honest): this proves no encoded solution at raw cap d=3 in the fixed W2
+orientation/gauge.  A successful optional msolve run also checks d=4.  It does
+NOT prove W2 dead at arbitrary degree, and it does not execute the documentary
+five-prime d=3/d=4 sweeps or d=5 mod-65003 report.  See w2-verdict.md.
 
 Method.  sympy alone cannot Groebner the raw 62-eq/26-var d=3 system in a sane
-budget (that is precisely why this task existed).  We therefore FIRST perform a
-feasibility-preserving linear elimination (each equation c*v+rest=0 with c a
-NONZERO CONSTANT and rest free of v lets us eliminate v via the variety bijection
-v = -rest/c; V(I) is empty iff V(reduced) is empty, so the unit-ideal verdict is
-preserved EXACTLY), shrinking the system enough for an exact sympy Groebner test.
-The reducer itself is validated at d=2 against a DIRECT full-system Groebner
-(reduced-unit == direct-unit).  The kill was ALSO obtained independently by msolve
-0.10.1 on the raw system -- reduced Groebner basis = [1] over QQ and [-1] (no
-solution) over five primes in [10^4,10^5], at d=3 and d=4 (see w2-verdict.md).
+budget.  The committed companion witness gives sparse multipliers h_i for the
+freshly reconstructed FULL equations f_i.  This verifier parses all coefficients
+in QQ and checks the polynomial identity sum_i h_i*f_i = 1 by exact coefficient
+collection; that independently proves the ideal is the whole QQ polynomial ring.
+The identity was generated with Singular, but Singular is neither trusted nor
+needed here.  A feasibility-preserving linear reducer remains only for its d=2
+control.  Separate msolve 0.10.1 computations were reported for d=3/d=4 over QQ
+and five primes; no outputs are committed, so those results remain documentary
+unless an optional command is run here.
 
 Controls (no false kill):
   - The explicit w2-decisive Section-4 slope-1 datum satisfies the cascade, Q_0=1
-    and all six memberships but FAILS the tail (all five Q_-m != 0); its coeff
-    degrees fit cap d for every d>=3, witnessing cascade+slope FEASIBLE at d=3,4.
-  - d<=2: cascade+slope UNIT (the slope alone kills), FULL UNIT, but cascade+tail
-    PROPER (feasible) -- reproducing the sibling siblings and showing the machine
-    distinguishes feasible from infeasible.
+    and all six memberships but FAILS the tail (all five Q_-m != 0); its raw free
+    degrees fit cap d for every d>=3, witnessing cascade+slope FEASIBLE in branch B.
+  - d<=2: cascade+slope UNIT and FULL UNIT in both branches; cascade+tail is checked
+    PROPER at d=1 in both branches.  The sibling tail verifier separately checks
+    cascade+tail at d=2.
 
 Run:  uv run --with sympy python research/band3/verify_w2_verdict.py
-Ends: ALL W2 VERDICT CHECKS PASSED
+The final summary lists every executed PASS and absent optional-tool SKIP.
 """
 import sympy as sp
 import time
+from pathlib import Path
 
 E = sp.symbols("E")
 LEVELS = range(-3, 4)
 _T0 = time.time()
+_STATUSES = []
 
 
 def sh(f, n):
@@ -79,16 +83,27 @@ def potential(A, B):
                          for k in range(1, 4) for j in range(k)))
 
 
+def record(status, label):
+    _STATUSES.append((status, label))
+    print(f"{status} [{time.time() - _T0:6.1f}s] {label}")
+
+
 def check(condition, label):
     if not condition:
+        record("FAIL", label)
         raise AssertionError("FAIL " + label)
-    print(f"PASS [{time.time() - _T0:6.1f}s] {label}")
+    record("PASS", label)
 
 
 def check_zero(value, label):
     if sp.expand(value) != 0:
+        record("FAIL", label)
         raise AssertionError(f"FAIL {label}: residual {sp.factor(sp.expand(value))}")
-    print(f"PASS [{time.time() - _T0:6.1f}s] {label}")
+    record("PASS", label)
+
+
+def skip(label):
+    record("SKIP", label)
 
 
 # ---- crossed-product engine (identical to the sibling tail verifier) ----
@@ -210,8 +225,8 @@ def is_unit(eqs, vs, domain=sp.QQ):
 
 def linear_reduce(eqs, fv):
     """Feasibility-preserving elimination: while some equation is c*v+rest with c a
-    nonzero CONSTANT and rest free of v, set v=-rest/c and substitute.  Preserves
-    V(.)=empty exactly.  Returns (residual eqs, residual vars)."""
+    nonzero rational constant and rest free of v, set v=-rest/c and substitute.
+    Preserves V(.)=empty exactly.  Returns (residual eqs, residual vars)."""
     eqs = [sp.expand(e) for e in eqs if sp.expand(e) != 0]
     vs = list(fv)
     changed = True
@@ -222,18 +237,20 @@ def linear_reduce(eqs, fv):
             fsyms = e.free_symbols & set(vs)
             if not fsyms:
                 continue
-            for v in fsyms:
+            # fv order is intentional: set iteration made this reducer nondeterministic.
+            for v in (v_ for v_ in vs if v_ in fsyms):
                 if sp.Poly(e, v).degree() != 1:
                     continue
                 coeff = e.coeff(v, 1)
-                if coeff == 0 or (coeff.free_symbols & set(vs)):
-                    continue
                 rest = sp.expand(e - coeff * v)
+                if coeff == 0 or coeff.free_symbols or v in rest.free_symbols:
+                    continue
                 score = len(sp.Add.make_args(rest))
-                if best is None or score < best[0]:
-                    best = (score, e, v, sp.expand(-rest / coeff))
+                candidate = (score, vs.index(v), e, v, sp.expand(-rest / coeff))
+                if best is None or candidate[:2] < best[:2]:
+                    best = candidate
         if best is not None:
-            _, e0, v0, sol = best
+            _, _, e0, v0, sol = best
             eqs = [sp.expand(ee.subs(v0, sol)) for ee in eqs if ee is not e0]
             eqs = [ee for ee in eqs if sp.expand(ee) != 0]
             vs.remove(v0)
@@ -241,10 +258,79 @@ def linear_reduce(eqs, fv):
     return eqs, vs
 
 
+def load_qq_certificate(branch, variables):
+    """Load and validate the sparse multipliers for sum_i h_i f_i = 1."""
+    if branch not in {"A", "B"}:
+        raise AssertionError(f"unknown certificate branch {branch!r}")
+    path = Path(__file__).with_name("w2_d3_qq_certificates.txt")
+    sections = {"A": {}, "B": {}}
+    section = None
+    seen_headers = set()
+    for line_number, raw in enumerate(path.read_text(encoding="ascii").splitlines(), 1):
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line.startswith("[") or line.endswith("]"):
+            if not (line.startswith("[") and line.endswith("]")):
+                raise AssertionError(f"malformed certificate section at line {line_number}")
+            section = line[1:-1]
+            if section not in sections:
+                raise AssertionError(f"unknown certificate section {section!r}")
+            if section in seen_headers:
+                raise AssertionError(f"duplicate certificate section {section!r}")
+            seen_headers.add(section)
+            continue
+        if section is None or ":" not in line:
+            raise AssertionError(f"malformed certificate entry at line {line_number}")
+        index_text, multiplier = line.split(":", 1)
+        try:
+            index = int(index_text)
+        except ValueError as exc:
+            raise AssertionError(
+                f"non-integer certificate index at line {line_number}"
+            ) from exc
+        if index < 0:
+            raise AssertionError(f"negative certificate index at line {line_number}")
+        if index in sections[section]:
+            raise AssertionError(
+                f"duplicate equation index {index} in certificate section {section}"
+            )
+        if not multiplier.strip():
+            raise AssertionError(f"empty certificate multiplier at line {line_number}")
+        sections[section][index] = sp.Poly(
+            multiplier,
+            *variables,
+            domain=sp.QQ,
+        ).as_expr()
+    if seen_headers != set(sections):
+        missing = sorted(set(sections) - seen_headers)
+        raise AssertionError(f"missing certificate section(s): {missing}")
+    if not sections[branch]:
+        raise AssertionError(f"empty d=3 QQ certificate for branch {branch}")
+    return sections[branch]
+
+
+def verify_qq_unit_certificate(eqs, fv, branch):
+    """Check a Nullstellensatz identity exactly by sparse QQ coefficient collection."""
+    eqs = [sp.expand(e) for e in eqs if sp.expand(e) != 0]
+    expected_vars = {"A": 26, "B": 25}
+    if len(eqs) != 62 or len(fv) != expected_vars[branch]:
+        raise AssertionError(
+            f"unexpected d=3 branch-{branch} shape: {len(eqs)} equations, "
+            f"{len(fv)} variables"
+        )
+    ys = sp.symbols(f"y0:{len(fv)}")
+    substitution = dict(zip(fv, ys))
+    multipliers = load_qq_certificate(branch, ys)
+    if max(multipliers) >= len(eqs):
+        raise AssertionError("certificate equation index is out of range")
+    identity = sum(h * eqs[i].subs(substitution) for i, h in multipliers.items()) - 1
+    return sp.Poly(identity, *ys, domain=sp.QQ).is_zero, len(eqs), len(ys), len(multipliers)
+
+
 a3_w2 = sp.expand(E * (E + 2) * (E + 4))
 b2_w2 = sp.expand(E * (E + 3))
 W2 = (a3_w2, b2_w2)
-PRIMES = [32003, 65003]
 
 # =====================================================================
 print("--- 0. machinery: Q_m equals the crossed-product commutator, Q_0=(T-1)G ---")
@@ -294,8 +380,8 @@ for j in (1, 2, 3):
 tail_witness = [q_m(Ax, Bx, m) for m in (-1, -2, -3, -4, -5)]
 check(all(t != 0 for t in tail_witness),
       "witness: the tail FAILS at this slope-1 point (all Q_-1..Q_-5 != 0)")
-# coeff degrees fit cap d for every d>=3, so this point lies on the cascade+slope
-# variety at d=3 and d=4 -> cascade+slope is FEASIBLE there (no false kill).
+# The raw free quotient polynomials fit cap d=3, so this same point embeds in
+# every larger raw cap; cascade+slope is therefore feasible for all d>=3.
 degfit = (sp.Poly(Ax[2], E).degree() <= 3 and sp.Poly(Ax[-1], E).degree() <= 4
           and sp.Poly(Ax[-2], E).degree() <= 5)
 check(degfit, "witness: coeff degrees fit cap d=3 (hence all d>=3): cascade+slope feasible d>=3")
@@ -332,19 +418,19 @@ print("\n--- 4. THE d=3 VERDICT: FULL system is the UNIT IDEAL, both branches (e
 # =====================================================================
 for br in ("A", "B"):
     sysd, fv = systems(*W2, 3, br)
-    n_full = len([e for e in sysd["FULL"] if sp.expand(e) != 0])
-    red, vs = linear_reduce(sysd["FULL"], fv)
-    print(f"    d=3 br {br}: FULL {n_full} eqs / {len(fv)} vars  -->  reduced {len(red)} eqs / {len(vs)} vars")
-    check(is_unit(red, vs, domain=sp.QQ),
-          f"d=3 br {br}: FULL combined system = UNIT IDEAL over QQ  =>  INFEASIBLE")
+    valid, n_eqs, n_vars, n_nonzero = verify_qq_unit_certificate(sysd["FULL"], fv, br)
+    print(f"    d=3 br {br}: exact identity uses {n_nonzero}/{n_eqs} multipliers"
+          f" in QQ[y0,...,y{n_vars - 1}]")
+    check(valid,
+          f"d=3 br {br}: committed QQ identity proves FULL = UNIT  =>  INFEASIBLE")
 
 # =====================================================================
-print("\n--- 5. d=4 CONFIRMATION: FULL system UNIT, both branches ---")
+print("\n--- 5. optional d=4 confirmation of the reported full-system verdict ---")
 # =====================================================================
-# The raw d=4 system (73 eqs / ~32 vars) is beyond a quick sympy Groebner, so the
-# EXACT d=4 verdict is carried by msolve 0.10.1 (reduced GB = [1] over QQ; [-1] --
-# no solution -- over five primes in [10^4,10^5], both branches; see w2-verdict.md).
-# Here we reproduce it opportunistically if msolve is on PATH; otherwise we note it.
+# The raw d=4 system (73 eqs / ~32 vars) is beyond a quick SymPy Groebner.
+# Reproduce the reported exact-QQ result and one modular check opportunistically
+# when msolve is on PATH; otherwise record explicit SKIPs. The reported five-prime
+# sweep is documentary and is not executed here; see w2-verdict.md.
 import shutil
 import subprocess
 import tempfile
@@ -352,24 +438,33 @@ import os
 
 
 def msolve_verdict(eqs, fv, char):
-    """Return 'UNIT' / 'FEASIBLE' / 'ERR' via msolve; requires msolve on PATH."""
+    """Return UNIT only for msolve's complete [-1] output; errors propagate."""
     xs = sp.symbols(f"y0:{len(fv)}")
     sub = dict(zip(fv, xs))
     with tempfile.NamedTemporaryFile("w", suffix=".ms", delete=False) as f:
         inp = f.name
         f.write(",".join(str(x) for x in xs) + "\n" + str(char) + "\n")
-        f.write(",\n".join(str(sp.expand(e.subs(sub))).replace(" ", "")
+        f.write(",\n".join(sp.sstr(sp.expand(e.subs(sub))).replace("**", "^").replace(" ", "")
                            for e in eqs if sp.expand(e) != 0) + "\n")
     out = inp + ".out"
     try:
-        subprocess.run(["msolve", "-f", inp, "-o", out], check=True,
-                       stderr=subprocess.DEVNULL, timeout=1200)
-        r = open(out).read().strip()
+        proc = subprocess.run(["msolve", "-f", inp, "-o", out], check=True,
+                              capture_output=True, text=True, timeout=1200)
+        if not os.path.exists(out):
+            raise RuntimeError("msolve completed without creating its output file")
+        with open(out, encoding="utf-8") as f:
+            result = f.read().strip()
+        if result == "[-1]":
+            return "UNIT"
+        raise RuntimeError(
+            "msolve returned an unrecognized/non-unit result; "
+            f"stdout={proc.stdout[-500:]!r}, stderr={proc.stderr[-500:]!r}, "
+            f"output={result[:500]!r}"
+        )
     finally:
         for p_ in (inp, out):
             if os.path.exists(p_):
                 os.remove(p_)
-    return "UNIT" if r.startswith("[-1]") else "FEASIBLE(" + r[:20] + ")"
 
 
 if shutil.which("msolve"):
@@ -380,14 +475,23 @@ if shutil.which("msolve"):
         check(msolve_verdict(sysd["FULL"], fv, 65003) == "UNIT",
               f"d=4 br {br}: FULL = UNIT mod 65003 via msolve")
 else:
-    print("    [msolve not on PATH; d=4 exact verdict is in w2-verdict.md.")
-    print("     The DECISIVE kill is the d=3 exact-QQ result above (section 4).]")
+    skip("d=4 branches A/B: exact QQ via optional msolve (msolve not on PATH)")
+    skip("d=4 branches A/B: mod 65003 via optional msolve (msolve not on PATH)")
 
+# These computations are reported in the memo but are not encoded by this verifier.
+skip("documentary five-prime d=3 sweep (no committed inputs/outputs)")
+skip("documentary five-prime d=4 sweep (no committed inputs/outputs)")
+skip("documentary d=5 mod 65003 computation (no committed inputs/outputs)")
+
+passed = [label for status, label in _STATUSES if status == "PASS"]
+skipped = [label for status, label in _STATUSES if status == "SKIP"]
 print("\n" + "=" * 70)
-print("VERDICT: the W2 combined system (positive cascade + Q_0=1 + negative tail")
-print("Q_-1..Q_-5 + membership) is INFEASIBLE at d=3 AND d=4, both tail branches.")
-print("No slope-1 datum clears the tail: the band-3 exotic DC1 construction route")
-print("dies at bounded degree.  SCOPE: bounded d in {3,4}; arbitrary degree OPEN.")
+print("EXECUTED RESULT: exact SymPy checks passed, including FULL d=3 over QQ")
+print("on both tail branches. No encoded solution exists at raw cap d=3 in")
+print("the fixed normalized W2 orientation/gauge. Arbitrary degree remains OPEN.")
+print(f"STATUS: {len(passed)} PASS, {len(skipped)} SKIP; any failure exits immediately")
+for label in skipped:
+    print(f"  SKIP: {label}")
 print("=" * 70)
 print(f"\n(total {time.time() - _T0:.1f}s)")
-print("ALL W2 VERDICT CHECKS PASSED")
+print("W2 VERDICT EXECUTED CHECKS PASSED; OPTIONAL/DOCUMENTARY ITEMS SKIPPED ABOVE")

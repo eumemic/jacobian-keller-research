@@ -1,6 +1,6 @@
-# W2 verdict: the combined slope+tail system is infeasible at d=3 and d=4 — the band-3 exotic construction route dies at bounded degree
+# W2 bounded verdict: no encoded slope+tail solution at raw cap d=3
 
-**INDEPENDENTLY DERIVED — EXACT ALGEBRA (two independent solvers) — NOT PEER REVIEWED — BAND-SCOPED — BOUNDED DEGREE**
+**INDEPENDENTLY DERIVED — EXACT ALGEBRA — NOT PEER REVIEWED — FIXED ORIENTATION/GAUGE — BOUNDED RAW CAP**
 
 This memo settles the **single finite feasibility question** all three W2 sibling
 flanks reduced to. W2 is the `r=-4` exceptional member of the band-3 step-2 exotic
@@ -16,31 +16,34 @@ The question: **does any slope-1 datum simultaneously satisfy, at a common raw
 degree cap `d`, the positive cascade `Q_4=Q_3=Q_2=Q_1=0`, the moment unit
 `Q_0=1` (`<=> R(1)=1, R(-1)=-1`), the full negative tail `Q_-1=...=Q_-5=0`, and
 all Weyl memberships?** A "yes" would assemble a **DC1 counterexample candidate
-pair** and trigger the escalation protocol. A "no" kills the current construction
-route.
+pair** and trigger the escalation protocol. A "no" establishes only that no
+encoded solution exists at the tested raw cap(s).
 
 ## Verdict
 
-> **INFEASIBLE. The combined system is the UNIT IDEAL at `d=3` AND `d=4`, on BOTH
-> tail branches — exactly over `QQ`, by two independent Gröbner engines
-> (`msolve 0.10.1` and `sympy`), and modulo five primes in `[10^4,10^5]`.**
+> **BOUNDED VERDICT.** In the fixed normalized W2 orientation/gauge, the encoded
+> combined system is the unit ideal at raw cap `d=3`, on both tail branches, by
+> exact `QQ` polynomial identities checked directly against the reconstructed FULL
+> systems. An exact `d=4` result was reported
+> externally and can be checked by the verifier only when optional `msolve 0.10.1`
+> is installed; without committed run artifacts or a completed optional run, it is
+> documentary rather than part of the self-contained verdict.
 >
-> No slope-`1` datum clears the negative tail at raw-degree cap `3` or `4`. The
-> slope `R(1)=1` is achievable and the tail is feasible **separately**, but their
-> **intersection is empty**. **No DC1 counterexample pair materializes; the
-> escalation orders were not triggered; no Weyl pair and no counterexample is
-> constructed.**
+> Thus no encoded slope-`1` datum clears the negative tail at raw cap `d=3`.
+> Separate feasibility plus the empty conjunction is established only to the
+> extent stated in §3; this is not an arbitrary-degree joint theorem. No DC1
+> candidate pair materializes, and no Weyl pair or counterexample is constructed.
 >
-> **Scope (honest).** This is a **bounded-degree** kill (`d in {3,4}` exact,
-> `d=5` mod-`p`). It does **NOT** close W2 at arbitrary degree. It kills the
-> finite-search *construction route* (find a slope-`1` datum that also clears the
-> tail at some small cap) through the degrees a naive search would reach, and
-> shifts the remaining burden to a **structural / degree-free argument** — the
-> finite computation cannot decide arbitrary degree.
+> **Scope.** The self-contained exact rational result is bounded to raw cap `d=3`.
+> The next unverified exact rational raw cap is `d=4`; `d=5` modulo `65003` is a
+> reported finite-field computation, not a proof over `QQ`. Nothing here closes
+> W2 at arbitrary degree or any other Band-3 top.
 
-Exact certificate: [`verify_w2_verdict.py`](verify_w2_verdict.py) (ends
-`ALL W2 VERDICT CHECKS PASSED`). Base commit `66156f2`; all load-bearing
-lambda-wave / cascade facts are re-verified in file, not merely cited.
+Committed certificate: [`verify_w2_verdict.py`](verify_w2_verdict.py), with the
+exact rational multiplier witness in
+[`w2_d3_qq_certificates.txt`](w2_d3_qq_certificates.txt). Its final status states
+exactly what ran, says only that the **executed** checks passed, and lists every
+optional or documentary item as `SKIP`. Base commit `66156f2`.
 
 ## 0. The combined system and the two exhaustive tail branches
 
@@ -62,54 +65,71 @@ in branch B). At `d=3`: branch A has **26** free parameters, branch B **25**; th
 `FULL` system is **62** scalar equations. This is exactly the "62-eq/26-var d=3
 system that did not terminate" in [`w2-decisive.md`](w2-decisive.md) §5b.
 
-## 1. Stage 1 — the mod-`p` sweep (decisive-in-expectation)
+## 1. Reported external mod-`p` sweep (documentary, not reproduced here)
 
-Reducing the full combined system modulo five primes
-`p in {10007, 31013, 50021, 65003, 99013}` and running `msolve` over `GF(p)`:
+The original computation report says the full combined system was reduced modulo
+five primes `p in {10007, 31013, 50021, 65003, 99013}` and run through `msolve`
+over `GF(p)`:
 
 | system (`d=3`) | branch A | branch B |
 |---|---|---|
 | `FULL` (cascade + `Q_0=1` + tail + membership) | **`[-1]` (UNIT) mod all 5** | **`[-1]` (UNIT) mod all 5** |
 
-`msolve`'s `[-1]` = "no solution in the algebraic closure" = unit ideal. A uniform
-`[-1]` across five large primes is a **strong kill signal** (a proper `QQ` ideal
-would reduce to a proper ideal at all but finitely many primes). Each solve took
-`<0.02 s`. Proceeding to the exact verdict with the kill prior.
+`msolve`'s `[-1]` denotes no solution in the algebraic closure, hence the unit
+ideal over that finite field. These timings and outputs are an **external
+computation report**: no per-prime input/output artifacts are committed, and the
+verifier does not execute this five-prime sweep. Reproduction requires generating
+the relevant `FULL` system for each branch/cap in msolve format (variable line,
+characteristic line, comma-separated equations), then running
+`msolve -f INPUT.ms -o OUTPUT.out` and retaining inputs, tool/version metadata,
+and outputs beginning `[-1]`. Do not treat this report as the exact-`QQ` proof.
 
-## 2. Stage 3 — the exact `QQ` verdict (two independent engines)
+## 2. Exact `QQ` verdict: committed d=3 check and external cross-checks
 
-**`msolve` over `QQ` (char 0).** The reduced Gröbner basis (`-g 2`) of the `FULL`
-`d=3` system is literally `[1]` — a length-one basis, the constant `1` — for
-**both** branch A and branch B. Hence `1` is in the ideal: **infeasible over
-`QQ`** (and over `C`). The default parametrization output is `[-1]` for both.
+**Reported external `msolve` over `QQ` (char 0).** The original report records a
+reduced Gröbner basis (`-g 2`) of `[1]` for the `FULL` `d=3` system on both
+branches, with default output `[-1]`. No raw msolve input/output is committed, so
+this is documentary corroboration rather than a second committed certificate.
 
-**`sympy`, independent, via structure reduction.** `sympy` cannot Gröbner the raw
-`62`-eq/`26`-var system in a sane budget (the very reason this task existed). A
-**feasibility-preserving linear elimination** — repeatedly solve any equation
-`c*v + rest = 0` with `c` a nonzero **constant** and `rest` free of `v`, via the
-variety bijection `v = -rest/c` (so `V(.)` is empty iff the reduced `V(.)` is
-empty; the unit-ideal verdict is preserved **exactly**) — shrinks the system to a
-size `sympy` handles:
+**Committed exact rational identity.** `sympy` cannot Gröbner the raw
+`62`-eq/`26`-var system in a sane budget (the very reason this task existed).
+Instead, [`w2_d3_qq_certificates.txt`](w2_d3_qq_certificates.txt) commits sparse
+Nullstellensatz multipliers `h_i` for the freshly reconstructed `FULL` equations
+`f_i`. The principal verifier renames the free parameters deterministically to
+`y0,...`, parses every multiplier coefficient in `QQ`, and checks
 
-| `d=3` | raw | reduced | independent `sympy` verdict |
-|---|---|---|---|
-| branch A | 62 eq / 26 var | 51 eq / **16 var** | `groebner` residual `= [1]` over `QQ` (unit) |
-| branch B | 62 eq / 25 var | 38 eq / **12 var** | `groebner` residual `= [1]` over `GF(32003), GF(65003), QQ` (unit) |
+```text
+sum_i h_i f_i = 1
+```
 
-The reducer is validated at `d=2` against a **direct** full-system Gröbner
-(`reduced-unit == direct-unit`). **Two solvers, exact `QQ`, both branches: UNIT.**
+by exact multivariate coefficient collection. Branch A uses 17 nonzero
+multipliers among the 62 equations in `QQ[y0,...,y25]`; branch B uses 14 among 62
+in `QQ[y0,...,y24]`. This identity directly implies `1` belongs to each ideal.
+The witnesses were generated with Singular, but the generator is not required or
+trusted by the verifier: only the independently checked identities matter.
+
+The feasibility-preserving linear reducer remains as a `d=2` control and is
+validated there against a **direct** full-system Gröbner
+(`reduced-unit == direct-unit`). The committed, self-contained exact result is
+therefore: **exact polynomial identities over `QQ`, d=3, both branches: UNIT**.
+The reported msolve result is a solver cross-check without committed artifacts.
 
 ## 3. The controls — this is not a false kill
 
-The kill is meaningful only because the two ingredients are *individually*
-satisfiable at `d=3`; the machine distinguishes feasible from infeasible:
+The committed controls distinguish several feasible and infeasible systems, but
+they do **not** establish every entry of the former d=3-by-branch table. The exact
+committed evidence is:
 
-| system, `d=3` | branch A | branch B | meaning |
-|---|---|---|---|
-| positive cascade only | FEASIBLE (pos-dim) | FEASIBLE | solutions exist |
-| cascade + tail (no `Q_0=1`) | FEASIBLE | FEASIBLE | tail non-obstructing alone |
-| cascade + `Q_0=1` (no tail) | **FEASIBLE** | **FEASIBLE** | **slope `R(1)=1` achievable** |
-| `FULL` (all together) | **UNIT** | **UNIT** | **intersection empty** |
+| control | committed evidence | scope |
+|---|---|---|
+| cascade + tail, no `Q_0=1` | proper ideal | `d=1`, both branches in this verifier; `d=2` in `verify_w2_tail.py` |
+| cascade + `Q_0=1`, no tail | explicit exact witness | `d=3`, branch B (`a_-3=0`, free `b_-3`) |
+| `FULL` conjunction | unit ideal | `d=3`, both branches |
+
+Thus separate feasibility is established, and the conjunction is empty, but a
+claim of separate d=3 feasibility on **both** branches would exceed the committed
+controls. Branch A cascade+slope feasibility is not needed for the bounded unit
+verdict and is not asserted here.
 
 The **slope flip** is the crux. At `d<=2` the row "cascade + `Q_0=1`" is the
 **UNIT** ideal (the slope alone kills — `R(1)` is forced `0 != 1`); at `d=3` it
@@ -128,79 +148,96 @@ Q_-1, Q_-2, Q_-3, Q_-4, Q_-5  all != 0   at that point
 ```
 
 (each carrying its forced membership factor `(E)_1,(E)_2,(E)_3,(E)_4,(E)_5`
-respectively). Because that datum's coefficient degrees fit cap `d` for every
-`d>=3`, it also witnesses "cascade + `Q_0=1`" **feasible** at `d=3` and `d=4`.
-This is the point [`w2-decisive.md`](w2-decisive.md) §5b already found not to
+respectively). Because that datum's **raw free-polynomial degrees** fit cap `d` for every
+`d>=3`, it witnesses "cascade + `Q_0=1`" feasible in branch B at those caps.
+The cap does not bound every resulting coefficient polynomial: membership factors
+and the solved cascade formulas raise degrees (for example `a_-1` and solved
+`b` coefficients can exceed `d`). This is the point [`w2-decisive.md`](w2-decisive.md) §5b already found not to
 extend; the present memo upgrades "this particular point fails" to "**the entire
-slope-`1` fiber fails**, exactly, at `d=3` and `d=4`".
+slope-`1` fiber fails**, exactly, at `d=3`". The analogous `d=4` conclusion remains
+an external report unless the optional computation is actually run.
 
-## 4. Stage 4 — `d=4` (and `d=5`) confirmation
+## 4. Optional d=4 reproduction and reported d=5 evidence
 
-Per the escalation protocol, `d=4` was pushed:
+The original external report records:
 
-| system | branch A | branch B |
-|---|---|---|
-| `FULL`, `d=4`, `QQ` (msolve, exact) | **UNIT** | **UNIT** |
-| `FULL`, `d=4`, mod 5 primes | `[-1]` all 5 | `[-1]` all 5 |
-| `FULL`, `d=5`, mod `65003` | `[-1]` (UNIT) | `[-1]` (UNIT) |
+| system | branch A | branch B | publication status |
+|---|---|---|---|
+| `FULL`, `d=4`, `QQ` (msolve, exact) | **UNIT** | **UNIT** | optionally reproducible by the verifier when `msolve` is on `PATH` |
+| `FULL`, `d=4`, mod 5 primes | `[-1]` all 5 | `[-1]` all 5 | documentary; no artifacts committed |
+| `FULL`, `d=5`, mod `65003` | `[-1]` | `[-1]` | documentary finite-field evidence only |
 
-`d=4` is **73** equations in **32** (branch A) / **31** (branch B) free
-parameters. So the intersection is empty **exactly** at `d=3` and `d=4`, and
-mod-`p` at `d=5`.
+`d=4` has 73 equations in 32 (branch A) / 31 (branch B) free parameters. With
+`msolve` installed, the committed verifier generates the `d=4` systems and runs
+exact char 0 and char 65003 via `msolve -f INPUT -o OUTPUT`; absent `msolve`, both
+are explicit `SKIP`. It does not run the five-prime sweeps or `d=5`.
+
+The self-contained exact rational ledger stops at `d=3`; `d=4` is the next
+unverified exact rational raw cap unless the optional msolve run completes. The
+reported char-65003 `d=5` result is not a `QQ` proof.
 
 ## 5. What this settles, and what it does not
 
-**Reading with the siblings.** [`w2-theory.md`](w2-theory.md) proved every
-*functional-method* obstruction on W2 fails (reflection does not close it; the
-point-annihilator dual `{ev_-1,ev_0,ev_1}` is complete with no hidden functional;
-the moment slope is achievable), leaving exactly the combined feasibility open.
+**Reading with the siblings.** [`w2-theory.md`](w2-theory.md) showed that reflection does not close W2 and that
+the complete dual of the W2 filler quotient is the point-annihilator span
+`{ev_-1,ev_0,ev_1}`; no additional functional **in that dual** remains. It did not
+rule out every conceivable linear invariant of larger systems. Together with the
+achievable moment slope, this left the encoded combined feasibility open.
 [`w2-negative-tail.md`](w2-negative-tail.md) proved the tail is a *proper*
 (feasible) ideal on its own at `d=1,2`. [`w2-decisive.md`](w2-decisive.md) proved
-`R(1)=1` achievable at `d=3`. **This memo closes the loop: the SIMULTANEOUS system
-is the unit ideal at `d=3` and `d=4`.** The achievability of the slope and the
-feasibility of the tail are real, but they are **not co-realizable** at these
-degrees.
+`R(1)=1` achievable at `d=3`. **This memo closes the self-contained loop at `d=3`:
+the simultaneous system is the unit ideal on both branches.** The analogous
+`d=4` result is externally reported and only optional here.
 
-**The DC1 consequence.** No candidate pair exists at `d in {3,4}`, so `[D,X]=1`,
-the char-`p` sieve, and the `A_1`-generation test were **not** run — there is
-nothing to feed them. The band-3 exotic hatch does **not** yield a DC1
-counterexample by this route at bounded degree.
+**The DC1 consequence.** No encoded candidate pair exists at raw cap `d=3` in
+this fixed normalized W2 orientation/gauge, so `[D,X]=1`, the char-`p` sieve, and
+the `A_1`-generation test were not run. This says only that no encoded solution
+exists at that cap; it does not kill a construction route at arbitrary degree or
+address other Band-3 tops.
 
 **Honest ledger — proved vs bounded.**
 
-- **Proved (exact algebra over `QQ`, this memo, machine-checked by two independent
-  solvers):** the W2 combined system (positive cascade `∧` `Q_0=1` `∧`
-  `Q_-1..Q_-5=0` `∧` membership) is the **unit ideal** at raw-degree cap `d=3` and
-  `d=4`, on **both** tail branches. Equivalently: no slope-`1` datum with
-  coefficient degrees `<= 3` (resp. `<= 4`) clears the negative tail.
-- **Bounded evidence (mod-`p`):** the same kill at `d=5` (both branches, prime
-  `65003`); and the `d=3,4` kill modulo five primes in `[10^4,10^5]`.
-- **Controls (no false kill):** cascade, cascade+tail, and cascade+`Q_0=1` are all
-  **feasible** at `d=3` (the last one flips from unit at `d<=2`); an explicit
-  slope-`1` witness point satisfies cascade+slope+membership and fails the tail.
+- **Committed exact `QQ` certificate:** the W2 combined system (positive cascade
+  `∧` `Q_0=1` `∧` `Q_-1..Q_-5=0` `∧` membership) is the unit ideal at raw cap
+  `d=3`, on both tail branches. The sparse identities are checked directly against
+  all 62 freshly reconstructed FULL equations; no d=3 reduction is load-bearing.
+- **Exact `QQ` result with optional reproduction:** the same unit result at raw cap
+  `d=4`, both branches, is reported from msolve and reruns when optional msolve is
+  available; otherwise the verifier marks it `SKIP`.
+- **Reported external finite-field evidence:** `d=5` at prime `65003`, and `d=3,4`
+  at five listed primes. No machine-checkable artifacts for these sweeps are
+  committed; they remain documentary and are not `QQ` proofs.
+- **Controls:** cascade+tail is committed feasible at `d=1` in both branches here
+  and at `d=2` in the sibling tail verifier. An explicit branch-B slope-`1`
+  witness at raw cap `d=3` satisfies cascade+slope+membership and fails the tail.
 
 **Open / NOT claimed (explicit).**
-- **Arbitrary degree.** Whether some slope-`1` datum of raw degree `>= 6` clears
-  the tail is **not** decided here. A finite Gröbner search cannot; closing W2 at
+- **Arbitrary degree.** Whether some slope-`1` datum at a higher raw cap clears
+  the tail is **not** decided here. The next unverified exact rational raw cap is
+  `d=4`; the reported `d=5` modular result is not a `QQ` proof. A finite Gröbner
+  search cannot settle arbitrary degree; closing W2 at
   arbitrary degree now requires a **structural (degree-free)** argument — the
   natural next target, analogous to the `lambda_r` theorem that closed
   `r != -4` at arbitrary degree. The infinite-dimensional
   `Im L_K ∩ Im L_H` ([`../dc1-program/two-filler-cross-cancellation.md`](../dc1-program/two-filler-cross-cancellation.md))
   is untouched.
-- The band-`k` hatches (`k >= 4`, [`w2-theory.md`](w2-theory.md) §3) reduce to the
-  same slope gate `R(1)=1`; their combined slope+tail feasibility is **not**
-  addressed here (a separate computation per band).
+- A canonical common-root hatch family exists for every `k>=3`. Band 4 has a
+  checked analogous slope gate, but uniqueness of one hatch per band, reduction
+  of all hatches to one gate, and any uniform higher-band induction role are
+  conjectural. No higher-band combined slope+tail system is addressed here.
 - Everything outside the W2 combined system: the non-AP `deg a_3 >= 6` exotic
   tops, all of band `>= 4`, DC1, JC2. No Weyl pair, no counterexample.
 
 **Exceptional-locus / search-space honesty.** Both `Q_-6` branches are covered
 (`a_-3=0` and `a_-3 != 0` with `b_-3=mu_3 a_-3`), and they are exhaustive. The
-free data was **not** otherwise bounded: within each branch the FULL space of raw
-degree-`<= d` coefficients (all of `a_2,a_1,a_0,a_-1,a_-2,a_-3`, `mu_3`, and the
-`b_0` cross-cancellation kernel) was carried symbolically — no `a_-3`-shape
-restriction and no kernel-parameter truncation beyond the degree cap `d` itself.
-The only bound is the degree cap, and it is the reported scope (`d in {3,4}`
-exact, `d=5` mod-`p`).
+free data was not otherwise specialized: within each branch, the raw free
+polynomials for `a_2,a_1,a_0` and the membership quotients of `a_-1,a_-2,a_-3`
+(or `b_-3` in branch B), together with `mu_3` and retained solver kernels, were
+carried symbolically up to raw cap `d`. The cap applies to those raw free
+polynomials **after factoring out required membership factors**. Consequently
+`a_-j` and cascade-solved `b` coefficients can have degrees greater than `d`;
+phrases such as "all coefficient degrees <= d" are incorrect. No additional
+`a_-3` shape restriction or kernel specialization was imposed.
 
 ## 6. Verification
 
@@ -208,14 +245,17 @@ exact, `d=5` mod-`p`).
 uv run --with sympy python research/band3/verify_w2_verdict.py
 ```
 
-Exact `sympy`. §0 machinery (`Q_m = [D,X]_m` for all `m in [-6,6]`,
-`Q_0=(T-1)G`); §1 the explicit slope-`1` witness (cascade+slope+membership hold,
-tail fails); §2 the `d<=2` controls (slope kills alone; tail feasible alone); §3
-reducer validation at `d=2`; §4 **the `d=3` verdict** — the FULL system reduces to
-`[1]` over `QQ` on both branches (INFEASIBLE); §5 the `d=4` confirmation
-(reproduced via `msolve` if present; exact-`QQ` values recorded above). A
-successful run ends `ALL W2 VERDICT CHECKS PASSED`.
+Exact SymPy executes §0 machinery, §1 the explicit branch-B slope witness, §2
+low-cap controls, §3 reducer validation, and §4 the FULL `d=3` unit test over `QQ`
+on both branches. Section 5 runs `d=4` exact `QQ` and mod `65003` only when
+`msolve` is on `PATH`; otherwise both are explicit `SKIP`. The five-prime sweeps
+and `d=5` report are always listed as documentary `SKIP` because no committed
+artifact path is available. The final line is
+`W2 VERDICT EXECUTED CHECKS PASSED; OPTIONAL/DOCUMENTARY ITEMS SKIPPED ABOVE`,
+preceded by exact PASS/SKIP counts.
 
-The primary exact-`QQ` `d=4` certificate and the mod-`p` sweeps were produced by
-`msolve 0.10.1`; the `d=3` kill is reproduced independently and self-containedly by
-`sympy` in the verifier via the feasibility-preserving reduction.
+The committed self-contained exact certificate consists of direct `QQ` identities
+against the reconstructed FULL `d=3` systems.
+The exact-`QQ` `d=4` result is optionally reproducible with msolve. The five-prime
+and `d=5` statements remain external reports until inputs, outputs, versions, and
+commands are committed.
