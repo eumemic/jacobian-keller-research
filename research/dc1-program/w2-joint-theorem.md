@@ -3,6 +3,21 @@
 **INDEPENDENTLY DERIVED — EXACT ALGEBRA / MACHINE-CHECKED IDENTITIES — NOT PEER
 REVIEWED — BAND-SCOPED**
 
+> **CORRECTION (see [`joint-covector.md`](joint-covector.md) §5).** Two `msolve`
+> feasibility sub-claims of this memo's §S8 were produced with Python `**`
+> exponents, which `msolve 0.10.1` silently misparses
+> ([`hatch-census.md`](hatch-census.md) §5). Re-run with `^`:
+> 1. §3's *"a special slope-`1` sub-locus survives `Q_-1`; the uniform kill is
+>    the full tail"* is **REFUTED** — `cascade+Q_0=1+Q_-1` is the **unit ideal**
+>    at `d=3` and `d=4`, both branches (`QQ` + mod `p` + `sympy` cross-check);
+>    `[Phi ; M_-1]` alone is the uniform kill at those caps.
+> 2. §2's machine pillar *"`R(1)` not in `sqrt(cascade+tail)`"* **also flips**
+>    (`R(1) ∈ sqrt(cascade+tail)` per `msolve` `^`, `QQ` + mod `p`) — which
+>    would make the *"not slope-forcing"* framing of §2 **wrong** and reopen
+>    slope-forcing as W2's mechanism. This flip is a heavy single-engine verdict
+>    and is **FLAGGED, pending independent re-derivation** — do not rely on
+>    either direction of §2's "free modulus" claim until it lands.
+
 This memo attacks architecture step 1: turn the bounded `d<=4` Gröbner kill of the
 W2 combined system ([`../band3/w2-verdict.md`](../band3/w2-verdict.md)) into a
 degree-free theorem. It does **not** fully close W2 at arbitrary degree, but it
