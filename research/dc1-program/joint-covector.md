@@ -217,6 +217,15 @@ under `**` (`verify §S9`).
 > the "not slope-forcing" framing is trusted or overturned. Reproduce:
 > `cascade+tail + {1 - t·R(1)}` via `msolve` with `^` (see `verify_w2_joint.py`
 > §S8, which now carries the `^` fix at line 570).
+>
+> **RESOLVED ([`slope-forcing-verdict.md`](slope-forcing-verdict.md)):
+> adjudicated TRUE**, both branches, two independent engines (`sympy`
+> parametrized reduction + `msolve` `^` full system) over `QQ` + two primes,
+> non-vacuously (the origin lies on `cascade+tail`). On the cascade
+> `R(1) = -108·a2_0·am1_3`; the tail at depth `Q_-1..Q_-3` forces it to zero
+> (`Q_-1` alone does not — explicit witness with `R(1)=-432`). The
+> `w2-joint-theorem.md` §2 headline is overturned; this memo's §3–§4 Fredholm
+> results stand alongside as a distinct mechanism.
 
 ## 6. Evidence ledger — proved vs bounded vs refuted
 
@@ -265,12 +274,14 @@ under `**` (`verify §S9`).
   data under a fixed normalisation), so there is no universal constant analogous to
   the W1 `lambda_0(E-R)=4`.
 
-**Flagged (recorded, NOT claimed — needs independent re-derivation):**
+**Flagged — since RESOLVED (see [`slope-forcing-verdict.md`](slope-forcing-verdict.md)):**
 - The `w2-joint-theorem.md` §2 pillar *"`R(1)` not in `sqrt(cascade+tail)`"* also
   flips under `^` (`R(1) ∈ sqrt(cascade+tail)` per `msolve` `QQ` + mod `p`;
   `cascade+tail` appears feasible), which would make *"`R(1)=0` on `cascade+tail`"*
-  **true** and reopen whether W2's kill is slope-forcing (§5). A single heavy
-  `msolve`-only verdict; **flagged**, not used here (see §5).
+  **true** and reopen whether W2's kill is slope-forcing (§5). Originally a single
+  heavy `msolve`-only verdict, flagged and not used here. **Adjudicated TRUE**
+  (two engines, both branches, `QQ` + two primes, non-vacuous) — the tail **is**
+  slope-forcing at depth `Q_-1..Q_-3`; see the §5 resolution note.
 
 **Open / not claimed:**
 - The Joint Filler Covector Lemma at **arbitrary positive-data degree** (`d>4`):

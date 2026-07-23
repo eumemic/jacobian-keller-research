@@ -11,12 +11,16 @@ REVIEWED — BAND-SCOPED**
 >    the full tail"* is **REFUTED** — `cascade+Q_0=1+Q_-1` is the **unit ideal**
 >    at `d=3` and `d=4`, both branches (`QQ` + mod `p` + `sympy` cross-check);
 >    `[Phi ; M_-1]` alone is the uniform kill at those caps.
-> 2. §2's machine pillar *"`R(1)` not in `sqrt(cascade+tail)`"* **also flips**
->    (`R(1) ∈ sqrt(cascade+tail)` per `msolve` `^`, `QQ` + mod `p`) — which
->    would make the *"not slope-forcing"* framing of §2 **wrong** and reopen
->    slope-forcing as W2's mechanism. This flip is a heavy single-engine verdict
->    and is **FLAGGED, pending independent re-derivation** — do not rely on
->    either direction of §2's "free modulus" claim until it lands.
+> 2. §2's machine pillar *"`R(1)` not in `sqrt(cascade+tail)`"* is **REFUTED —
+>    ADJUDICATED** ([`slope-forcing-verdict.md`](slope-forcing-verdict.md)):
+>    `R(1)=0` **identically** on the `cascade+tail` variety at `d=3`, both
+>    branches, two independent engines (`sympy` parametrized + `msolve` `^` full
+>    system), over `QQ` + `GF(65003)` + `GF(32003)`, non-vacuously (the variety
+>    is nonempty). On the cascade, `R(1) = -108·a2_0·am1_3`, and the tail at
+>    depth `Q_-1..Q_-3` forces it to zero. So §2's *"not slope-forcing / free
+>    modulus"* headline is **WRONG** — the tail **is** slope-forcing — while the
+>    §3–§4 Fredholm/filler localization of the `{Q_0=1, Q_-1}` kill stands
+>    alongside it as a distinct, coexisting mechanism.
 
 This memo attacks architecture step 1: turn the bounded `d<=4` Gröbner kill of the
 W2 combined system ([`../band3/w2-verdict.md`](../band3/w2-verdict.md)) into a
