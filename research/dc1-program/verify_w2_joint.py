@@ -18,10 +18,9 @@ WHAT THIS FILE PROVES / RECORDS
       the level-3 terms drop because a3(0)=a3(-4)=0 and b2(0)=b2(-3)=0.   (arb deg)
   S3. BRANCH-B LINEARITY: with a_-3=0, the two fillers (a_-2=(E)_2 V, b_-3=(E)_3 C)
       enter Q_0-1 and Q_-1,...,Q_-4 LINEARLY; only Q_-5 is bilinear in them. (arb deg)
-  S4. REFUTATION of the naive target: R(1)=G(1) does NOT vanish on the cascade+tail
-      variety -- it is a nonvanishing free modulus there (so "R(1)=0 on cascade+tail"
-      is FALSE).  Also: NO constant-cofactor linear Nullstellensatz certificate
-      exists even at the (infeasible) d=2 system.                        (bounded)
+  S4. NONLINEARITY CHECK: NO constant-cofactor linear Nullstellensatz certificate
+      exists even at the (infeasible) d=2 system.  This says only that the
+      obstruction is nonlinear; it does not refute slope-forcing.              (bounded)
   S5. THE LOCALIZED KILL: at an explicit slope-1 datum, {Q_0=1, Q_-1} alone is the
       UNIT ideal in the fillers, on BOTH branches -- Q_-2..Q_-5 are NOT needed --
       while {Q_0=1} alone is feasible.                                    (bounded)
@@ -287,7 +286,7 @@ check(total_deg_in(q_m(Ab, Bb, -5), fillB) == 2,
       "branch B: Q_-5 is BILINEAR in the two fillers (the sole nonlinear tail eq)")
 
 # =====================================================================
-print("\n--- S4. REFUTATION of the naive target 'R(1)=0 on cascade+tail' ---")
+print("\n--- S4. NONLINEARITY CHECK: no constant-cofactor linear certificate ---")
 # =====================================================================
 # (a) NO constant-cofactor linear Nullstellensatz certificate for the (infeasible)
 #     d=2 full system: 1 is NOT in the QQ-span of node-evaluations of the
@@ -358,8 +357,8 @@ check(not has_lin_cert,
 print("\n--- S5. THE GENERIC LOCALIZED KILL: {Q_0=1, Q_-1} unit at the explicit"
       " slope-1 datum, both branches ---")
 # =====================================================================
-# At the explicit (generic) slope-1 datum, the FIRST tail eq already kills; the
-# symbolic sub-locus that survives Q_-1 (S8) needs deeper tail.
+# At the explicit slope-1 datum, the FIRST tail equation already kills. Corrected
+# msolve syntax also makes this kill uniform on the bounded d=3 system (S8).
 # explicit slope-1 datum (w2-decisive Section 4; a_-3=0, so a branch-B point).
 Apt = {
     3: a3_w2,
@@ -526,8 +525,7 @@ for i, sl in enumerate(slices):
 check(npts >= 5, f"collected {npts} distinct slope-1 data (>=5): generic gap=1 evidence at d=3")
 
 # =====================================================================
-print("\n--- S8. symbolic d=3: FULL tail is the uniform kill; Q_-1 kills only the"
-      " generic datum; R(1) not forced 0 ---")
+print("\n--- S8. corrected-syntax bounded adjudication (optional msolve) ---")
 # =====================================================================
 import shutil
 import subprocess
@@ -589,52 +587,28 @@ if shutil.which("msolve"):
         tail = []
         for m in (-1, -2, -3, -4, -5):
             tail += coeffs(q_m(A, B, m))
-        # UNIFORM kill needs the FULL tail: {cascade+Q_0=1+Q_-1} alone is NOT the
-        # unit ideal (a special slope-1 sub-locus survives Q_-1 -- Q_-1 kills only
-        # the GENERIC datum, as in S6/S7), but the full tail IS the unit ideal.
+        # Corrected '^' syntax: Q_-1 already gives the UNIFORM bounded moment-unit kill.
         emp_loc, _ = msolve_empty(posnz + slope + q1, fv, 65003)
-        check(not emp_loc,
-              f"branch {branch} d=3: cascade + Q_0=1 + Q_-1 is NOT unit (mod p) -- a "
-              f"slope-1 sub-locus survives Q_-1; the localization is generic, not uniform")
+        check(emp_loc,
+              f"branch {branch} d=3: cascade + Q_0=1 + Q_-1 is UNIT (mod p) -- "
+              f"the first tail row gives the uniform bounded moment-unit kill")
         emp_full, _ = msolve_empty(posnz + slope + tail, fv, 0)
         check(emp_full, f"branch {branch} d=3: FULL joint system (cascade+Q_0=1+Q_-1..Q_-5) "
                         f"= UNIT over QQ (msolve) -- the uniform kill; reproduces the verdict")
-    # REFUTATION: R(1)=G(1) does NOT vanish on cascade+tail (branch A, d=3).
-    # Rabinowitsch: cascade+tail + {1 - t*R(1)} nonempty  <=>  R(1) not in
-    # sqrt(cascade+tail)  <=>  some cascade+tail point has R(1) != 0.  msolve over QQ
-    # returned a positive-dimensional parametrization ([1,27,...]) confirming this;
-    # the cascade+tail ideal is large and positive-dimensional so the solve is slow.
-    # We attempt it mod p with a bounded timeout; on timeout we record the finding.
-    A, B, posnz, fv = build_full_branch(3, "A")
-    tail = []
-    for m in (-1, -2, -3, -4, -5):
-        tail += coeffs(q_m(A, B, m))
-    R1poly = clear_denoms(q_m(A, B, 0).subs(E, 0))
-    trab = sp.symbols("t_rab")
-    try:
-        emp_rab, _ = msolve_empty(posnz + tail + [sp.expand(1 - trab * R1poly)],
-                                  [trab] + fv, 65003, tmo=420)
-        check(not emp_rab,
-              "REFUTATION: R(1)=G(1) is NOT in sqrt(cascade+tail) at d=3 (msolve mod p: "
-              "positive-dim) => the target 'R(1)=0 on cascade+tail' is FALSE")
-    except subprocess.TimeoutExpired:
-        print("    [NOTE: the cascade+tail Rabinowitsch solve exceeded the budget; the "
-              "refutation\n     R(1) not in sqrt(cascade+tail) was obtained over QQ this "
-              "session (msolve\n     positive-dimensional [1,27,...]).  S7 exhibits slope-1 "
-              "data on the cascade;\n     S2 proves R(1) filler-independent -- together the "
-              "target is FALSE.]")
+    # Slope-forcing itself is certified independently in verify_slope_forcing.py.
+    # Do not duplicate that heavier Rabinowitsch computation here.
 else:
-    print("    [msolve not on PATH; the sharp d=3 {Q_0=1,Q_-1} kill, the FULL-system")
-    print("     unit ideal (d=3,4; see ../band3/w2-verdict.md), and the R(1)!=0 refutation")
-    print("     are recorded there.  The DECISIVE new content S5/S6/S7 above is sympy-exact.]")
+    print("    [SKIP: msolve not on PATH. Corrected-syntax symbolic d=3 checks were not run.")
+    print("     S5/S6/S7 above remain exact SymPy supporting checks; use")
+    print("     slope-forcing-verdict.md and verify_slope_forcing.py for the committed")
+    print("     d=3 radical-membership certificate.]")
 
 print("\n" + "=" * 70)
-print("W2 JOINT OBSTRUCTION: it is a FILLER obstruction, not slope-forcing.")
-print("Generic slope-1 data die already at {Q_0=1, Q_-1} (branch B: a linear")
-print("Fredholm gap = 1); the UNIFORM kill is the full tail Q_-1..Q_-5.  The")
-print("arbitrary-degree theorem is REDUCED to the JOINT FILLER COVECTOR LEMMA.")
-print("Proved: S0-S3 arbitrary degree; S4-S8 bounded/generic.  The naive")
-print("'R(1)=0 on cascade+tail' target is FALSE.")
+print("W2 JOINT OBSTRUCTION: slope-forcing and filler obstruction coexist at d=3.")
+print("Slope-1 data die already at {Q_0=1, Q_-1}; independently, the tail through")
+print("Q_-3 forces R(1)=0. The arbitrary-positive-degree theorem remains open.")
+print("Proved here: S0-S3 arbitrary degree; S4-S7 bounded/generic supporting checks.")
+print("S8 runs corrected-syntax bounded msolve checks only when msolve is available.")
 print("=" * 70)
 print(f"\n(total {time.time() - _T0:.1f}s)")
 print("ALL W2 JOINT CHECKS PASSED")

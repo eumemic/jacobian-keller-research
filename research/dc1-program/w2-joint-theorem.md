@@ -9,8 +9,9 @@ REVIEWED — BAND-SCOPED**
 > ([`hatch-census.md`](hatch-census.md) §5). Re-run with `^`:
 > 1. §3's *"a special slope-`1` sub-locus survives `Q_-1`; the uniform kill is
 >    the full tail"* is **REFUTED** — `cascade+Q_0=1+Q_-1` is the **unit ideal**
->    at `d=3` and `d=4`, both branches (`QQ` + mod `p` + `sympy` cross-check);
->    `[Phi ; M_-1]` alone is the uniform kill at those caps.
+>    at `d=3`, both branches (`QQ` + mod `p` + `sympy` cross-check), and in the
+>    optional/heavy `d=4` `msolve` run; `[Phi ; M_-1]` alone is the uniform kill at
+>    those tested caps.
 > 2. §2's machine pillar *"`R(1)` not in `sqrt(cascade+tail)`"* is **REFUTED —
 >    ADJUDICATED** ([`slope-forcing-verdict.md`](slope-forcing-verdict.md)):
 >    `R(1)=0` **identically** on the `cascade+tail` variety at `d=3`, both
@@ -22,25 +23,24 @@ REVIEWED — BAND-SCOPED**
 >    §3–§4 Fredholm/filler localization of the `{Q_0=1, Q_-1}` kill stands
 >    alongside it as a distinct, coexisting mechanism.
 
-This memo attacks architecture step 1: turn the bounded `d<=4` Gröbner kill of the
-W2 combined system ([`../band3/w2-verdict.md`](../band3/w2-verdict.md)) into a
-degree-free theorem. It does **not** fully close W2 at arbitrary degree, but it
-does three things that materially change the problem:
+This historical memo attacked architecture step 1 using a bounded computation.
+Its self-contained base verdict is the committed exact `d=3` certificate in
+[`../band3/w2-verdict.md`](../band3/w2-verdict.md); `d=4` is documentary unless the
+optional heavy `msolve` run completes. Later corrected-syntax computations and an
+independent SymPy adjudication changed two conclusions. The current conclusions are:
 
-1. **Corrects the target.** The stated goal — "on the variety {positive cascade,
-   negative tail, membership} the slope `R(1)=G(1)` vanishes identically" — is
-   **FALSE**. `R(1)` is a *nonvanishing free modulus* on the cascade+tail variety.
-   The joint kill is **not** a slope-forcing statement; it is a **filler**
-   obstruction — the fillers `Q_0=1` demands (to make `G=E`) clash with the tail.
-2. **Localizes the kill (generically) and linearizes it.** For the **generic**
-   slope-`1` datum, the obstruction is already present in **`{Q_0=1, Q_-1}`** — the
-   moment-unit condition and the **single** first negative-tail equation — and on
-   the free-filler branch it is a **linear (Fredholm) inconsistency** in the two
-   fillers. (A special slope-`1` sub-locus survives `Q_-1`; the *uniform* kill is
-   the full tail `Q_-1..Q_-5`, both branches.)
-3. **Reduces arbitrary-degree W2 to one named lemma** — the *Joint Filler Covector
-   Lemma* — and supplies a new degree-free structural tool (the *both-ends Lemma
-   P*) plus strong generic + degree-free-in-filler evidence for it.
+1. **The tail is slope-forcing at `d=3`.** On `cascade+tail`, `R(1)=0` on both
+   branches. The earlier claim that `R(1)` survived as a free modulus was a
+   `msolve` `**`-syntax artifact and is **refuted** by
+   [`slope-forcing-verdict.md`](slope-forcing-verdict.md) (b016917/968ec09).
+2. **The first tail row already kills the moment-unit locus at the tested caps.**
+   Correct `^` syntax makes `cascade+Q_0=1+Q_-1` the unit ideal at `d=3` and in the
+   optional/heavy `d=4` computation, both branches. Thus the former alleged
+   `Q_-1`-surviving sub-locus is **refuted**. The Fredholm localization remains a
+   useful description of this bounded obstruction.
+3. **Arbitrary degree remains open.** The both-ends Lemma P and filler linearity are
+   structural tools, but neither the slope-forcing identity nor the Joint Filler
+   Covector Lemma has been proved at arbitrary positive-data degree.
 
 W2 datum, gauge `b_3=0`, quantum band-3 conventions
 (`Q_m = sum_(k+l=m)[b_l^[k] a_k - a_k^[l] b_l]`, `f^[n](E)=f(E+n)`,
@@ -97,25 +97,27 @@ a_3(0)=a_3(-4)=0,   b_2(0)=b_2(-3)=0     =>
 
 So the W2 slope pair is a **3-term boundary pairing at each end**, and — decisively
 — `R(1)` and `R(-1)` are **independent of the fillers** `a_-2, b_-3` (the level-3
-`b_-3` and `a_-2`-carrying terms are exactly the ones that vanish). This is why the
-slope alone cannot see the tail: the tail lives in the filler data, the slope does
-not.
+`b_-3` and `a_-2`-carrying terms are exactly the ones that vanish). This means the
+slope formula has no direct filler variables; it does **not** prevent the tail
+system, after eliminating its filler constraints, from forcing the slope to zero.
+That indirect forcing is exactly what the corrected `d=3` result establishes.
 
-## 2. The correct mechanism (not slope-forcing)
+## 2. Corrected mechanism: slope-forcing and filler obstruction coexist
 
-> **Refutation (machine-checked).** `R(1)=G(1)` does **NOT** vanish on the
-> cascade+tail variety. At `d=3` it is a **positive-dimensional free modulus**
-> there: `R(1) not in sqrt(cascade+tail)` by a Rabinowitsch test — msolve returns a
-> positive-dimensional parametrization over `QQ` and over `GF(p)` (`verify §S8`
-> reproduces the mod-`p` witness; `verify §S7` exhibits slope-`1` positive data on
-> the cascade). Hence the proposed target — "cascade ∧ tail ⇒ `R(1)=0`" — is
-> **false**, and the joint kill is *not* a slope statement.
+> **Correction (machine-checked by two engines).** At `d=3`, both branches,
+> `R(1)=G(1)` **does** vanish on the `cascade+tail` variety:
+> `R(1) in sqrt(cascade+tail)`. The variety is nonempty (the origin is an explicit
+> point), while `R(1)` is a free modulus on the cascade alone. The earlier opposite
+> Rabinowitsch verdict used Python `**` in `msolve` input and is **refuted**. See
+> [`slope-forcing-verdict.md`](slope-forcing-verdict.md) for exact SymPy over `QQ`
+> and two finite fields plus corrected-`^` full-system `msolve` checks. The tail is
+> slope-forcing at depth through `Q_-3` at this cap.
 
-The reason: `R(1)` is filler-independent (§1), while the tail `Q_-1..Q_-5` and the
-moment-unit condition `Q_0=1` both constrain the **fillers**. The incompatibility is
-between the fillers that `Q_0=1` forces (to make `G=E`) and the fillers the tail
-allows. Concretely (`verify §S3`), **`a_-2` does not enter the positive cascade** —
-it is a pure filler — and on **branch B**
+A distinct filler description remains valid and useful: `R(1)` is
+filler-independent (§1), while `Q_0=1` and the negative equations constrain the
+fillers. Corrected syntax shows the joint moment-unit system is already impossible
+with `Q_-1` at the tested caps. Concretely (`verify §S3`), **`a_-2` does not enter
+the positive cascade** — it is a pure filler — and on **branch B**
 
 ```text
 Q_0-1, Q_-1, Q_-2, Q_-3, Q_-4   are LINEAR in the two fillers (a_-2, b_-3);
@@ -124,22 +126,19 @@ Q_-5                            is the sole BILINEAR one.
 
 ## 3. The generic localization and the Fredholm gap
 
-> **Generic localization (bounded, both branches).** At the explicit slope-`1`
-> positive datum, the ideal generated by `{Q_0=1, Q_-1}` **in the fillers** is
-> already the **unit ideal** — on branch A *and* branch B — while `{Q_0=1}` alone
-> is feasible. The remaining tail equations `Q_-2,...,Q_-5` are **not used**
-> *for this datum* (`verify §S5`).
->
-> **This localization is generic, not uniform.** The symbolic
-> `{cascade + Q_0=1 + Q_-1}` at `d=3` is **not** the unit ideal on either branch
-> (`verify §S8`, msolve): a special slope-`1` sub-locus **survives** `Q_-1`, and
-> the **uniform** kill is the full tail — `{cascade + Q_0=1 + Q_-1..Q_-5}` is the
-> unit ideal, both branches (`verify §S8`; `w2-verdict.md` at `d=3,4`).
+> **Uniform bounded localization (corrected).** At the explicit slope-`1` datum,
+> `{Q_0=1, Q_-1}` in the fillers is the unit ideal on both branches, while
+> `{Q_0=1}` alone is feasible (`verify §S5`). More strongly, after replacing the
+> invalid `**` input by `^`, the full symbolic
+> `{cascade + Q_0=1 + Q_-1}` system is the unit ideal at `d=3`, both branches
+> (`QQ` and mod `65003`), and in the optional/heavy `d=4` run (`QQ`). The former
+> claim that a special slope-`1` sub-locus survives `Q_-1` is **refuted**; no deeper
+> tail row is needed for this bounded moment-unit kill.
 
-So the picture is *stratified*: `Q_-1` kills the **generic** slope-`1` datum, and
-the deeper tail equations pick off the residual sub-loci. The kill is a **filler**
-statement — *no filler completion realizes `Q_0=1` and the tail simultaneously* —
-not a slope statement.
+Thus two compatible mechanisms are established at `d=3`: the tail through `Q_-3`
+forces `R(1)=0` without `Q_0`, while `Q_0=1` together with `Q_-1` already gives a
+filler/Fredholm inconsistency. Neither statement is proved at arbitrary
+positive-data degree.
 
 On branch B the fillers enter `{Q_0=1, Q_-1..Q_-4}` **linearly**, so the generic
 kill is a Fredholm (rank) statement. Writing the combined operator
@@ -153,9 +152,11 @@ cascade/const terms:
 > degree**. Across **6 distinct slope-`1` data** at `d=3`, `L` has full column
 > rank and the gap is `1` at every point (`verify §S7`) — generic in the positive
 > data (rank only drops under specialization, so gap `1` at these points forces
-> gap `>= 1` at the generic point of the slope-`1` fiber). The `Q_-1`-surviving
-> sub-locus is exactly where this generic full-rank fails; the full tail supplies
-> the extra rows that close it.
+> gap `>= 1` at the generic point of the slope-`1` fiber). Historically this memo
+> inferred a `Q_-1`-surviving rank-drop sub-locus; corrected `^` syntax proves that
+> inferred feasible sub-locus is empty at `d=3` (and in the optional `d=4` run).
+> Individual pivots may still degenerate, but another covector supplies the same
+> obstruction; deeper tail rows are not needed at those tested caps.
 
 ## 4. The named residual: the Joint Filler Covector Lemma
 
@@ -174,12 +175,11 @@ The arbitrary-degree W2 joint theorem is now reduced to exactly one statement.
 
 - **Status.** Proved at bounded/generic degree: the explicit datum degree-free in
   the filler (`dV=4..8`, `{Q_0=1,Q_-1}`); 6 distinct slope-`1` data at `d=3`
-  (`{Q_0=1,Q_-1}` gap `=1`); branch-A and branch-B **full-tail** unit ideal at
-  `d=3` (both branches) and `d=4` (committed verdict). **Open**: arbitrary
-  *positive-data* degree; the residual `Q_-1`-surviving sub-locus (needs the deeper
-  tail rows / the bilinear `Q_-5`); and a degree-free construction of `lam` (the
-  analogue of the `lambda_r` cofactor functional, now on the **joint**
-  `Phi ⊕ M_{-1} ⊕ …` cokernel rather than `Phi` alone).
+  (`{Q_0=1,Q_-1}` gap `=1`); and the uniform `{cascade+Q_0=1+Q_-1}` unit result at
+  `d=3`, both branches. The analogous `d=4` result is optional/heavy `msolve`
+  evidence, not a committed self-contained witness artifact. **Open**: arbitrary
+  *positive-data* degree and a degree-free construction of `lam` (the analogue of
+  the `lambda_r` cofactor functional, now on the **joint** `Phi ⊕ M_-1` cokernel).
 
 Why the single functional `lambda_{-4}` failed but the *joint* one need not: the
 top cofactor functional `lambda_{-4}(f)=f(-1)+f(1)-2f(0)` annihilates `Im Phi` and
@@ -210,15 +210,18 @@ cokernel is one dimension bigger than the tail row can fill.
   datum — that datum has no tail-clearing filler of any degree (`§S6`).
 - **Gap `=1` at 6 distinct slope-`1` data**, `L` full column rank — generic in the
   positive data at `d=3` (`§S7`).
-- **UNIFORM kill = the full tail.** `{cascade + Q_0=1 + Q_-1}` is **not** the unit
-  ideal (either branch, `d=3`) — a slope-`1` sub-locus survives `Q_-1`; the FULL
-  system (cascade `∧` `Q_0=1` `∧` `Q_-1..Q_-5`) **is** the unit ideal at `d=3`,
-  both branches (`§S8`), reproducing `w2-verdict.md` (`d=3,4`).
+- **Uniform bounded moment-unit kill.** `{cascade + Q_0=1 + Q_-1}` is the unit
+  ideal at `d=3`, both branches, with corrected `msolve` `^` syntax (`QQ` and mod
+  `65003`). The FULL system is independently unit at `d=3` by committed exact
+  rational certificates in `w2-verdict.md`; `d=4` remains optional/heavy evidence.
+- **Bounded slope forcing.** At `d=3`, both branches, `R(1)` belongs to the radical
+  of `cascade+tail`; exact SymPy and corrected-syntax `msolve` agree, and the
+  variety is nonempty (`slope-forcing-verdict.md`).
 
-**Refuted:** the stated target "`R(1)=0` on cascade+tail" (§2, `§S8` msolve); the
-existence of a degree-free **linear** Nullstellensatz certificate (`§S4`); the
-over-strong claim that `Q_-1` alone uniformly kills (`§S8`: it kills only the
-generic datum).
+**Refuted / corrected:** the former claims that `R(1)` survives freely on
+`cascade+tail` and that a slope-`1` sub-locus survives `Q_-1` were both caused by
+invalid `msolve` `**` syntax. The absence of a degree-free **linear**
+Nullstellensatz certificate (`§S4`) remains a valid bounded observation.
 
 **Open / not claimed:** the Joint Filler Covector Lemma at arbitrary positive-data
 degree; the degree-free covector `lam`; branch-A at arbitrary degree; the
@@ -243,8 +246,8 @@ cokernel of `[Phi ; M_{-1}]`. Three concrete openings:
    instance of the step-`(k-1)`/step-`k` hatch, each reducing to the same slope
    gate. The both-ends Lemma P is band-`k` verbatim (it is Lemma P at `E=±1`), and
    the level-`k` drop is the general `a_k(0)=a_k(-2(k-1))=0`, `b_{k-1}(0)=…=0`
-   pattern; so the generic `{Q_0=1, Q_{-1}}` kill and the full-tail uniform kill
-   are the natural band-`k` conjectures to test next.
+   pattern; so the corrected bounded `{Q_0=1, Q_{-1}}` uniform kill and the
+   slope-forcing tail are distinct natural band-`k` conjectures to test next.
 3. **The singular-hatch theorem** (architecture step 2) wants a *uniform* reason
    every hatch is silent. The joint covector is that reason if it exists
    degree-free: it is the functional obstructing `Q_0=1 ∧ (Q_-1,…,Q_-5)=0` on the
@@ -259,11 +262,11 @@ uv run --with sympy python research/dc1-program/verify_w2_joint.py
 Runs `§S0` (crossed-product engine, `Q_0=(T-1)G`), `§S1` (`Im Phi ⊂ D·F[E]`, slope
 gate), `§S2` (both-ends Lemma P + W2 level-3 drop + filler-independence), `§S3`
 (branch-B linearity, `a_-2` a pure filler), `§S4` (no linear Nullstellensatz
-certificate), `§S5` (the generic `{Q_0=1, Q_-1}` kill at the explicit datum, both
+certificate), `§S5` (the `{Q_0=1, Q_-1}` kill at the explicit datum, both
 branches), `§S6` (the branch-B Fredholm gap, stable across filler degree), `§S7`
-(6 distinct slope-`1` data, generic gap `=1`), `§S8` (msolve, `d=3`: `Q_-1` alone
-is **not** a uniform kill — `cascade+Q_0=1+Q_-1` is not the unit ideal on either
-branch; the **full** `cascade+Q_0=1+Q_-1..Q_-5` **is** the unit ideal, both
-branches; and the machine-checked refutation `R(1) not in sqrt(cascade+tail)`).
-A successful run ends `ALL W2 JOINT CHECKS PASSED`. The exact-`QQ` `d=4`
-full-system kill is the committed `w2-verdict.md` msolve certificate.
+(6 distinct slope-`1` data, generic gap `=1`), and corrected-syntax bounded
+`msolve` checks. Historical `§S8` conclusions produced with `**` are refuted as
+stated above; use `joint-covector.md` and `slope-forcing-verdict.md` for their
+adjudication. A successful lightweight run ends `ALL W2 JOINT CHECKS PASSED`.
+The self-contained combined-system verdict is exact at `d=3`; `d=4` requires the
+optional heavy `msolve` run and has no committed witness artifact.

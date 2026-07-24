@@ -9,13 +9,14 @@ This memo attacks THE new step-1 lemma: degree-free slope-forcing at W2,
    positive cascade  AND  Q_-1=Q_-2=Q_-3=0  AND  membership   =>   R(1)=G(1)=0.
 ```
 
-With `Q_0=1` forcing `R(1)=1` (slope gate), this closes W2 at arbitrary positive-data
-degree — the negative tail and the moment unit are mutually exclusive — and with it
-Band 3's last hatch. The bounded `d=3` adjudication
+If the displayed implication were proved at arbitrary positive-data degree, then
+`Q_0=1` forcing `R(1)=1` would close W2 at that scope. It is **not** proved here:
+the tail-forcing residual remains open in §6. The bounded `d=3` adjudication
 ([`slope-forcing-verdict.md`](slope-forcing-verdict.md), commit `968ec09`) established
 `R(1) ∈ sqrt(cascade+tail)` at `d=3`, both branches, two engines; on the cascade the
-slope collapses to a single monomial. This memo supplies the **degree-free backbone**
-of that collapse and pushes the elimination as far as it currently reaches.
+slope collapses to a single monomial. This memo proves only the **degree-free
+factorization backbone** and pushes the still-open tail elimination as far as it
+currently reaches.
 
 W2 datum, gauge `b_3=0`, quantum band-3 conventions
 (`Q_m=sum_(k+l=m)[b_l^[k]a_k - a_k^[l]b_l]`, `f^[n](E)=f(E+n)`,
@@ -219,7 +220,7 @@ The degree-free lemma is now **exactly one statement**, thanks to the factorizat
 
 This is a Fredholm/cokernel statement: the 16-covector elimination of §4 must pair the
 non-filler residual `N` to a multiple of `a_2(0)·W` at arbitrary degree — the
-degree-free analogue of the `d≤4` joint-covector kill
+degree-free analogue of the bounded joint-covector kill (committed at `d=3`; optional/heavy at `d=4`)
 ([`joint-covector.md`](joint-covector.md) §4), now on the depth-3 tail cokernel and with
 `W` in place of the moment-unit `rhs`. What blocks it from being degree-free today is the
 same gap as the joint-covector lemma: the covectors' fixed part lives on the `(a_3,b_2)`

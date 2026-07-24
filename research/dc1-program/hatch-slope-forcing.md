@@ -30,8 +30,10 @@ x^{a+b} f(E+b)g(E)`, `f^[n](E)=f(E+n)`, `Q_m=sum_{i+l=m}(b_l^[i]a_i-a_i^[l]b_l)`
 `lambda_3(E)=-3`. Tail `= Q_-1..Q_-(2k-1)`; `Q_-2k` splits branch A
 (`a_-k=(E)_k am_k`, `b_-k=mu_k a_-k`) from branch B (`a_-k=0`, `b_-k=(E)_k C`).
 
-Exact certificate: [`verify_hatch_slope_forcing.py`](verify_hatch_slope_forcing.py)
-(ends `ALL HATCH SLOPE FORCING CHECKS PASSED`; heavy legs behind `HEAVY=1`). Every
+Verifier: [`verify_hatch_slope_forcing.py`](verify_hatch_slope_forcing.py). It
+prints a PASS/SKIP/FAIL evidence ledger; without `msolve`, the load-bearing `d=3`
+probe is explicitly `SKIP` and the final status does not claim the headline passed.
+Heavy corroboration remains behind `HEAVY=1`. Every
 load-bearing upstream fact — the crossed-product engine, `Q_0=(T-1)G`, `lambda_3`
 and its point-functional closed form, `Im Phi subset ker lambda_3`, the
 `Phi`-filler independence of the two targets, the positive cascade — is
@@ -268,4 +270,8 @@ HEAVY=1 uv run --with sympy python research/dc1-program/verify_hatch_slope_forci
 free moduli, distinctness); `S3` feasibility origin; `S4` THE PROBE (msolve parser
 validation, d=2 degenerate, d=3 both branches both targets); `S5` graded depth
 (`kmin=2`, `Q_-1` witnesses); `S6` forced-value structure (no monomial collapse);
-`S7` (`HEAVY`) band 5 `d=2`. Ends `ALL HATCH SLOPE FORCING CHECKS PASSED`.
+`S7` (`HEAVY`) band 5 `d=2`. The final evidence ledger reports the executed
+supporting checks as PASS, unavailable optional legs as SKIP, and the headline as
+`PASS -- ... PAYLOAD PASSED` only when all four default `msolve` radical-membership
+probes (both targets, both branches, mod `65003`) actually ran and returned UNIT.
+Without `msolve` it ends `SKIP -- ... PAYLOAD NOT RUN; SUPPORTING CHECKS PASSED`.

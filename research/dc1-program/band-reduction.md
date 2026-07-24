@@ -1,4 +1,4 @@
-# Band reduction: the normalization theorem forcing a minimal Weyl pair onto a controlled wall
+# Band reduction: proved top-wall constraints and a conditional normalization framework
 
 **INDEPENDENTLY DERIVED — EXACT ALGEBRA / MACHINE-CHECKED IDENTITIES — NOT PEER REVIEWED — PARTIAL THEOREM WITH NAMED GAPS**
 
@@ -8,13 +8,14 @@ but no theorem that **forces** a hypothetical counterexample onto a wall. This
 memo supplies that forcing map, as far as it is currently reachable, and names
 precisely what is not.
 
-The deliverable is a **normalization theorem**: minimize a pair over the tame
-group; the minimal configurations are band `<= 2` (generating, closed) **or** a
-top coefficient sitting on a controlled wall (shifted-power or singular-hatch)
-at its band. The two ingredients are Dixmier's classical leading-form dichotomy
-and the tame-move degree reduction; the new content is running them on
-**endomorphism pairs** (not automorphisms) and locating the **exact point where
-the classical reduction stalls** — which is what defines the walls intrinsically.
+The deliverable is a **partial normalization framework**, not an unconditional
+normalization theorem. It proves the band floors, the single-transvection stall,
+and the top-wall classification. Subject to two open steps — excluding escape by
+a composite sequence of tame moves and proving shifted-power descent — a minimal
+pair would be forced to band `<=2` (generating) or onto a controlled top wall. The
+new content is locating precisely where the available endomorphism-pair reduction
+stalls; it does not prove that every tame orbit reaches one of the advertised
+terminal configurations.
 
 Exact certificate: [`verify_band_reduction.py`](verify_band_reduction.py) (41
 checks, ends `ALL BAND REDUCTION CHECKS PASSED`). Base commit `30d8c59`. Every
@@ -33,13 +34,14 @@ Q_m=δ_{m0}`; membership `(E)_j=E(E-1)⋯(E-j+1) | a_{-j},b_{-j}`; gauge `b_k=0`
 
 ## 0. Headline
 
-> **Band Normalization Theorem (partial, with named gaps).** Let `(X,D) ∈ A_1`
-> with `[D,X]=1`. Minimize the lexicographic invariant `(n+m, k)` — total
-> Bernstein degree, then band `k = max(band X, band D)` — over the orbit of the
-> tame group `𝒯` (affine symplectic, Fourier, pair-exchange, transvections
-> `exp(ad p(X))`, `exp(ad q(D))`), all of which preserve `[D,X]=1` **and** the
-> generated subalgebra. If the minimal representative does not generate `A_1`
-> (a DC1 counterexample), then:
+> **Conditional band-reduction framework (proved components plus named gaps).**
+> Let `(X,D) ∈ A_1` with `[D,X]=1`, and consider the lexicographic invariant
+> `(n+m, k)` — total Bernstein degree, then band
+> `k = max(band X, band D)` — along the tame orbit. The following floors and wall
+> equations are proved. Calling an orbit representative globally tame-minimal, or
+> concluding that it reaches a controlled terminal wall, additionally requires
+> resolving the composite-move escape and shifted-power descent gaps in §9.
+> For a representative reduced against the moves actually analyzed here:
 >
 > 1. **Floors (PROVED).** `n+m > 2` and band `k ≥ 3`. Band `≤ 1` is affine
 >    symplectic (band-1 rigidity `P3`); band `2` is tame (the band-2 theorem,
@@ -63,10 +65,11 @@ Q_m=δ_{m0}`; membership `(E)_j=E(E-1)⋯(E-j+1) | a_{-j},b_{-j}`; gauge `b_k=0`
 >    is band 3: **W2** `(a_3=E(E+2)(E+4), b_2=E(E+3))`, which realizes the
 >    Dixmier minimum `(a,b)=(2,3)` with `p=x^2ξ`.
 >
-> **A tame-minimal non-generating pair therefore lands on a controlled wall at
-> its band** — shifted-power or singular-hatch — *modulo the two named gaps in
-> §9* (the composite-move escape = classical DC1 core, and the shifted-power
-> descent).
+> **Conditional conclusion only.** If composite tame-move escape is excluded and
+> shifted-power descent is supplied, a tame-minimal non-generating pair lands on
+> the residual controlled wall. Without those open inputs, this memo classifies
+> single-transvection stalls and their top walls; it does not furnish an
+> unconditional normalization theorem.
 
 The beautiful confirmation, machine-checked (`§2` of the verifier): **the band-3
 singular hatch W2 is exactly the minimal Dixmier-stuck leading-form
@@ -298,28 +301,30 @@ obstruction collapses to the single slope `R(1)=1`
 ([`../band3/w2-theory.md`](../band3/w2-theory.md), re-verified `§6` here:
 `λ_r(E)=r+4`, `λ_{-4}(E)=0`, filler divisibility by `D`), which is **achievable**
 ([`../band3/w2-decisive.md`](../band3/w2-decisive.md)) yet whose **combined
-slope+tail system is the unit ideal at `d ≤ 4`**
-([`../band3/w2-verdict.md`](../band3/w2-verdict.md)).
+slope+tail system has a committed exact unit-ideal certificate at `d=3`; an
+analogous `d=4` result is optional/heavy `msolve` evidence without a committed
+witness artifact** ([`../band3/w2-verdict.md`](../band3/w2-verdict.md)).
 
 ---
 
-## 7. The Band Normalization Theorem (assembled)
+## 7. The conditional framework assembled
 
-Combining §2–§6:
+Combining §2–§6 gives the following implication, conditional on Gaps 1–2 of §9:
 
-> **Theorem.** A tame-minimal `(X,D)`, `[D,X]=1`, that does not generate `A_1`
-> has band `k ≥ 3`, sits in the Dixmier stratum `σ_X=α p^a, σ_D=β p^b` with
-> `a ∤ b, b ∤ a` (minimally `(2,3)`, `p=x^2ξ`), and its top coefficients obey
-> the necklace wall `W(k,q)`, `q=band D`. The wall solution is either a
-> **shifted power** (effective cofactor) or a **singular hatch** (non-effective
-> cofactor, `q ∤ k`; balanced ⟹ `k ≥ 3`), the minimal hatch being **W2**.
-> The pair therefore lands on a controlled wall — shifted-power or
-> singular-hatch — at its band. ∎ *(modulo Gaps 1–2 of §9.)*
+> **Conditional proposition.** Assume composite tame-move escape is impossible and
+> shifted-power descent holds. Then a tame-minimal `(X,D)`, `[D,X]=1`, that does not
+> generate `A_1` has band `k ≥ 3`, sits in the Dixmier stratum
+> `σ_X=α p^a, σ_D=β p^b` with `a ∤ b, b ∤ a` (minimally `(2,3)`, `p=x^2ξ`), and its
+> top coefficients obey the necklace wall `W(k,q)`, `q=band D`. The wall solution
+> is either a **shifted power** (effective cofactor) or a **singular hatch**
+> (non-effective cofactor, `q ∤ k`; balanced ⟹ `k ≥ 3`), the minimal hatch being
+> **W2**.
 
-The three campaign wall-results now have a **forcing map** into them:
+Under those hypotheses, the three campaign wall-results form a forcing map:
 `W2q`/necklace (§5) receives every top; `lambda_r` (§6) closes the shifted-power
-and non-anchored exotic AP tops; the W2 hatch (§6) is the residual singular
-hatch. What was a catalogue of walls is now the *image of a normalization*.
+and non-anchored exotic AP tops; the W2 hatch (§6) is the residual singular hatch.
+Without the two hypotheses this remains a catalogue and classification of the
+walls reached by the analyzed moves, not the image of a proved normalization.
 
 ---
 
@@ -372,8 +377,10 @@ telescoping descent does not propagate (shifted power).**
 - The Dixmier-lemma converse is verified as a single instance (`centraliser of
   p^3 = span(p^2)`), not re-proved in general; the general statement is the
   cited 1968 lemma.
-- The W2 downstream fate (`R(1)=1` achievable, combined system unit at `d≤4`) is
-  imported from the sibling memos (`w2-decisive`, `w2-verdict`), bounded degree.
+- The W2 downstream fate (`R(1)=1` achievable and the combined system unit at
+  `d=3`) is imported from committed sibling certificates (`w2-decisive`,
+  `w2-verdict`). The analogous `d=4` unit result is documentary unless the
+  optional heavy `msolve` run completes.
 
 **Open / NOT claimed — the named unhandled configurations:**
 
@@ -399,10 +406,11 @@ telescoping descent does not propagate (shifted power).**
    reach the top, `p` is a non-monomial common form and the exponents are not
    pinned by the band indices alone; that general classification is not done.
 4. **Singular-hatch realizability.** Whether any singular hatch actually carries
-   a genuine Weyl pair (the combined slope+tail) is open at arbitrary degree; it
-   is the unit ideal for W2 at `d≤4` (`w2-verdict`). The residual identity
-   `λ(R)=0` beyond band 3 (`lambda-general-k.md` §6) and the full band-`k`
-   exotic closure are open.
+   a genuine Weyl pair (the combined slope+tail) is open at arbitrary degree. For
+   W2 the committed exact unit-ideal certificate stops at `d=3`; `d=4` is an
+   optional heavy `msolve` computation without a committed witness artifact
+   (`w2-verdict`). The residual identity `λ(R)=0` beyond band 3
+   (`lambda-general-k.md` §6) and the full band-`k` exotic closure are open.
 5. Everything outside the top wall: the full negative tail, `[D,X]=1`
    verification of any hatch datum, DC1, JC2. **No Weyl pair and no
    counterexample is constructed.**

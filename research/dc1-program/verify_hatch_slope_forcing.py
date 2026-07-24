@@ -58,7 +58,10 @@ LEDGER (honest):
 
 Run:      uv run --with sympy python research/dc1-program/verify_hatch_slope_forcing.py
 Heavy:    HEAVY=1 uv run --with sympy python research/dc1-program/verify_hatch_slope_forcing.py
-Ends:     ALL HATCH SLOPE FORCING CHECKS PASSED
+Ends with an evidence ledger and one of:
+  PASS -- HATCH SLOPE FORCING HEADLINE PAYLOAD PASSED
+  SKIP -- HATCH SLOPE FORCING HEADLINE PAYLOAD NOT RUN
+A failed assertion exits nonzero with FAIL.
 """
 import sympy as sp
 import os, time, sys, subprocess, tempfile, shutil
@@ -524,6 +527,8 @@ for branch in ("A", "B"):
 
 # --- d=3 (THE REAL TEST): msolve '^' Rabinowitsch, full un-reduced system, both branches ---
 PROBE = {}
+HEADLINE_EXPECTED = {(branch, nm, PRIMES[0]) for branch in ("A", "B")
+                     for nm in ("R(1)", "lambda_3(R)")}
 if HAVE_MS:
     dp3_primes = PRIMES if HEAVY else (PRIMES[0],)
     for branch in ("B", "A"):
@@ -620,16 +625,22 @@ else:
 
 # ======================================================================
 print("\n" + "=" * 72, flush=True)
-print("SUMMARY -- THE UNIFICATION PROBE", flush=True)
-print("  band 4 hatch, d=3, BOTH branches:  R(1) IN sqrt(cascade+tail)  AND", flush=True)
-print("  lambda_3(R) IN sqrt(cascade+tail).  The negative tail forces BOTH cokernel", flush=True)
-print("  pairings of R to vanish, so lambda(E-R)=lambda(E) for every lambda in", flush=True)
-print("  Ann(Im Phi) beyond ev_0  ->  Q_0=1 contradicted in ALL cokernel directions.", flush=True)
-print("  Architecture steps 1 (slope) and 2 (covector) collapse into ONE mechanism at", flush=True)
-print("  the band-4 hatch (bounded d=3; msolve '^' UNIT mod 65003 [+ mod 32003 + QQ char-0", flush=True)
-print("  under HEAVY], parser-validated; sympy certifies the controls/feasibility/d=2).", flush=True)
-print("  d<=2 degenerate; k=3 (W2) is the base case (lambda_3=ev_-1, lambda_3(R)=-R(1)).", flush=True)
+print("EVIDENCE LEDGER -- THE UNIFICATION PROBE", flush=True)
+headline_passed = HEADLINE_EXPECTED.issubset(PROBE) and all(PROBE[key] is True for key in HEADLINE_EXPECTED)
+print(f"  PASS: {_NP} executed supporting checks", flush=True)
+if headline_passed:
+    print("  PASS: band-4 d=3 headline payload -- both targets, both branches,", flush=True)
+    print(f"        msolve '^' Rabinowitsch UNIT mod {PRIMES[0]}", flush=True)
+else:
+    print("  SKIP: band-4 d=3 headline payload -- requires msolve on PATH;", flush=True)
+    print("        no radical-membership verdict was executed", flush=True)
+if not HEAVY:
+    print(f"  SKIP: heavy corroboration -- mod {PRIMES[1]}, QQ char 0, band-5 d=2", flush=True)
+print("  FAIL: none", flush=True)
 print("=" * 72, flush=True)
 print(f"\n(total {time.time()-_T0:.1f}s; {_NP} checks passed; HEAVY={'1' if HEAVY else '0'}, "
       f"msolve={'yes' if HAVE_MS else 'no'})", flush=True)
-print("ALL HATCH SLOPE FORCING CHECKS PASSED", flush=True)
+if headline_passed:
+    print("PASS -- HATCH SLOPE FORCING HEADLINE PAYLOAD PASSED", flush=True)
+else:
+    print("SKIP -- HATCH SLOPE FORCING HEADLINE PAYLOAD NOT RUN; SUPPORTING CHECKS PASSED", flush=True)

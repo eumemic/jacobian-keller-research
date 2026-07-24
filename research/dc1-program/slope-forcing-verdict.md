@@ -160,10 +160,12 @@ mechanisms, and both are real:
 
 So `w2-joint-theorem.md` §2's *headline* ("not slope-forcing; `R(1)` a free modulus")
 is wrong, but its §3–§4 *Fredholm localization at `Q_0=1+Q_-1`* stands as a separate,
-compatible fact. The W2 full-system kill (`cascade ∧ Q_0=1 ∧ tail`, unit at `d≤4`,
-[`../band3/w2-verdict.md`](../band3/w2-verdict.md)) is now **explained the simple way**:
-the depth-3 tail forces `R(1)=0` while `Q_0=1` demands `R(1)=1` — an immediate
-contradiction.
+compatible fact. The W2 full-system kill (`cascade ∧ Q_0=1 ∧ tail`) has a
+committed self-contained exact certificate at `d=3`; the analogous `d=4` result is
+optional/heavy `msolve` evidence without a committed witness artifact
+([`../band3/w2-verdict.md`](../band3/w2-verdict.md)). At `d=3` it is now **explained
+the simple way**: the depth-3 tail forces `R(1)=0` while `Q_0=1` demands `R(1)=1`
+— an immediate contradiction.
 
 ## 6. Consequence for the degree-free W2 target
 
