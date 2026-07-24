@@ -25,13 +25,10 @@
 #       pushed to D=3,4 (msolve, kappa a free variable => all kappa).
 #
 #   RESIDUAL 3 (constant-h, gauged wall constant kappa_2 != 0) -- the B0 gauge
-#       collapse D -> D - lam X CANNOT kill b_2 = kappa_2 without un-gauging b_3
-#       (machine-checked, arbitrary degree): kappa_2 is a TAME INVARIANT of the
-#       gauge-b_3=0 sector (no transvection/pair-exchange/Fourier removes it), so
-#       no tame move maps kappa_2 != 0 into the kappa_2 = 0 tame family.  The
-#       positive cascade PERMITS kappa_2 != 0; its emptiness is therefore not a
-#       tame-reduction question but the open A*-band3 NEGATIVE-TAIL closure (the
-#       top-mirror of the open quantum A*-I), isolated exactly in the memo sec.4.
+#       collapse D -> D - lam X CANNOT kill b_2 = kappa_2 without un-gauging b_3.
+#       This is a ONE-STEP obstruction for the listed generators, not an invariant
+#       under arbitrary composite tame words.  The positive cascade permits
+#       kappa_2 != 0; both composite tame escape and negative-tail closure remain open.
 #
 # Conventions frozen from the DC1 corpus:
 #   A_1[x^-1] = (+)_k x^k C[E],  E = x d,  (x^a f)(x^b g) = x^{a+b} f(E+b) g(E),
@@ -59,6 +56,7 @@ import os
 import time
 import shutil
 import subprocess
+import tempfile
 
 E = sp.symbols('E')
 kappa, rho, alpha = sp.symbols('kappa rho alpha')
@@ -155,19 +153,23 @@ def msolve_unit(eqs, allc, tag, timeout=400):
     body = ",\n".join(str(sp.expand(e)).replace('**', '^').replace(' ', '') for e in eqs)
     ms = f"{varstr}\n0\n{body}\n"
     assert '**' not in ms, "msolve input must use '^' not '**'"
-    path = f"/tmp/spr_{tag}.ms"
-    with open(path, 'w') as fh:
+    with tempfile.NamedTemporaryFile('w', prefix=f"spr_{tag}_", suffix='.ms', delete=False) as fh:
+        path = fh.name
         fh.write(ms)
-    t = time.time()
-    r = subprocess.run(['msolve', '-g', '2', '-f', path],
-                       capture_output=True, text=True, timeout=timeout)
-    out = r.stdout.strip()
-    dt = time.time() - t
-    tail = out.splitlines()[-1] if out else 'EMPTY'
-    unit = tail.rstrip().endswith('[1]:')
-    print(f"        msolve[{tag}]: nvars={len(allc)} neqs={len(eqs)} "
-          f"time={dt:.1f}s GB_tail={tail[:32]} UNIT={unit}", flush=True)
-    return unit
+    try:
+        t = time.time()
+        r = subprocess.run(['msolve', '-g', '2', '-f', path],
+                           capture_output=True, text=True, timeout=timeout, check=True)
+        out = r.stdout.strip()
+        dt = time.time() - t
+        tail = out.splitlines()[-1] if out else 'EMPTY'
+        unit = tail.rstrip().endswith('[1]:')
+        print(f"        msolve[{tag}]: nvars={len(allc)} neqs={len(eqs)} "
+              f"time={dt:.1f}s GB_tail={tail[:32]} UNIT={unit}", flush=True)
+        return unit
+    finally:
+        if os.path.exists(path):
+            os.remove(path)
 
 
 # ===========================================================================
@@ -472,8 +474,8 @@ band_Sx = max((abs(k) for k in Sx if sp.expand(Sx[k]) != 0), default=0)
 band_Sd = max((abs(k) for k in Sd if sp.expand(Sd[k]) != 0), default=0)
 check("RESIDUAL 3: pair-exchange keeps band=max(2,3)=3 (relabels top; does not lower band or remove kappa_2)",
       band_Sx == 2 and band_Sd == 3 and max(band_Sx, band_Sd) == 3)
-print("   => kappa_2 is a gauge-b_3=0 tame INVARIANT: no tame move maps kappa_2 != 0 into the")
-print("      kappa_2 = 0 tame family. The two sectors are genuinely distinct.")
+print("   => one-step gauge obstruction only: these generators do not remove kappa_2 while")
+print("      staying in the displayed sector; composite tame-word escape remains open.")
 
 # Fourier E->-E-1 sends the constant top a_3=1 to an x^{-3}-coefficient 1, NOT divisible
 # by E(E-1)(E-2) -- breaks A_1 membership (astar-band3.md sec.6 (i)). Machine witness:
@@ -510,7 +512,7 @@ print("   Gap 2 band-3 shifted-cube status after this memo:")
 print("     RESIDUAL 1 (h|a_1): DERIVED in-file from Q_3, no slack (arbitrary degree).")
 print("     RESIDUAL 2 diff-3:  CLOSED arbitrary degree (2-separation suffices).")
 print("     RESIDUAL 2 diff-1,2: bounded emptiness only (cap D=2 committed; D=3,4 HEAVY).")
-print("     RESIDUAL 3 kappa_2!=0: NOT tame-reducible (gauge invariant); = open A*-band3 tail.")
+print("     RESIDUAL 3 kappa_2!=0: one-step generator obstruction only; composite escape + tail OPEN.")
 
 # ===========================================================================
 print("\n" + "=" * 72)

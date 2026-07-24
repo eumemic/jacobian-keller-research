@@ -39,10 +39,8 @@ BOUNDED (exact scope stated):
     is confirmed in S3 (HEAVY); the d=4 TAIL-FORCING GB is memory-bound (msolve >6GB) /
     sympy-slow and is NOT machine-confirmed here -- S6 attempts it and downgrades robustly.
   * DEPTH TRAJECTORY: rigorous 1<kmin<=3 at d=3 (kmin>1 by witness; depth-3 unit).
-  * OPEN: whether the tail forces the PRODUCT a_2(0)*W=0 (a genuine union) or already the
-    FACTOR a_2(0)=0.  The discriminating test (a_2(0) in sqrt(cascade+Q_-1..Q_-3)?) is a
-    non-unit positive-dimensional GB that msolve does not terminate (OOM); S5d downgrades
-    it to a note.  Either way R(1)=a_2(0)*W=0 is forced (S4).
+  * SUPERSEDED MECHANISM: this file proves only the product.  The later exact certificate
+    residual-identity.md proves the depth-3 tail forces W=0 and gives a_2(0)!=0 witnesses.
 
 Run:  uv run --with sympy python research/dc1-program/verify_slope_forcing_degree_free.py
       HEAVY=1 ... (adds d=4 msolve '^' legs and QQ depth legs)
@@ -58,6 +56,7 @@ _T0 = time.time()
 random.seed(20260723)
 HEAVY = os.environ.get("HEAVY") == "1"
 PRIMES = (65003, 32003)
+_DEPTH3_CERTS = set()
 
 
 def sh(f, n):
@@ -431,9 +430,11 @@ if shutil.which("msolve"):
             t0 = time.time()
             tag = f"mod {char}" if char else "over QQ"
             try:
-                check(msolve_unit(cert, allv, char, tmo=300),
+                depth3_ok = msolve_unit(cert, allv, char, tmo=300)
+                check(depth3_ok,
                       f"branch {branch} d=3: a_2(0)*am1_3 in sqrt(cascade+Q_-1..Q_-3) (msolve '^' "
                       f"{tag}) => depth-3 slope forcing (kmin<=3)  ({time.time()-t0:.1f}s)")
+                _DEPTH3_CERTS.add((branch, char))
             except MSFAIL:
                 print(f"    [branch {branch} d=3 depth-3 {tag}: msolve timeout/OOM "
                       f"({time.time()-t0:.1f}s); sympy full-tail leg + branch B depth-3 stand]",
@@ -543,11 +544,16 @@ else:
 
 print("\n" + "=" * 70, flush=True)
 print("DEGREE-FREE BACKBONE: R(1) = a_2(0) * W on the cascade (PROVED, arbitrary degree).", flush=True)
-print("Slope-forcing reduces to: the tail forces a_2(0)*W = 0.  TAIL FORCING machine-confirmed", flush=True)
-print("at d=3 (both branches, full tail sympy QQ+2 primes, + depth-3 msolve '^').  The d=4", flush=True)
+print("Slope-forcing reduces to: the tail forces a_2(0)*W = 0.  Full-tail forcing is", flush=True)
+print("machine-confirmed at d=3 (both branches, SymPy QQ+2 primes).  The depth-3 msolve", flush=True)
+print("refinement is optional and reported by the final PASS/SKIP status.  The d=4", flush=True)
 print("FACTORIZATION is confirmed (S3 HEAVY); the d=4 tail-forcing GB is NOT tractable here", flush=True)
-print("(msolve memory-bound).  W = -(4/9)am1_3 at d=3; rigorous 1<kmin<=3.  Product-vs-factor", flush=True)
-print("(union a_2(0)*W=0 or a_2(0)=0) is OPEN (discriminating GB non-terminating).", flush=True)
+print("(msolve memory-bound).  W = -(4/9)am1_3 at d=3.  This file's product-only", flush=True)
+print("mechanism is superseded by residual-identity.md: depth-3 forces W=0.", flush=True)
 print("=" * 70, flush=True)
 print(f"\n(total {time.time() - _T0:.1f}s; {_NP} checks passed)", flush=True)
-print("ALL SLOPE FORCING DEGREE FREE CHECKS PASSED", flush=True)
+depth3_expected = {("B", PRIMES[0]), ("B", 0), ("A", PRIMES[0]), ("A", PRIMES[1])}
+if depth3_expected <= _DEPTH3_CERTS:
+    print("ALL SLOPE FORCING DEGREE FREE CHECKS PASSED", flush=True)
+else:
+    print("SKIP -- SLOPE FORCING DEPTH-3 MSOLVE PAYLOAD NOT RUN; FULL-TAIL CHECKS PASSED", flush=True)

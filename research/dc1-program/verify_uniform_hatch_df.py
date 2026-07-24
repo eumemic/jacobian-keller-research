@@ -33,7 +33,7 @@ WHAT IS PROVED (arbitrary degree, machine identities; k in {3,4,5}):
 
 WHAT IS REFUTED (correcting the naive W2->band4 generalization):
   * S2: NO single boundary value a_j(0) divides R(1) or lambda_3(R) modulo the band-4
-        cascade (d=3, GF(p) radical); the two targets share no common polynomial factor.
+        cascade (d=3, GF(p) radical).  No arbitrary gcd/common-factor test is claimed.
         W2's single-factor factorization R(1)=a_2(0)*W is SPECIAL to k=3.
 
 WHAT IS BOUNDED (exact scope; band 4, d=3):
@@ -43,7 +43,7 @@ WHAT IS BOUNDED (exact scope; band 4, d=3):
         msolve '^' UNIT (both targets; branch B default, +branch A/2nd prime/QQ HEAVY).
         Q_-1 alone forces NEITHER (explicit witnesses) -> rigorous kmin=2.
   * S7 (HEAVY) explicit determinant-SATURATED consistency-covector certificate:
-        R(1), lambda_3(R) in sqrt( (cascade + 10 explicit covectors) : det^inf ) -- msolve UNIT.
+        R(1), lambda_3(R) in sqrt( (cascade + 8 explicit covectors) : det^inf ) -- msolve UNIT.
 
 WHAT IS OPEN / NOT CLAIMED:
   * The arbitrary-degree kill (the covector membership is bounded, d=3).
@@ -190,6 +190,27 @@ def sy_unit_modp(eqs, p):
     gens = sorted(set().union(*[e.free_symbols for e in eqs]), key=str)
     G = sp.groebner([mp(e, p, gens) for e in eqs], *gens, order="grevlex", modulus=p)
     return list(G.exprs) == [sp.Integer(1)]
+
+
+def rank_mod_p(rows, ncol, p):
+    """Exact row rank over GF(p)."""
+    A = [[int(x) % p for x in row] for row in rows]
+    rank = 0
+    for col in range(ncol):
+        pivot = next((i for i in range(rank, len(A)) if A[i][col]), None)
+        if pivot is None:
+            continue
+        A[rank], A[pivot] = A[pivot], A[rank]
+        inv = pow(A[rank][col], p - 2, p)
+        A[rank] = [(x * inv) % p for x in A[rank]]
+        for i in range(len(A)):
+            if i != rank and A[i][col]:
+                c = A[i][col]
+                A[i] = [(x - c * y) % p for x, y in zip(A[i], A[rank])]
+        rank += 1
+        if rank == len(A):
+            break
+    return rank
 
 
 # ---- msolve '^' engine (validated parsing) ----
@@ -499,8 +520,9 @@ Mmat = sp.Matrix([[sp.Poly(sp.expand(r), *phi).coeff_monomial(f) if sp.expand(r)
                    else sp.Integer(0) for f in phi] for r in rows])
 nonfill = sorted((set().union(*[r.free_symbols for r in rows]) - {E} - set(phi)), key=str)
 ptF = {v: sp.Integer(random.randint(2, PRIMES[0] - 2)) for v in nonfill}
-rankM = mp_matrix_rank = sp.Matrix([[int(mp(Mmat[i, j], PRIMES[0], nonfill).subs(ptF)) % PRIMES[0]
-                                     for j in range(Mmat.cols)] for i in range(Mmat.rows)]).rank()
+rank_rows = [[int(mp(Mmat[i, j], PRIMES[0], nonfill).subs(ptF)) % PRIMES[0]
+              for j in range(Mmat.cols)] for i in range(Mmat.rows)]
+rankM = rank_mod_p(rank_rows, Mmat.cols, PRIMES[0])
 ok(rankM == len(phi),
    f"band4 d=3: depth-2 filler map = {len(rows)} rows x {len(phi)} Phi fillers, FULL COLUMN RANK "
    f"{rankM} at a generic point; cokernel dim = {len(rows)}-{rankM} = {len(rows)-rankM} "

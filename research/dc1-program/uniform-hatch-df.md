@@ -59,7 +59,7 @@ in file**.
 > 3. **REFUTED — no single divisor (band 4).** Unlike W2, where `R(1)=a_2(0)·W` factors
 >    through a **single** boundary value, at band 4 **no** `a_j(0)` divides `R(1)` or
 >    `lambda_3(R)` modulo the cascade (`d=3`, exact `GF(p)` radical membership: each is
->    UNIT-**false**), and the two targets share **no** common polynomial factor. The
+>    UNIT-**false**), and no tested boundary value is a common divisor. The
 >    remaining Lemma-P terms carry `a_2(0)` (the *next* boundary value), so the slope is
 >    a genuine **two-boundary** object; W2's clean factorization is special to `k=3`.
 > 4. **BACKBONE-3 — depth-2 filler-linearity (PROVED, arbitrary degree, band 4 & 5).**
@@ -116,7 +116,7 @@ So exactly the two terms `a_3(0)b_-3(3)` and `-a_-2(2)b_2(0)=-rho_4 a_-2(2)a_3(0
 `a_3(0)`-divisible (shared by `lambda_3(R)`, `verify §S2`), but the whole slope is
 **not**: the exact `GF(p)` radical test finds `a_3(0), a_2(0), a_1(0)` each a
 **non-divisor** of both targets modulo the cascade (`d=3`; `verify §S2`, `a_3(0)`
-default, `a_2(0),a_1(0)` under `HEAVY`), and the two targets share no common factor.
+default, `a_2(0),a_1(0)` under `HEAVY`), with no claim about an arbitrary common factor of the two targets.
 **The degree-free invariant is therefore not a factor but the covector structure of
 §1.4.**
 
@@ -214,7 +214,7 @@ is `~50 s` and whose reduce+GB exceeds the budget — **open / out of budget**.
 **Refuted / corrected:**
 - The naive generalization "the band-4 slope factors through a single boundary value
   `a_{k-1}(0)`" is **false**: no single `a_j(0)` divides `R(1)` or `lambda_3(R)` mod
-  the band-4 cascade (`d=3`, exact `GF(p)`), and the two share no common factor. W2's
+  the band-4 cascade (`d=3`, exact `GF(p)`). No arbitrary gcd/common-factor test is claimed. W2's
   `R(1)=a_2(0)·W` is special to `k=3`; for `k>=4` the correct invariant is the
   covector structure, not a factor.
 

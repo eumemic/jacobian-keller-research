@@ -37,8 +37,9 @@ branch A:  a_-3=(E)_3 am3,  b_-3=mu_3 a_-3;    branch B:  a_-3=0,  b_-3=(E)_3 C.
 ```
 
 Exact certificate: [`verify_residual_identity.py`](verify_residual_identity.py) (default run
-≈ 5.4 min, `102` checks; `HEAVY=1` ≈ 9.5 min, `111` checks; ends
-`ALL RESIDUAL IDENTITY CHECKS PASSED`). Every load-bearing upstream fact — the
+≈ 5.4 min, `102` checks; `HEAVY=1` ≈ 9.5 min, `111` checks). The all-caps PASS is emitted
+only when the exact-`QQ` depth-3 `msolve` payload completes; otherwise the verifier ends
+with an explicit SKIP while retaining the exact full-tail SymPy checks. Every load-bearing upstream fact — the
 crossed-product engine, `Q_0=(T-1)G`, the slope gate, the both-ends Lemma P, the positive
 cascade, the factorization `R(1)=a_2(0)·W` — is **re-derived in file**.
 
@@ -240,7 +241,8 @@ HEAVY=1 uv run --with sympy python research/dc1-program/verify_residual_identity
 `§S0` engine; `§S1` slope gate + both-ends Lemma P + mirror + factorization; `§S2` the
 degree-free filler-linearity structural key (`d=2,3,4,5`, both branches); `§S3`
 factorization + mirror + `W`-collapse on the parametrized cascade; `§S4` product-vs-factor
-at `d=3` (`W` forced two engines, `a_2(0)` free via slice + witness); `§S5` the
-det-saturated consistency-covector certificate; `§S6` branch A per gauge; `§S7` (HEAVY) the
-`d=4` linear-elimination route. Default ends `ALL RESIDUAL IDENTITY CHECKS PASSED` after
-`102` checks; HEAVY after `111`.
+at `d=3` (`W` forced two engines when `msolve` is available, `a_2(0)` free via slice +
+witness); `§S5` the det-saturated consistency-covector certificate; `§S6` branch A per
+gauge; `§S7` (HEAVY) the `d=4` linear-elimination route. The final status is PASS only
+when the exact-`QQ` depth-3 payload runs; otherwise it is SKIP with supporting/full-tail
+checks passed.

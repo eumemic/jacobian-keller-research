@@ -28,8 +28,8 @@ branch A:  a_-3=(E)_3 am3,  b_-3=mu_3 a_-3;    branch B:  a_-3=0,  b_-3=(E)_3 C.
 ```
 
 Exact certificate: [`verify_slope_forcing_degree_free.py`](verify_slope_forcing_degree_free.py)
-(ends `ALL SLOPE FORCING DEGREE FREE CHECKS PASSED`; default sympy legs, `HEAVY=1` adds
-the `d=4` `msolve` `^` extension and depth trajectory). Every load-bearing upstream fact
+(ends in PASS only when the depth-3 `msolve` payload completes, otherwise explicit SKIP;
+default SymPy legs, `HEAVY=1` adds the `d=4` `msolve` `^` extension and depth trajectory). Every load-bearing upstream fact
 — the crossed-product engine, `Q_0=(T-1)G`, the slope gate, the both-ends Lemma P, the
 positive cascade — is **re-derived in file**.
 
@@ -174,17 +174,14 @@ depth-3 tail **without** the `Q_0=1` block.
   confirmed tail-forcing cap. The `d`-uniform statement is the §0–§2 factorization, not a
   bounded `msolve` sweep.
 
-**Product vs. `a_2(0)` — the finer mechanism is OPEN.** Whether the tail forces the whole
-**product** `a_2(0)·W = 0` (a genuine union `{a_2(0)=0} ∪ {W=0}`) or already forces the
-**factor** `a_2(0)=0` is **not resolved here**. The discriminating test — is `a_2(0) ∈
-sqrt(cascade+Q_-1..Q_-3)`? — is a non-unit (positive-dimensional) Gröbner computation
-that `msolve` does not terminate in budget (it OOMs; `verify §S5d` downgrades it to a
-note). The naive filler-elimination (solve 8 fillers, project) is **not** a valid
-substitute: it drops the saturation by the `8×8` filler determinant, and indeed reports
-even the verified product `a_2(0)·am1_3` as *not* in its (unsaturated) radical — so it
-under-approximates the true elimination ideal and cannot settle the union either. What
-**is** machine-checked (`verify §S5e`) is the depth-3 tail's Fredholm data — **24
-filler-linear equations, filler map full column rank 8, cokernel dimension 16**.
+**Product vs. factor — resolved by the later residual certificate.** This memo originally
+left the mechanism open after establishing only `a_2(0)·W=0`. The exact depth-3 certificate
+in [`residual-identity.md`](residual-identity.md) strengthens it to **`W=0`**, while an
+explicit rational witness has `a_2(0)≠0`. Thus the tail locus lies in `V(W)`; it is not a
+genuine union and does not force `a_2(0)=0`. The warning about naive filler elimination
+remains valid: solving fillers without the `8×8` determinant saturation under-approximates
+the elimination ideal. The Fredholm data checked here are **24 filler-linear equations,
+filler map full column rank 8, cokernel dimension 16**.
 
 ## 5. Depth trajectory
 
@@ -276,10 +273,9 @@ on the `(a_2,b_1)` necklace, whose nodes are the **algebraic** roots of the solv
   **arbitrary degree** (§6) — machine-confirmed at `d=3` only (the `d=4` forcing GB is not
   tractable in budget). The degree-free covector for the `(a_2,b_1)`-necklace block is not
   obtained; `W`'s datum-dependence is the obstacle.
-- Whether the tail forces the **product** `a_2(0)·W=0` (a genuine union) or already the
-  **factor** `a_2(0)=0`: the discriminating test `a_2(0) ∈ sqrt(cascade+Q_-1..Q_-3)?` is a
-  non-unit positive-dimensional Gröbner basis that `msolve` OOMs on; the naive
-  filler-elimination is invalid (drops the `8×8`-determinant saturation). Undetermined.
+- The product-vs-factor mechanism is **no longer open at `d=3`**: the later
+  [`residual-identity.md`](residual-identity.md) certificate forces `W=0` and supplies an
+  `a_2(0)≠0` witness. Its arbitrary-degree extension remains part of the first item.
 - Whether `kmin=3` for `d>4`; the explicit minimal Nullstellensatz power `m` (only
   `m≥1`, radical membership, is certified — the elimination Gröbner bases do not
   terminate in a sane sympy budget).
@@ -300,8 +296,8 @@ boundary identities + THE FACTORIZATION `R(1)=a_2(0)W`; `§S3` factorization on 
 parametrized cascade (`d=1,2,3`; `d=4` `HEAVY`), `W` collapse, slope-is-free control;
 `§S4a` slope forcing at `d=3` on the full tail both branches (`QQ`+two primes, sympy
 exact); `§S4b` the depth-3 graded refinement (`msolve` `^`, `QQ`+one prime, both
-branches); `§S5` depth trajectory (witnesses; rigorous `1<kmin<=3`), the `a_2(0)`-not-forced
-union probe (`msolve`, budget-permitting), and `§S5e` the depth-3 Fredholm structure
+branches); `§S5` depth trajectory (witnesses; rigorous `1<kmin<=3`), the historical
+`a_2(0)` probe (superseded by `residual-identity.md`), and `§S5e` the depth-3 Fredholm structure
 (24 filler-linear eqs, rank 8, cokernel 16); `§S6` (`HEAVY`) the `d=4` `msolve` `^`
-attempt + depth trajectory (memory-bound). Ends
-`ALL SLOPE FORCING DEGREE FREE CHECKS PASSED`.
+attempt + depth trajectory (memory-bound). Ends in PASS only when the depth-3 `msolve`
+payload completes; otherwise ends in explicit SKIP while retaining the full-tail checks.

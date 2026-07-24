@@ -27,19 +27,16 @@ The one-line summary of each residual:
 > Hence the entire **diff-3 class** (roots differing by exactly `3`, so `2`-separated
 > but not cube-separated) is **forced `h` constant at arbitrary degree** — one of
 > the three residual classes is eliminated. The genuinely broken classes **diff-1**
-> and **diff-2** (the `a₂` divisibility fails) get bounded emptiness pushed from
-> cap `D = 2` to **cap `D = 4`** (`msolve`, `κ` a free variable, all `κ`).
+> and **diff-2** (the `a₂` divisibility fails) have committed bounded emptiness at
+> cap `D = 2`; cap `D = 3,4` is an optional `HEAVY` `msolve` payload (`κ` free).
 >
-> **RESIDUAL 3 (constant-h, `κ₂ ≠ 0`) — disposition fixed.** The gauged wall
-> constant `κ₂ = b₂` is a **tame invariant** of the gauge-`b₃=0` sector: no
-> gauge-preserving transvection alters it (`D ↦ D − λX` preserves `b₃ = 0` only for
-> `λ = 0`; higher transvections overshoot to band `≥ 6`; pair-exchange only
-> relabels the band-3 top; Fourier breaks membership). **So no tame move maps
-> `κ₂ ≠ 0` into the `κ₂ = 0` tame family** — the two sectors are genuinely
-> distinct, and the positive cascade *permits* `κ₂ ≠ 0`. Its emptiness is therefore
-> not a tame-reduction question; it is exactly the **A\*-band3 negative-tail
-> closure** ([`../band3/astar-band3.md`](../band3/astar-band3.md) §6), stated
-> precisely in §4 below.
+> **RESIDUAL 3 (constant-h, `κ₂ ≠ 0`) — one-step obstruction only.** No listed
+> gauge-preserving generator removes `κ₂`: `D ↦ D − λX` preserves `b₃ = 0` only for
+> `λ = 0`; higher transvections overshoot to band `≥ 6`; pair-exchange relabels the
+> band-3 top; Fourier breaks membership. This does **not** establish invariance under
+> an arbitrary composite tame word, which may leave and later return to the displayed
+> gauge/band sector. The positive cascade permits `κ₂ ≠ 0`; both composite tame escape
+> and the **A\*-band3 negative-tail closure** remain open.
 
 Exact certificate:
 [`verify_shifted_power_residuals.py`](verify_shifted_power_residuals.py) — default
@@ -220,7 +217,7 @@ The tame family
 `κ₂ = 0` branch (`D ↦ D − λX` is the **B0-band3 collapse** killing `b₃, b₂, b₋₃`
 at once).
 
-### 3.1 `κ₂` is a tame invariant (gauge obstruction, arbitrary degree)
+### 3.1 One-step gauge obstruction (arbitrary degree; composite words open)
 
 The only transvection `D ↦ D − p'(X)` reaching band `2` with band `≤ 3` is
 `p'(X) = λX` (band `3`, since `a₃ = 1`). It sends
@@ -237,9 +234,10 @@ which generator carries the band-3 top. Fourier `E ↦ −E−1` sends the const
 breaking `A₁`-membership (as in [`../band3/astar-band3.md`](../band3/astar-band3.md)
 §6). All four facts are machine-checked (`§3`).
 
-> **Hence no tame move maps `κ₂ ≠ 0` into the `κ₂ = 0` tame family.** `κ₂` is a
-> genuine invariant of the gauge-`b₃=0` constant-h sector; the tame family is the
-> `κ₂ = 0` slice, and `κ₂ ≠ 0` is a genuinely separate sector.
+> **Scope.** These checks obstruct each displayed move when applied directly while
+> retaining the stated low-band/gauge description. They do not exclude a composite
+> tame word that temporarily exits this sector and later returns with `κ₂=0`. Thus
+> `κ₂` is not proved to be a tame-orbit invariant here.
 
 ### 3.2 The positive cascade permits `κ₂ ≠ 0`
 
@@ -253,8 +251,8 @@ fixed nonzero the positive cascade `+ Q₀=1` does *not* collapse to the unit id
 (the Gröbner basis stays large; the exact full-tail sweep is too costly at the
 caps attempted, matching the identical remark for the mirror A\* sector in
 [`../band3/astar-band3.md`](../band3/astar-band3.md) §8). **No emptiness claim is
-made here.** The honest disposition is §4 point 4: `κ₂ ≠ 0` is a proved
-non-tame-reducible sector whose closure is the open A\*-band3 negative tail.
+made here.** The honest disposition is §4 point 4: the direct gauge-reduction move
+stalls, while composite tame escape and the A\*-band3 negative-tail closure are open.
 
 ---
 
@@ -276,10 +274,10 @@ as follows (in the conditional-framework terms of `band-reduction.md` §9).
 
 3. **RESIDUAL 2, diff-1 & diff-2 classes** (`gcd(h,h^{[1]}) ≠ 1` or
    `gcd(h,h^{[2]}) ≠ 1`): the `a₂` divisibility genuinely fails and `G = h^{[-1]}M`
-   is unavailable. Bounded emptiness only (now cap `D = 4`, all `κ`). A new
-   sub-wall, open at arbitrary degree.
-4. **RESIDUAL 3, `κ₂ ≠ 0`:** *not* a tame-reduction gap (κ₂ is a proved invariant,
-   §3.1). The exact remaining statement is:
+   is unavailable. Bounded emptiness only: cap `D = 2` committed, with cap `D = 3,4`
+   optional under `HEAVY` when `msolve` is available. A new sub-wall, open at arbitrary degree.
+4. **RESIDUAL 3, `κ₂ ≠ 0`:** the direct gauge-reduction move stalls (§3.1), but
+   composite tame-word escape is not excluded. Independently, the exact tail statement is:
 
    > *(κ₂-closure)* There is **no** genuine Weyl pair `[D,X] = 1` with `a₃ = 1`
    > (constant top), gauge `b₃ = 0`, `b₂ = κ₂ ≠ 0`, and membership-valid negative
@@ -314,16 +312,16 @@ stated):**
   the separation table (`a₂`: `j=1,2`; `a₁`: `j=2`; `b₁`: none); the **diff-3
   closure** at arbitrary degree (`2`-separated `h`), machine-verified at three
   diff-3 tops.
-- **RESIDUAL 3:** the gauge obstruction — `κ₂` is a tame invariant of the
-  gauge-`b₃=0` sector (no transvection / pair-exchange / Fourier removes it); the
-  constant-top `Q₄` identity and a `κ₂ ≠ 0` positive solution.
+- **RESIDUAL 3:** the one-step gauge obstruction (none of the displayed direct
+  transvection / pair-exchange / Fourier moves removes `κ₂` while retaining the sector);
+  the constant-top `Q₄` identity and a `κ₂ ≠ 0` positive solution.
 
 **Bounded / finite evidence (exact scope):**
 - diff-1, diff-2 sector emptiness: cap `D = 2` committed (exact SymPy, all `κ`),
   cap `D = 3,4` HEAVY (`msolve`, all `κ`).
 - `κ₂ ≠ 0` constant-h sector: **no emptiness claim** — the bounded probe is
-  inconclusive (Gröbner too costly, mirroring `astar-band3.md` §8). Only the
-  gauge-invariance of `κ₂` and the positive-cascade consistency are established.
+  inconclusive (Gröbner too costly, mirroring `astar-band3.md` §8). Only the direct
+  one-step gauge obstruction and positive-cascade consistency are established.
 
 **Refuted (machine-checked) — a corpus correction:**
 - The diff-3 tops (e.g. `E(E−3)`), listed as an **open** arbitrary-degree residual
@@ -334,7 +332,7 @@ stated):**
 
 **Open / NOT claimed:**
 1. diff-1, diff-2 non-separated tops at arbitrary degree (bounded evidence only).
-2. `κ₂ ≠ 0` constant-h at arbitrary degree (the A\*-band3 negative-tail closure).
+2. `κ₂ ≠ 0` constant-h: composite tame-word escape and the A\*-band3 negative-tail closure.
 3. Imbalanced coprime walls (`q ∤ k`, `q ≥ 2`); general-`k` negative tail; **W2**.
 No Weyl pair, no counterexample; DC1/JC2 untouched.
 

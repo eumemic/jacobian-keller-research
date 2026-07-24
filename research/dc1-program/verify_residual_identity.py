@@ -30,7 +30,7 @@ BOUNDED (d=3, exact; stated scope):
   * PRODUCT-VS-FACTOR, RESOLVED and CORRECTING slope-forcing-degree-free.md S4/S7:
     the depth-3 tail forces the FACTOR W=0 (at d=3, W=-(4/9)am1_3, so am1_3=0),
     NOT a "genuine union" and NOT a_2(0)=0.  Machine-checked: am1_3 in
-    sqrt(cascade+tail) (two engines: sympy full-tail QQ+2 primes, msolve '^' depth-3
+    sqrt(cascade+tail) (SymPy full-tail QQ+2 primes; when available, msolve '^' depth-3
     QQ+prime); a_2(0) NOT forced (explicit witness a_2(0)=-2,R(1)=0; slice a_2(0)=1
     feasible).  So cascade+tail is contained in V(W); R(1)=a_2(0)*W=0 via W=0.
   * CONSISTENCY-COVECTOR CERTIFICATE (det-saturated): explicit covectors mu_j
@@ -53,7 +53,7 @@ OPEN (not claimed): the residual identity at ARBITRARY degree; a degree-free cov
 
 Run:  uv run --with sympy python research/dc1-program/verify_residual_identity.py
       HEAVY=1 ... (adds d=4 linear-route legs + branch-A depth-3 msolve + full-system)
-Ends: ALL RESIDUAL IDENTITY CHECKS PASSED
+Ends: PASS only when exact-QQ depth-3 msolve completes; otherwise explicit SKIP.
 """
 import sympy as sp
 import time, os, random, subprocess, tempfile, shutil
@@ -66,6 +66,7 @@ random.seed(20260723)
 HEAVY = os.environ.get("HEAVY") == "1"
 PRIMES = (65003, 32003)
 _NP = 0
+_DEPTH3_CERTS = set()
 
 
 def sh(f, n):
@@ -471,9 +472,11 @@ if shutil.which("msolve"):
     for char in (PRIMES[0], 0):
         t0 = time.time(); tag = f"mod {char}" if char else "over QQ"
         try:
-            check(msolve_unit(tail3_3 + [1 - t_rab * am1_3], allv3, char, tmo=120),
+            depth3_ok = msolve_unit(tail3_3 + [1 - t_rab * am1_3], allv3, char, tmo=120)
+            check(depth3_ok,
                   f"am1_3 in sqrt(cascade+Q_-1..Q_-3) (msolve '^' {tag}) => W=0 forced at DEPTH 3 "
                   f"({time.time()-t0:.1f}s)")
+            _DEPTH3_CERTS.add(char)
         except MSFAIL:
             print(f"    [depth-3 msolve {tag}: timeout/OOM ({time.time()-t0:.1f}s); sympy full-tail stands]", flush=True)
 else:
@@ -758,11 +761,19 @@ print("\n" + "=" * 72, flush=True)
 print("PROVED (arbitrary d): engine; slope gate; both-ends Lemma-P; R(1)=a_2(0)*W;", flush=True)
 print("  MIRROR R(-1)=-R(1); STRUCTURAL KEY -- Q_-1,Q_-2,Q_-3 filler-LINEAR at every d,", flush=True)
 print("  so filler elimination is linear algebra over the cascade function field.", flush=True)
-print("BOUNDED (d=3, exact): the depth-3 tail forces the FACTOR W=0 (am1_3 in sqrt(cascade+tail),", flush=True)
-print("  two engines), a_2(0) NOT forced (explicit witness) -- CORRECTING the 'genuine union'", flush=True)
-print("  reading; explicit det-saturated consistency-covector certificate; branch A per gauge.", flush=True)
+depth3_headline = 0 in _DEPTH3_CERTS
+if depth3_headline:
+    print("BOUNDED (d=3, exact): the depth-3 tail forces the FACTOR W=0 (exact QQ msolve);", flush=True)
+else:
+    print("SKIP (d=3 depth-3 headline): exact QQ msolve certificate did not complete;", flush=True)
+print("  full-tail QQ SymPy forces W=0; a_2(0) NOT forced by an explicit QQ witness -- CORRECTING", flush=True)
+print("  the 'genuine union' reading; explicit det-saturated consistency-covector certificate;", flush=True)
+print("  branch A per gauge.", flush=True)
 print("BOUNDED (d=4, HEAVY): linear-elimination route; W-forcing by sampling; det-saturated GB", flush=True)
 print("  degree ~18 not confirmed in budget.  OPEN: arbitrary-degree residual identity.", flush=True)
 print("=" * 72, flush=True)
 print(f"\n(total {time.time() - _T0:.1f}s; {_NP} checks passed)", flush=True)
-print("ALL RESIDUAL IDENTITY CHECKS PASSED", flush=True)
+if depth3_headline:
+    print("ALL RESIDUAL IDENTITY CHECKS PASSED", flush=True)
+else:
+    print("SKIP -- RESIDUAL DEPTH-3 EXACT-QQ PAYLOAD NOT RUN; SUPPORTING/FULL-TAIL CHECKS PASSED", flush=True)
