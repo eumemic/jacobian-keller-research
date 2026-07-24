@@ -28,8 +28,9 @@ PROVED (arbitrary degree / node-free, machine-checked identities):
       (i)  moving-sum adjoint identity  lambda(S_n g)=(S_n^* lambda)(g)  for SYMBOLIC nodes
            rho (integer OR algebraic) -- the criterion never needed integer nodes;
       (ii) TRACE-FORM DESCENT: for a squarefree datum polynomial p (symbolic coeffs) and any
-           weight/test h, sum_{p(rho)=0} h(rho) = Tr_{F[E]/(p)}(h) = a POLYNOMIAL in the
-           coefficients of p,h (companion trace), computed with NO root named -- so a Galois-
+           weight/test h, sum_{p(rho)=0} h(rho) = Tr_{F[E]/(p)}(h) is rational in the
+           arbitrary coefficients of p,h, and polynomial after monic normalization (companion
+           trace), computed with NO root named -- so a Galois-
            symmetric node-functional lam=sum_{p(rho)=0} g(rho) ev_rho descends to F(datum);
       (iii) trace forms are CLOSED under S_n^* (shift-window), so the algebraic-necklace
            support conditions are themselves trace-form/resultant-computable degree-freely.
@@ -50,8 +51,8 @@ PROVED (arbitrary degree / node-free, machine-checked identities):
 BOUNDED (d=3, exact; stated scope):
   * S5 the depth-3 tail cokernel is 16-dimensional; the W-forcing pairing exists (kill
     reproduced: am1_3 in sqrt(cascade+Q_-1..Q_-5), sympy exact QQ + prime); a_2(0) NOT forced
-    (explicit witness); every cokernel covector annihilates the filler columns identically.
-    The W-forcing covector's support meets the algebraic necklace (not the membership windows
+    (explicit witness); the computed specialized cokernel vectors annihilate the specialized
+    filler columns exactly. The W-forcing covector's support meets the algebraic necklace (not the membership windows
     alone) -- the fixed part is silent, as at Q_0 (joint-covector.md).
 
 OPEN / NOT CLAIMED (the prize, obstruction LOCALIZED -- lead 5):
@@ -59,12 +60,13 @@ OPEN / NOT CLAIMED (the prize, obstruction LOCALIZED -- lead 5):
     W at EVERY d.  The two-term coupling across the varying tops (a_2,a_1,a_0)/(b_1,b_0,b_-1)
     does not reduce to one fixed node-selection+weight rule in these tests; that coupling is
     the exact residual gap.  S6 verifies the linear-route data (filler map full column rank;
-    W-forcing sampling) at d=4 mod p, confirming the covector EXISTS at d=4, but not a
-    degree-free recipe.  The arbitrary-d W-forcing identity remains OPEN.
+    sampled W-forcing obstruction) at d=4 mod p, providing bounded supporting evidence
+    only, not a symbolic covector or degree-free recipe. The arbitrary-d W-forcing identity
+    remains OPEN.
 
 Run:  uv run --with sympy python research/dc1-program/verify_algebraic_covector.py
       HEAVY=1 ... (adds d=4 linear-route mod-p leg + depth-3 msolve kill + larger trace-form)
-Ends: ALL ALGEBRAIC COVECTOR CHECKS PASSED
+Ends with a PASS/SKIP-aware summary.
 """
 import sympy as sp
 import time, os, random, subprocess, tempfile, shutil
@@ -151,24 +153,29 @@ def sy_unit(eqs, vs, modulus=None):
 def msolve_unit(eqs, vs, char, tmo=200):
     xs = sp.symbols(f"z0:{len(vs)}")
     sub = dict(zip(vs, xs))
-    with tempfile.NamedTemporaryFile("w", suffix=".ms", delete=False) as f:
-        inp = f.name
-        f.write(",".join(str(x) for x in xs) + "\n" + str(char) + "\n")
-        f.write(",\n".join(str(clear_denoms(e.subs(sub))).replace(" ", "").replace("**", "^")
-                           for e in eqs if sp.expand(e) != 0) + "\n")
-    out = inp + ".out"
-    try:
-        subprocess.run(["msolve", "-g", "2", "-f", inp, "-o", out], check=True,
-                       stderr=subprocess.DEVNULL, timeout=tmo)
-        r = open(out).read()
-    finally:
-        for pth in (inp, out):
-            if os.path.exists(pth):
-                os.remove(pth)
-    return r[r.rfind("["):].strip().startswith("[1]")
+    with tempfile.TemporaryDirectory(prefix="algebraic-covector-") as tmp:
+        inp = os.path.join(tmp, "input.ms")
+        out = os.path.join(tmp, "output.txt")
+        with open(inp, "w", encoding="utf-8") as f:
+            f.write(",".join(str(x) for x in xs) + "\n" + str(char) + "\n")
+            f.write(",\n".join(str(clear_denoms(e.subs(sub))).replace(" ", "").replace("**", "^")
+                               for e in eqs if sp.expand(e) != 0) + "\n")
+        rr = subprocess.run(["msolve", "-g", "2", "-f", inp, "-o", out],
+                            capture_output=True, text=True, timeout=tmo)
+        if rr.returncode != 0:
+            raise RuntimeError(f"msolve failed with status {rr.returncode}: {rr.stderr.strip()}")
+        if not os.path.exists(out):
+            raise RuntimeError(f"msolve produced no output file; stderr: {rr.stderr.strip()}")
+        with open(out, encoding="utf-8") as f:
+            r = f.read()
+    lines = [line for line in r.splitlines() if not line.lstrip().startswith("#")]
+    parsed = "".join(lines).replace(" ", "")
+    if not parsed.startswith("["):
+        raise RuntimeError(f"malformed msolve output: {parsed[:200]!r}")
+    return parsed.startswith("[1]:") or parsed == "[1]"
 
 
-MSFAIL = (subprocess.TimeoutExpired, subprocess.CalledProcessError)
+MSFAIL = (subprocess.TimeoutExpired,)
 
 
 def rank_mod_p(rows, ncol, p):
@@ -363,9 +370,9 @@ for n in (2, 3, 4):
     check_zero(sp.expand(lhs - rhs),
                f"S_{n} adjoint  ev_rho(S_{n} g)=(S_{n}^* ev_rho)(g)  SYMBOLIC node rho, generic deg-5 g")
 # (ii) TRACE-FORM DESCENT.  For squarefree p (symbolic coeffs), sum_{p(rho)=0} h(rho) equals
-#     Tr_{F[E]/(p)}(h) = trace of multiplication-by-h on the companion basis -- a POLYNOMIAL in
-#     the coefficients of p,h, so a Galois-symmetric node-functional descends to F(datum) with
-#     NO root ever named.
+#     Tr_{F[E]/(p)}(h) = trace of multiplication-by-h on the companion basis -- rational in
+#     arbitrary coefficients of p,h and polynomial after monic normalization. Thus a
+#     Galois-symmetric node-functional descends to F(datum) with NO root ever named.
 
 
 def companion_trace(pexpr, hexpr):
@@ -463,11 +470,12 @@ for dwin in (2, 3, 4):
         blk = sh(Bz[-1], -2) * am2d - Bz[-1] * sh(am2d, -1)  # a-block(Q_-3), top b_-1
         check_zero(blk.subs(E, rhov),
                    f"[d={dwin}] membership covector ev_{rhov} on lambda_-3 annihilates a-block (root of (E)_2)")
-# NO single-algebraic-node kill: needs a shared root of top(E),top(E-3); generically none.
+# On this tested generic a_2 b-block rung, no single-node kill exists: it would need
+# a shared root of a_2(E),a_2(E-3), and generically there is none.
 gsh = sp.gcd(sp.Poly(clear_denoms(Az[2]), E), sp.Poly(clear_denoms(sh(Az[2], -3)), E))
 check(sp.Poly(gsh, E).degree() == 0,
-      "gcd(a_2(E),a_2(E-3))=1 generically => NO single algebraic node kills a block: "
-      "the covector must COUPLE the two terms across the varying tops (the obstruction)")
+      "tested generic a_2 b-block rung: gcd(a_2(E),a_2(E-3))=1, so no single "
+      "algebraic node kills this rung; its two terms must be coupled")
 
 # =====================================================================
 print("\n--- S4. BLOCK ADJOINT CRITERION (algebraic-node): coefficient-of-filler-value vanishing ---", flush=True)
@@ -524,11 +532,11 @@ ptF = {v: sp.Integer(random.randint(2, 60)) for v in free3}
 rankM = Mmat.subs(ptF).rank()
 check(rankM == len(fill3),
       f"filler map M FULL COLUMN RANK {rankM}=8; cokernel dim = {len(rows3)}-{rankM} = {len(rows3)-rankM}")
-# the cokernel covectors annihilate the filler columns IDENTICALLY (as polynomial identities):
+# Exact cokernel vectors at this specialization annihilate every specialized filler column.
 LK = Mmat.subs(ptF).T.nullspace()
 check(len(LK) == len(rows3) - rankM and all(
         all(sp.expand((sp.Matrix([list(v)]) * Mmat.subs(ptF))[k]) == 0 for k in range(len(fill3))) for v in LK),
-      f"all {len(LK)} cokernel covectors satisfy mu.M=0 identically (annihilate every filler column)")
+      f"all {len(LK)} specialized cokernel covectors satisfy mu.M=0 exactly at the tested specialization")
 # W-KILL reproduced (control): am1_3 in sqrt(cascade+Q_-1..Q_-5), sympy exact QQ + prime.
 t_rab = sp.symbols("t_rab")
 allv3 = [t_rab] + free3 + fill3
@@ -598,8 +606,8 @@ for d in (1, 2, 3):
     check(sp.simplify(rd["R1"] - prod) == 0, f"d={d}: R(1)=a_2(0)*W exact on the parametrized cascade")
     if d <= 2:
         check(sp.expand(rd["R1"]) == 0, f"d={d}: R(1)=0 on the cascade ALONE (forcing vacuous below d=3)")
-# d=4 linear route (mod p): filler map full column rank + W-forcing sampling => the covector
-# EXISTS at d=4 (but this is EXISTENCE, not a fixed degree-free recipe).
+# d=4 linear route (mod p): sampled full column rank plus absence of sampled
+# W!=0 tail-solvable points is bounded supporting evidence, not a covector construction.
 if HEAVY:
     rd4 = build_reduced(4)
     free4, fill4 = rd4["free"], rd4["fillers"]
@@ -614,7 +622,7 @@ if HEAVY:
     pbig = 2147483647
     Mp = [[int(x) for x in row] for row in fM4(*[random.randint(2, 90) for _ in free4]).tolist()]
     check(rank_mod_p(Mp, len(fill4), pbig) == len(fill4),
-          f"d=4 filler map FULL COLUMN RANK {len(fill4)}=10 (linear elimination valid; covector exists)")
+          f"d=4 sampled filler map has FULL COLUMN RANK {len(fill4)}=10 (linear elimination valid at this sample)")
     n_wit = 0; n_Wnz = 0
     for _ in range(40):
         vals = [random.randint(-5, 5) for _ in free4]
@@ -630,8 +638,8 @@ if HEAVY:
             if M4.subs(fv).rank() == M4.subs(fv).row_join(N4.subs(fv)).rank():
                 n_wit += 1
     check(n_wit == 0,
-          f"d=4: among {n_Wnz} random cascade pts with W!=0, tail-solvable={n_wit} => W-forcing covector "
-          "EXISTS at d=4 (mod-p sampling; EXISTENCE only, not a degree-free recipe)")
+          f"d=4: among {n_Wnz} sampled cascade pts with W!=0, tail-solvable={n_wit} "
+          "(mod-p bounded evidence only; no symbolic covector or degree-free recipe)")
     # depth-3 msolve kill at d=3 (single-tool corroboration of S5 control):
     if shutil.which("msolve"):
         t0 = time.time()
@@ -655,15 +663,19 @@ print("    (companion trace = root sum, no root named; closed under S_n^*) -- th
 print("    (a_2,b_1) algebraic necklace needs.", flush=True)
 print("  * TWO-BLOCK STRUCTURE: explicit two-term operators, level incidence; the negative-tail", flush=True)
 print("    necklace is ENTIRELY algebraic (no a_3,b_2); membership-window covectors annihilate;", flush=True)
-print("    single-algebraic-node kill impossible (coupling obstruction).", flush=True)
+print("    no single-node kill on the tested generic a_2 b-block rung (coupling obstruction).", flush=True)
 print("  * BLOCK ADJOINT CRITERION: symbolic-node coefficient-of-filler-value vanishing =>", flush=True)
 print("    trace-form support conditions.", flush=True)
 print("BOUNDED (d=3, exact): cokernel dim 16; W-kill reproduced (am1_3 in sqrt(cascade+tail),", flush=True)
-print("  sympy QQ+prime); a_2(0) NOT forced (witness); covectors annihilate fillers identically;", flush=True)
+print("  sympy QQ+prime); a_2(0) NOT forced (witness); specialized cokernel vectors", flush=True)
+print("  annihilate specialized filler columns exactly;", flush=True)
 print("  W enters the consistency conditions; Q_-1 alone does not force W (depth-3 coupling needed).", flush=True)
 print("OPEN (obstruction LOCALIZED): a FIXED finite trace-form recipe giving unit*W at every d --", flush=True)
 print("  blocked by the two-term coupling across the varying (a_2,a_1,a_0)/(b_1,b_0,b_-1) tops.", flush=True)
-print("  d=4 (HEAVY): covector EXISTS (full column rank + W-forcing sampling) but no degree-free recipe.", flush=True)
+print("  d=4 (HEAVY): sampled rank/solvability evidence only; no symbolic covector or degree-free recipe.", flush=True)
 print("=" * 74, flush=True)
 print(f"\n(total {time.time() - _T0:.1f}s; {_NP} checks passed, {_NSKIP} skipped)", flush=True)
-print("ALL ALGEBRAIC COVECTOR CHECKS PASSED", flush=True)
+if _NSKIP:
+    print("ALL EXECUTED ALGEBRAIC COVECTOR CHECKS PASSED; OPTIONAL CHECKS SKIPPED", flush=True)
+else:
+    print("ALL ALGEBRAIC COVECTOR CHECKS PASSED; NO SKIPS", flush=True)

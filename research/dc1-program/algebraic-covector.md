@@ -15,9 +15,11 @@ five things:
    identity `lambda(S_n g) = (S_n^* lambda)(g)` holds verbatim for a **symbolic** node
    `rho` — nothing in the adjoint algebra ever used integrality. And a Galois-symmetric
    node-functional `lam = sum_{p(rho)=0} g(rho) ev_rho` over the roots of a datum
-   polynomial `p` is a **trace form** `Tr_{F[E]/(p)}(g·)`, a polynomial in the
-   coefficients of `p` computed with **no root named**, closed under `S_n^*` — so the
-   algebraic-necklace support conditions are degree-free-computable via companion
+   polynomial `p` is a **trace form** `Tr_{F[E]/(p)}(g·)`, a rational function of the
+   coefficients of `p` computed with **no root named** (polynomial after monic
+   normalization; in general denominators are powers of the leading coefficient),
+   closed under `S_n^*` — so the algebraic-necklace support conditions are
+   degree-free-computable over the corresponding coefficient field via companion
    traces / resultants (lead 1).
 2. **Derives the two-block structure of the negative tail (PROVED, degree-free).** The
    filler-linear parts of `Q_-1,Q_-2,Q_-3` are explicit **two-term** operators whose
@@ -32,12 +34,13 @@ five things:
    cokernel is 16-dimensional; the W-kill is reproduced; `a_2(0)` is not forced; `W`
    enters the consistency conditions; `Q_-1` alone does not force `W` (lead 3).
 5. **Tests the fixed trace-form recipe and localizes the obstruction (OPEN, lead 4/5).**
-   A single algebraic node cannot annihilate a block (it would need a shared root of
-   `top(E)` and `top(E-3)`, generically none); the covector must **couple** the two terms
-   across the **varying** tops `(a_2,a_1,a_0)/(b_1,b_0,b_-1)`. That coupling is the exact
-   residual gap: a fixed finite trace-form recipe producing a unit multiple of `W` at
-   **every** `d` is **not** obtained. At `d=4` the covector **exists** (linear-route
-   full column rank + W-forcing sampling) but no degree-free recipe.
+   On a rung where the two terms use independently variable filler evaluations, a single
+   algebraic node would need a shared root of `top(E)` and `top(E-3)`, generically none;
+   the sought covector must therefore **couple** terms and rungs across the **varying**
+   tops `(a_2,a_1,a_0)/(b_1,b_0,b_-1)`. That coupling is the exact residual gap: a fixed
+   finite trace-form recipe producing a unit multiple of `W` at **every** `d` is **not**
+   obtained. At `d=4`, full filler-column rank and random mod-`p` samples give supporting
+   evidence only; they do **not** construct a W-forcing covector or prove one exists.
 
 W2 datum, gauge `b_3=0`, quantum band-3 conventions
 (`Q_m=sum_(k+l=m)[b_l^[k]a_k - a_k^[l]b_l]`, `f^[n](E)=f(E+n)`,
@@ -48,11 +51,12 @@ a_3 = E(E+2)(E+4)   (roots {0,-2,-4}),   b_2 = E(E+3),   b_3 = 0.
 branch B:  a_-3=0,  b_-3=(E)_3 C;   branch-B fillers  a_-2=(E)_2 V,  b_-3=(E)_3 C.
 ```
 
-Exact certificate: [`verify_algebraic_covector.py`](verify_algebraic_covector.py) (default
-≈ 40 s, `75` checks, ends `ALL ALGEBRAIC COVECTOR CHECKS PASSED`; `HEAVY=1` ≈ 120 s, `79`
-checks — adds the `d=4` linear-route mod-`p` leg and the depth-3 `msolve` kill). Every
-load-bearing upstream fact — the crossed-product engine, `Q_0=(T-1)G`, the slope gate, the
-both-ends Lemma P, the factorization `R(1)=a_2(0)·W` — is **re-derived in file**.
+Exact certificate: [`verify_algebraic_covector.py`](verify_algebraic_covector.py). Runtime is
+environment-dependent; `HEAVY=1` adds the `d=4` linear-route mod-`p` leg and the optional
+depth-3 `msolve` kill. The final summary distinguishes a run in which all checks passed from
+one in which all executed checks passed but optional checks were skipped. Every load-bearing
+upstream fact — the crossed-product engine, `Q_0=(T-1)G`, the slope gate, the both-ends Lemma
+P, the factorization `R(1)=a_2(0)·W` — is **re-derived in file**.
 
 ## 0. Headline
 
@@ -61,9 +65,10 @@ both-ends Lemma P, the factorization `R(1)=a_2(0)·W` — is **re-derived in fil
 > Galois-symmetric annihilators descend to `F(datum)` as **trace forms** computable
 > without naming a root (PROVED, machine-checked on symbolic blocks). The depth-3 negative
 > tail is two explicit **two-term** block operators on a **purely algebraic** necklace
-> (PROVED, degree-free). But the block annihilators must **couple** the two terms across
-> the varying tops `(a_2,a_1,a_0)/(b_1,b_0,b_-1)` — a single algebraic node never
-> suffices — and a **fixed finite trace-form recipe** yielding a unit multiple of `W` at
+> (PROVED, degree-free). But on the tested generic b-block rung a single algebraic
+> node does not suffice; the sought annihilator must **couple** terms and rungs across
+> the varying tops `(a_2,a_1,a_0)/(b_1,b_0,b_-1)`. A **fixed finite trace-form recipe**
+> yielding a unit multiple of `W` at
 > every degree is **not** obtained. The residual identity
 > `W ∈ sqrt(cascade+Q_-1..Q_-3)` at arbitrary `d` is therefore still **open**; what is new
 > is the degree-free calculus in which it lives and the precise coupling that blocks it.
@@ -83,9 +88,11 @@ polynomial `p` (symbolic coefficients) and any weight/test `h`,
    sum_{p(rho)=0} h(rho)  =  Tr_{F[E]/(p)}(h)  =  trace of mult-by-h on the companion basis,
 ```
 
-a **polynomial in the coefficients of `p,h`** (`verify §S2(ii)`: the companion trace has
-free symbols `⊆ coeffs(p)∪coeffs(h)`, and equals the actual root sum on random squarefree
-specializations — no root named). **Tier note (audit-demoted): the equality clause
+a **rational function in the coefficients of `p,h`**, with denominators coming from
+monic normalization (and hence polynomial in the coefficients of `h` and a monic `p`),
+computed with no root named (`verify §S2(ii)`: the companion trace has free symbols
+`⊆ coeffs(p)∪coeffs(h)`, and equals the actual root sum on random squarefree
+specializations). **Tier note (audit-demoted): the equality clause
 "companion trace = root-sum functional" is machine-checked in-file only NUMERICALLY at
 fixed degree (`deg p=3, deg h=2`, 4 random squarefree specializations) — the fact is the
 standard trace theorem, but the in-file evidence tier is bounded, not a symbolic proof
@@ -173,8 +180,10 @@ dimension **16** (`verify §S5`). Read through §1–§3:
 - **`a_2(0)` is not forced.** Explicit `cascade+tail` witness with `a_2(0)≠0`, `R(1)=0`
   (`verify §S5`) — the kill is the **factor** `W`, `a_2(0)` free (as in
   [`residual-identity.md`](residual-identity.md) §2).
-- **The covectors are honest.** All 16 cokernel covectors satisfy `mu·M=0` identically
-  (annihilate every filler column). The filler map `M` is **independent of `am1_3`**: `W`
+- **The specialized covectors are honest at the tested datum point.** After the free
+  cascade coordinates are specialized, all 16 numerical cokernel covectors satisfy
+  `mu·M=0` exactly at that specialization (annihilate every filler column). This is not
+  a symbolic identity in the unspecialized free cascade coordinates. The filler map `M` is **independent of `am1_3`**: `W`
   lives purely in the residual `N`. And `W` **enters** the consistency conditions (some
   cokernel covector pairs `N` with a nonzero `am1_3`-coefficient), so tail-solvability
   genuinely constrains `W`.
@@ -187,12 +196,15 @@ silent.
 
 ## 5. The fixed recipe and the coupling obstruction (OPEN, localized — lead 4/5)
 
-**Why a single algebraic node cannot annihilate a block.** For the b-block, `ev_rho` on
-`lambda_m` kills the first term iff `a_{m+3}(rho)=0` and the second iff
-`a_{m+3}(rho-3)=0`; a single node kills the whole block only at a **shared** root of
-`a_{m+3}(E)` and `a_{m+3}(E-3)`, and `gcd(a_2(E),a_2(E-3))=1` generically (`verify §S3`).
-So the annihilating covector must **couple** the two terms — across rungs with **different**
-tops `a_2,a_1,a_0` (resp. `b_1,b_0,b_-1`). In the integer-node band-3 AP family the
+**Why a single algebraic node is insufficient for the tested generic b-block.** On a
+rung where the two filler evaluations are independent, `ev_rho` on `lambda_m` kills the
+first term iff `a_{m+3}(rho)=0` and the second iff `a_{m+3}(rho-3)=0`; it kills that
+whole rung only at a **shared** root of `a_{m+3}(E)` and `a_{m+3}(E-3)`. The verifier
+checks the generic `a_2` instance, where `gcd(a_2(E),a_2(E-3))=1` (`verify §S3`). This
+argument is not a blanket theorem for every block and rung: coincident filler evaluations
+can cancel, and lower tops require separate analysis. For the tested generic b-block, the
+annihilator must **couple** its two terms and ultimately the rungs with different tops
+`a_2,a_1,a_0` (and analogously on the a-block side). In the integer-node band-3 AP family the
 analogous coupling telescoped because the tops were shifts of one polynomial
 ([`lambda-general-k.md`](lambda-general-k.md) Thm C); here the tops are **independent
 datum**, and no fixed telescoping is available.
@@ -205,15 +217,16 @@ verified degree by degree:
 - `d=1,2,3`: `R(1)=a_2(0)·W` exact on the parametrized cascade; forcing vacuous for `d≤2`
   (cascade alone kills the slope) (`verify §S6`).
 - `d=3`: the covector kill (§4).
-- `d=4` (`HEAVY`): the depth-3 tail is 30 rows linear in 10 fillers, filler map **full
-  column rank 10**, and among random cascade points with `W≠0` the tail is **never**
-  solvable — so the W-forcing covector **exists** at `d=4` (mod-`p` sampling). This is
-  **existence**, not a degree-free recipe.
+- `d=4` (`HEAVY`): at sampled cascade points the depth-3 tail is 30 rows linear in 10
+  fillers and its filler map has **full column rank 10**; among the sampled points with
+  `W≠0`, the tail was never solvable. This is finite mod-`p` evidence only. It proves
+  neither `W∈sqrt(I)` over the parameter space nor the existence of a symbolic W-forcing
+  cokernel covector.
 
-So the covector exists at every tested degree (the cokernel is nonempty by the rank count,
-uniformly), but its algebraic-necklace part is **datum-dependent** in a way that the coupled
-two-term structure across varying tops does not, in these tests, reduce to one fixed
-trace-form rule. **That coupling is the named residual gap** — the exact obstruction between
+At `d=3` the exact covector kill exists. At `d=4` the nonempty cokernel and samples only
+motivate the same search; whether its algebraic-necklace part pairs the residual to a unit
+multiple of `W` remains unproved. The coupled two-term structure across varying tops does
+not, in these tests, reduce to one fixed trace-form rule. **That coupling is the named residual gap** — the exact obstruction between
 the built calculus and the arbitrary-`d` residual identity.
 
 ## 6. Evidence ledger — proved / bounded / refuted / open
@@ -224,30 +237,33 @@ the built calculus and the arbitrary-`d` residual identity.
   filler-independent; the factorization `R(1)=a_2(0)·W` (`§S0,§S1`).
 - **Algebraic-node Thm A′:** the moving-sum adjoint identity `lambda(S_n g)=(S_n^* lambda)(g)`
   for a **symbolic** node `rho` (`n=2,3,4`, generic degree-5 `g`); the **trace-form
-  descent** `sum_{p(rho)=0} h(rho)=Tr_{F[E]/(p)}(h)` — a polynomial in `coeffs(p,h)` equal
-  to the root sum, **no root named** (in-file symbolic scope `deg p=3, deg h=2`, plus random
-  root-sum confirmation); trace forms **closed under `S_n^*`** (`§S2`).
+  descent** `sum_{p(rho)=0} h(rho)=Tr_{F[E]/(p)}(h)` — a rational function in
+  `coeffs(p,h)` (polynomial after monic normalization), equal to the root sum with
+  multiplicity and **no root named** (in-file symbolic scope `deg p=3, deg h=2`, plus
+  random squarefree root-sum confirmation); trace forms **closed under `S_n^*`** (`§S2`).
 - **Two-block structure:** the explicit two-term operators `a-block`, `b-block` with tops
   `(b_1,b_0,b_-1)`, `(a_2,a_1,a_0)` (level incidence, generic data); the negative-tail
   necklace is **entirely algebraic** — `a_3,b_2` occur in **no** `Q_-1,Q_-2,Q_-3`;
-  membership-window covectors annihilate a block (`d=2,3,4`); a single algebraic node
-  cannot (generic `gcd(top(E),top(E-3))=1`) (`§S3`).
+  membership-window covectors annihilate a block (`d=2,3,4`); on the tested generic
+  `a_2` b-block rung with independent filler evaluations, a single algebraic node cannot
+  (`gcd(a_2(E),a_2(E-3))=1`) (`§S3`).
 - **Block adjoint criterion:** the symbolic-node coefficient-of-`C(sigma)`/`V(sigma)`
   identities, whence the algebraic-necklace support conditions are trace forms (`§S4`).
 
 **Bounded-finite (exact scope stated):**
-- `d=3`: depth-3 tail 24 filler-linear equations, filler map full column rank 8, cokernel
-  dimension **16**; all 16 covectors annihilate the filler columns identically; `M`
-  independent of `am1_3`; `W` enters the consistency conditions; `Q_-1` alone does not force
+- `d=3`: at the tested exact datum specialization, the depth-3 tail has 24 filler-linear
+  equations, filler map full column rank 8, and cokernel dimension **16**; all 16 resulting
+  covectors annihilate the specialized filler columns exactly. `M` is independent of
+  `am1_3`; `W` enters the specialized consistency conditions; `Q_-1` alone does not force
   `W` (witness `R(1)=16/9`) (`§S5`).
 - `d=3` W-kill (control, reproduced): `am1_3 ∈ sqrt(cascade+Q_-1..Q_-5)` over `QQ`+`GF(65003)`
   (sympy exact); depth-3 `am1_3 ∈ sqrt(cascade+Q_-1..Q_-3)` (`msolve '^'`, `HEAVY`);
   `a_2(0)` not forced (explicit witness) (`§S5,§S6`).
 - `R(1)=a_2(0)·W` exact on the parametrized cascade at `d=1,2,3`; forcing vacuous `d≤2`
   (`§S6`).
-- `d=4` (`HEAVY`): depth-3 tail linear, filler map full column rank **10**; W-forcing
-  covector **exists** by mod-`p` sampling (no `W≠0` tail-solvable point) — **existence
-  only**, not a degree-free recipe (`§S6`).
+- `d=4` (`HEAVY`): at sampled mod-`p` cascade points, the depth-3 filler map has full
+  column rank **10**, and no sampled `W≠0` point was tail-solvable. This is supporting
+  evidence only, not a symbolic W-forcing covector or radical certificate (`§S6`).
 
 **Refuted / corrected (sharpening):**
 - The description ([`residual-identity.md`](residual-identity.md) §3) that the **pure-tail**
@@ -277,8 +293,11 @@ HEAVY=1 uv run --with sympy python research/dc1-program/verify_algebraic_covecto
 
 `S0` engine; `S1` slope gate + both-ends Lemma P + factorization; `S2` algebraic-node
 Thm A′ (symbolic-node adjoint + trace-form descent + `S_n^*` closure); `S3` the two blocks
-(two-term operators, purely-algebraic necklace, membership-window covectors, coupling
-obstruction); `S4` the block adjoint criterion; `S5` the `d=3` certificate (cokernel 16,
-W-kill, `a_2(0)` free, depth-3 needed); `S6` uniformity (`d=1,2,3` exact; `d=4` linear route
-+ depth-3 `msolve`, `HEAVY`). Default ends `ALL ALGEBRAIC COVECTOR CHECKS PASSED` after `75`
-checks (`2` HEAVY-only legs marked SKIP); `HEAVY` after `79`.
+(two-term operators, purely-algebraic necklace, membership-window covectors, tested generic
+coupling obstruction); `S4` the block adjoint criterion; `S5` the bounded `d=3` certificate
+(cokernel 16 at a specialization, W-kill, `a_2(0)` free, depth-3 needed); `S6` bounded
+checks (`d=1,2,3` exact identities at their stated caps; `d=4` sampling plus optional
+`msolve`, `HEAVY`). Runtime and executed-check counts depend on the environment and enabled
+optional tools. The verifier reports either that all checks passed with no skips, or that all
+executed checks passed with explicit skips; it never folds skipped optional legs into an
+unqualified all-passed banner. Sampling does not certify the broader mathematical conjectures.

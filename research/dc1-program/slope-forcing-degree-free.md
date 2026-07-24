@@ -220,11 +220,14 @@ non-filler residual `N` to a multiple of `a_2(0)·W` at arbitrary degree — the
 degree-free analogue of the bounded joint-covector kill (committed at `d=3`; optional/heavy at `d=4`)
 ([`joint-covector.md`](joint-covector.md) §4), now on the depth-3 tail cokernel and with
 `W` in place of the moment-unit `rhs`. What blocks it from being degree-free today is the
-same gap as the joint-covector lemma: the covectors' fixed part lives on the `(a_3,b_2)`
-root necklace (degree-free, adjoint criterion,
-[`lambda-general-k.md`](lambda-general-k.md) Thm A′), but the datum-dependent part sits
-on the `(a_2,b_1)` necklace, whose nodes are the **algebraic** roots of the solved
-`a_2,b_1`; a degree-free description of that block would close the lemma. `W` growing with
+same gap as the joint-covector lemma, with an important operator distinction. The fixed
+`(a_3,b_2)` root necklace belongs to the joint `Q_0`/`Phi` operator (degree-free
+adjoint criterion, [`lambda-general-k.md`](lambda-general-k.md) Thm A′), not to the
+pure `Q_-1,Q_-2,Q_-3` tail. The pure-tail necklace is algebraic after solving the
+cascade; its integer nodes are only the membership-window nodes (`{0,1}` for
+`a_-2=(E)_2V` and `{0,1,2}` for `b_-3=(E)_3C`). The datum-dependent
+`(a_2,b_1)` block likewise has the **algebraic** roots of the solved `a_2,b_1`; a
+degree-free description of that block would close the lemma. `W` growing with
 `d` (§3) is exactly this datum-dependence.
 
 ## 7. Evidence ledger — proved / bounded / refuted / open

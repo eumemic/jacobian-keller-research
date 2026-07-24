@@ -4,8 +4,8 @@ closure of the CONSTANT-TOP (constant-h) band-3 sector on the Weyl/Dixmier face.
 
 Target statement (shifted-power-residuals.md sec.3-4, RESIDUAL 3; the (kappa2-closure)):
     a3 = 1 (constant top), gauge b3 = 0, wall Q5 => b2 = kappa2 (constant).
-    CLAIM: no genuine Weyl pair [D,X]=1 in this sector has kappa2 != 0; equivalently
-    every genuine constant-top pair has kappa2 = 0 (the tame slice).
+    TARGET: exclude genuine Weyl pairs [D,X]=1 with kappa2 != 0. The displayed tame
+    family lies in the kappa2 = 0 slice; no converse classification of that slice is claimed.
 
 Conventions (frozen, DC1 house engine):
     A_1[x^{-1}] = (+)_k x^k C[E], E = x d, (x^a f)(x^b g) = x^{a+b} f(E+b) g(E),
@@ -34,9 +34,9 @@ arbitrary-degree closure is OPEN, exactly mirroring the classical e != 0 sibling
 
 Run:  uv run --with sympy python research/dc1-program/verify_astar_band3.py
       HEAVY=1 uv run --with sympy python research/dc1-program/verify_astar_band3.py
-A successful run ends 'ALL ASTAR-BAND3 (DC1) CHECKS PASSED'.
+The final summary distinguishes no-skip success from executed-check success with skips.
 """
-import os, sys, shutil, subprocess, random
+import os, sys, shutil, subprocess, random, tempfile
 import sympy as sp
 
 HEAVY = os.environ.get("HEAVY", "") not in ("", "0", "false", "False")
@@ -216,7 +216,7 @@ rM = Mmat.rank()
 rAug = Mmat.row_join(rhsv).rank()
 check(rAug == rM + 1,
       f"generic constant-top X: b-image rank {rM}, augmented {rAug} => NOT solvable "
-      "(the moment covector obstructs; the filler image is NOT everything)")
+      "(an unspecified cokernel covector obstructs; this does not identify the Lemma-P moment functional)")
 check(rM == Mmat.cols - 1,
       "b-kernel is 1-dimensional (the constant centralizer D=const); rank = cols-1")
 
@@ -250,48 +250,51 @@ def is_unit_ideal_QQ(eqs, unk):
     return list(G) == [sp.Integer(1)]
 
 
-def msolve_unit(eqs, unk, prime):
-    """msolve -g 2 over F_prime; returns True iff reduced GB is [1] (unit=EMPTY).
-    Integer coefficients ONLY (denominators cleared upstream) -- msolve misparses
-    rational monomials like 2*x^2/3."""
+def _run_msolve(eqs, unk, characteristic, args, timeout_s):
+    """Run msolve securely; timeout is an optional-check SKIP, other failures are fatal."""
     vs = ",".join(str(u) for u in unk)
     body = ",\n".join(str(sp.expand(e)).replace("**", "^") for e in eqs)
-    fn = f"/tmp/_astar_b3_{prime}.ms"
-    open(fn, "w").write(f"{vs}\n{prime}\n{body}\n")
-    out = fn + ".out"
-    try:
-        subprocess.run(["msolve", "-g", "2", "-f", fn, "-o", out],
-                       check=True, timeout=300,
-                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    except Exception:
+    with tempfile.TemporaryDirectory(prefix="astar-band3-") as tmp:
+        fn = os.path.join(tmp, "input.ms")
+        out = os.path.join(tmp, "output.txt")
+        with open(fn, "w", encoding="utf-8") as fh:
+            fh.write(f"{vs}\n{characteristic}\n{body}\n")
+        try:
+            rr = subprocess.run(["msolve", *args, "-f", fn, "-o", out],
+                                capture_output=True, text=True, timeout=timeout_s)
+        except subprocess.TimeoutExpired:
+            return None
+        if rr.returncode != 0:
+            raise RuntimeError(f"msolve failed with status {rr.returncode}: {rr.stderr.strip()}")
+        if not os.path.exists(out):
+            raise RuntimeError(f"msolve produced no output file; stderr: {rr.stderr.strip()}")
+        with open(out, encoding="utf-8") as fh:
+            return fh.read()
+
+
+def msolve_unit(eqs, unk, prime):
+    """msolve -g 2 over F_prime; None means timeout, malformed output is fatal."""
+    txt = _run_msolve(eqs, unk, prime, ["-g", "2"], 300)
+    if txt is None:
         return None
-    # msolve -g prepends '#'-comment header lines; the reduced GB follows as
-    # '[elt1, elt2, ...]:'.  Unit ideal <=> that bracket is exactly '[1]'.
-    lines = [ln for ln in open(out).read().splitlines() if not ln.lstrip().startswith("#")]
-    body = "".join(lines).replace(" ", "")
-    return body.startswith("[1]:") or body == "[1]"
+    lines = [ln for ln in txt.splitlines() if not ln.lstrip().startswith("#")]
+    parsed = "".join(lines).replace(" ", "")
+    if not parsed.startswith("["):
+        raise RuntimeError(f"malformed msolve finite-field output: {parsed[:200]!r}")
+    return parsed.startswith("[1]:") or parsed == "[1]"
 
 
 def msolve_empty_QQ(eqs, unk, timeout_s):
-    """msolve over characteristic 0 (rational, rigorous over QQ); returns
-    True iff the variety is EMPTY (msolve prints '[-1]:'), False if nonempty,
-    None on absence/timeout.  Integer coefficients only."""
-    vs = ",".join(str(u) for u in unk)
-    body = ",\n".join(str(sp.expand(e)).replace("**", "^") for e in eqs)
-    fn = "/tmp/_astar_b3_c0.ms"
-    open(fn, "w").write(f"{vs}\n0\n{body}\n")
-    out = fn + ".out"
-    try:
-        subprocess.run(["msolve", "-f", fn, "-o", out], check=True, timeout=timeout_s,
-                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    except Exception:
+    """msolve over QQ; None means timeout, malformed output is fatal."""
+    txt = _run_msolve(eqs, unk, 0, [], timeout_s)
+    parsed = txt.strip() if txt is not None else None
+    if parsed is None:
         return None
-    txt = open(out).read().strip()
-    if txt.startswith("[-1]"):
+    if parsed.startswith("[-1]"):
         return True
-    if txt.startswith("["):
+    if parsed.startswith("["):
         return False
-    return None
+    raise RuntimeError(f"malformed msolve characteristic-zero output: {parsed[:200]!r}")
 
 
 # --- kappa2 = 0 branch: an explicit tame witness (nonempty control) ---
@@ -307,7 +310,7 @@ Bw = {k: Dw.get(k, sp.Integer(0)) for k in range(-3, 4)}
 check(all(sp.expand(Qm(Aw, Bw, m) - (1 if m == 0 else 0)) == 0 for m in range(-6, 7)),
       "kappa2 = 0 tame witness: explicit [D,X]=1 (positive control), a3=1, b2=0")
 check(sp.expand(Bw[2]) == 0 and sp.expand(Aw[3]) == 1,
-      "  witness has b2 = kappa2 = 0 (tame slice nonempty)")
+      "  witness has b2 = kappa2 = 0 (the slice contains this tame family; no converse claimed)")
 
 # --- kappa2 != 0 branch: EMPTY at cap d=1 (normalize kappa2 = 1) ---
 print("  building cap d=1 kappa2=1 system ...", flush=True)
@@ -329,7 +332,7 @@ else:
     for p in (32003, 1000003, 2147483647):
         r = msolve_unit(eqs1, unk1, p)
         if r is None:
-            skip(f"msolve F_{p} corroboration (msolve call failed/timeout)")
+            skip(f"msolve F_{p} corroboration (timed out)")
         else:
             seen = True
             ok = ok and r
@@ -360,4 +363,7 @@ else:
 # ============================================================================
 print()
 print(f"({PASS} checks passed, {SKIP} skipped)")
-print("ALL ASTAR-BAND3 (DC1) CHECKS PASSED")
+if SKIP:
+    print("ALL EXECUTED ASTAR-BAND3 (DC1) CHECKS PASSED; OPTIONAL CHECKS SKIPPED")
+else:
+    print("ALL ASTAR-BAND3 (DC1) CHECKS PASSED; NO SKIPS")

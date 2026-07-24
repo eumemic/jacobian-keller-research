@@ -32,9 +32,9 @@
 #      at r) -- the source of the derivative-node criterion of Task 3;
 #    * a GENERIC Q_4 solution does NOT extend to Q_3 (linear inconsistency over
 #      the function field -- Q_3 constrains the a_2 freedom FURTHER);
-#    * yet the clean  h h^[1] | a_2  is NOT restored on the Q_4&Q_3 locus
-#      (verified witness with h h^[1] does-not-divide a_2): no modified
-#      closed-form factorization G = (factor) M', and no clean new family.
+#    * tested Gröbner normal forms show ideal membership at the gcd node and
+#      ideal nonmembership at a clean-extra node. This does NOT decide radical
+#      membership, geometric restoration, or alternative proper-factor mechanisms.
 #
 #  TASK 3 -- the multiplicity-extended moment/adjoint criterion:
 #    * the jet divisibility criterion a_3 | P  <=>  P^(j)(nu)=0 for j < m_nu;
@@ -44,9 +44,9 @@
 #
 #  TASK 4 -- bounded emptiness certificates per class (positive cascade
 #            Q_4=Q_3=Q_2=Q_1=0 + Q_0=1 + membership):
-#    * committed (exact SymPy over QQ(r,kappa)): cap d=2 UNIT IDEAL for GENERIC
-#      r and GENERIC kappa, BOTH classes -- an upgrade over the prior fixed-r=0
-#      d=2 evidence.
+#    * committed (exact SymPy; displayed coefficient domain ZZ[r,kappa], with r,kappa
+#      treated as coefficients): cap d=2 GENERIC-FIBER UNIT IDEAL over QQ(r,kappa),
+#      BOTH classes -- not a uniform certificate on every parameter specialization.
 #    * HEAVY (msolve, exact QQ, SKIP if absent): a grid of sampled (r,kappa)
 #      covering the special r-loci at cap d=2 AND d=3 (and d=4), BOTH classes.
 #
@@ -59,24 +59,25 @@
 #   Q_0 = (T-1)G.
 #
 # EVIDENCE TIERS:
-#   * committed = reproduced by the DEFAULT run (exact SymPy over QQ / QQ(r,kappa)):
-#     the degraded Q_4 forcing, the Q_3 cascade structure, the multiplicity
-#     criterion + moment slope, the mult-root closure, and cap-d=2 GENERIC-(r,kappa)
-#     emptiness for both classes.
+#   * committed = reproduced by the DEFAULT run (exact SymPy over QQ; symbolic
+#     parameter calculation displayed over ZZ[r,kappa] and interpreted on the
+#     generic fiber QQ(r,kappa)): the degraded Q_4 forcing, the Q_3 cascade
+#     structure, the multiplicity criterion + moment slope, the mult-root closure,
+#     and cap-d=2 generic-fiber emptiness for both classes.
 #   * HEAVY (set HEAVY=1) = msolve corroboration on a sampled (r,kappa) grid at
 #     cap d=2,3,4.  If msolve is absent or HEAVY is unset these print SKIP and the
 #     final status line does NOT claim them.
 #
 # Run:   uv run --with sympy python research/dc1-program/verify_broken_separation.py
 #        HEAVY=1 uv run --with sympy python research/dc1-program/verify_broken_separation.py
-# A successful run ends:  ALL BROKEN SEPARATION CHECKS PASSED
-# (only if everything that RAN passed and nothing load-bearing was skipped silently)
+# The final summary distinguishes no-skip success from executed-check success with skips.
 # ---------------------------------------------------------------------------
 import sympy as sp
 import os
 import time
 import shutil
 import subprocess
+import tempfile
 
 E = sp.symbols('E')
 kappa, r = sp.symbols('kappa r')
@@ -167,21 +168,35 @@ def Gpot(X, D, K=3):                            # closed-form moment potential
 
 
 def msolve_unit(eqs, allc, tag, timeout=300):
-    """True iff ideal(eqs) is the unit ideal over QQ (reduced GB = [1]).
-    msolve -g 2, characteristic 0.  Strings use '^' (NEVER '**')."""
+    """True iff ideal(eqs) is the unit ideal over QQ (reduced GB = [1])."""
     varstr = ", ".join(str(v) for v in allc)
-    body = ",\n".join(str(sp.expand(e)).replace('**', '^').replace(' ', '') for e in eqs)
+    # msolve's characteristic-zero parser is most reliable on integral
+    # polynomials.  Clear numeric denominators (notably the r=1/2 grid point)
+    # equation-by-equation; multiplying by a nonzero rational preserves the ideal.
+    cleared = [sp.fraction(sp.together(sp.expand(e)))[0] for e in eqs]
+    body = ",\n".join(str(e).replace('**', '^').replace(' ', '') for e in cleared)
     ms = f"{varstr}\n0\n{body}\n"
-    assert '**' not in ms, "msolve input must use '^' not '**'"
-    path = f"/tmp/bs_{tag}.ms"
-    with open(path, 'w') as fh:
-        fh.write(ms)
+    if '**' in ms:
+        raise ValueError("msolve input must use '^' not '**'")
     t = time.time()
-    rr = subprocess.run(['msolve', '-g', '2', '-f', path],
-                        capture_output=True, text=True, timeout=timeout)
+    with tempfile.TemporaryDirectory(prefix="broken-separation-") as tmp:
+        path = os.path.join(tmp, f"{tag}.ms")
+        with open(path, 'w', encoding='utf-8') as fh:
+            fh.write(ms)
+        try:
+            rr = subprocess.run(['msolve', '-g', '2', '-f', path],
+                                capture_output=True, text=True, timeout=timeout)
+        except subprocess.TimeoutExpired:
+            return None
+    if rr.returncode != 0:
+        raise RuntimeError(f"msolve[{tag}] failed with status {rr.returncode}: {rr.stderr.strip()}")
     out = rr.stdout.strip()
+    if not out:
+        raise RuntimeError(f"msolve[{tag}] produced empty output; stderr: {rr.stderr.strip()}")
     dt = time.time() - t
-    tail = out.splitlines()[-1] if out else 'EMPTY'
+    tail = out.splitlines()[-1]
+    if not tail.rstrip().endswith(']:'):
+        raise RuntimeError(f"msolve[{tag}] malformed output tail: {tail[:200]!r}")
     unit = tail.rstrip().endswith('[1]:')
     print(f"        msolve[{tag}]: nvars={len(allc)} neqs={len(eqs)} "
           f"time={dt:.1f}s GB_tail={tail[:24]} UNIT={unit}", flush=True)
@@ -258,7 +273,8 @@ def q4_forcing(hc, dcap=4):
     a2, a2c = gen('a2', dcap); b1, b1c = gen('b1', dcap)
     X = {3: a3, 2: a2, 1: sp.Integer(0)}; D = {3: sp.Integer(0), 2: b2, 1: b1}
     sols = sp.solve(sp.Poly(Qm(X, D, 4), E).all_coeffs(), b1c + a2c, dict=True)
-    assert len(sols) == 1, f"Q_4 not a single linear component: {len(sols)}"
+    if len(sols) != 1:
+        raise RuntimeError(f"Q_4 not a single linear component: {len(sols)}")
     a2s = sp.expand(a2.subs(sols[0]))
     return a2s
 
@@ -340,10 +356,10 @@ check("DIFF-1: a GENERIC Q_4 solution does NOT extend to Q_3 (Q_3 constrains a_2
 check("DIFF-2: a GENERIC Q_4 solution does NOT extend to Q_3 (Q_3 constrains a_2 further; symbolic r,kappa)",
       generic_no_q3_extension((E - r) * (E - r - 2)))
 
-# (3c) yet the clean h h^[1] | a_2 is NOT RESTORED on the Q_4 & Q_3 locus.
-#      Reliable: ideal membership via Groebner (NOT sp.solve, which drops
-#      components -- the determinant-saturation pitfall).  The gcd node a_2(r)=0
-#      IS in the ideal (forced), but the clean-extra node a_2(r-1)=0 is NOT.
+# (3c) At tested specializations, Gröbner reduction proves ideal membership for
+#      the gcd-node evaluation and ideal nonmembership for the clean-extra
+#      evaluation. Ideal nonmembership does not imply radical nonmembership or
+#      geometric non-forcing, so restoration remains unresolved.
 def restoration_status(hc, r0, k0):
     hc = sp.expand(hc); a3, b2 = sector_top(hc, sp.Integer(k0))
     a3 = sp.expand(a3.subs(r, r0)); b2 = sp.expand(b2.subs(r, r0))
@@ -358,11 +374,10 @@ def restoration_status(hc, r0, k0):
 for hc, tag in [((E - r) * (E - r - 1), "diff-1"), ((E - r) * (E - r - 2), "diff-2")]:
     for r0, k0 in [(2, 1), (0, 2)]:
         gf, ef = restoration_status(hc, r0, k0)
-        check(f"{tag} NON-RESTORATION [r={r0},kappa={k0}]: gcd node a_2(r)=0 FORCED={gf}, "
-              f"clean-extra node a_2(r-1)=0 NOT forced (={ef}) => h h^[1] | a_2 NOT restored",
-              gf and (not ef))
-print("   => no modified closed-form factorization G = (factor) M' is available;")
-print("      no clean new solution family is exposed -- the cascade only CONSTRAINS.")
+        check(f"{tag} IDEAL TEST [r={r0},kappa={k0}]: gcd-node evaluation is in the ideal={gf}; "
+              f"clean-extra evaluation is not in the ideal={not ef}", gf and (not ef))
+print("   => ideal nonmembership is inconclusive about radical membership and geometric restoration;")
+print("      restoration and alternative proper-factor mechanisms remain open.")
 
 
 # ===========================================================================
@@ -469,14 +484,16 @@ def sector_empty_sympy(hc, Dcap, rval=None, kval=None):
     return list(Gb) == [sp.Integer(1)]
 
 
-# (5a) COMMITTED, GENERIC (r,kappa): cap d=2 UNIT IDEAL over QQ(r,kappa), both
-#      classes (an upgrade over the prior fixed-r=0, all-kappa d=2 evidence).
+# (5a) COMMITTED, GENERIC FIBER (r,kappa): cap d=2 unit ideal after treating
+#      r,kappa as coefficient parameters, both classes. SymPy displays the
+#      coefficient domain as ZZ[r,kappa], but this calculation certifies the
+#      generic fiber over QQ(r,kappa), not uniform emptiness at every specialization.
 t0 = time.time()
-check("DIFF-1 bounded (cap d=2, exact SymPy over QQ(r,kappa) -- GENERIC r, GENERIC kappa): sector EMPTY",
+check("DIFF-1 bounded (cap d=2, exact SymPy; displayed domain ZZ[r,kappa], generic fiber QQ(r,kappa)): sector EMPTY",
       sector_empty_sympy((E - r) * (E - r - 1), 2))
-check("DIFF-2 bounded (cap d=2, exact SymPy over QQ(r,kappa) -- GENERIC r, GENERIC kappa): sector EMPTY",
+check("DIFF-2 bounded (cap d=2, exact SymPy; displayed domain ZZ[r,kappa], generic fiber QQ(r,kappa)): sector EMPTY",
       sector_empty_sympy((E - r) * (E - r - 2), 2))
-print(f"   (§5a generic-(r,kappa) SymPy Groebner time: {time.time() - t0:.1f}s)", flush=True)
+print(f"   (§5a generic-fiber (r,kappa) SymPy Groebner time: {time.time() - t0:.1f}s)", flush=True)
 
 # (5b) COMMITTED, SPECIFIC (r,kappa): cap d=2 UNIT IDEAL at integer/special r
 #      (covers r-values off the generic denominator locus), both classes.
@@ -501,12 +518,19 @@ if HEAVY and HAVE_MSOLVE:
     for Dcap in (2, 3, 4):
         for hc, tag in [((E - r) * (E - r - 1), "diff1"), ((E - r) * (E - r - 2), "diff2")]:
             allok = True
+            timed_out = []
             for rval, kval in HEAVY_GRID:
                 eqs, allc = build_sector(hc, Dcap, rval, kval)
                 u = msolve_unit(eqs, allc, f"{tag}_D{Dcap}_r{sp.nsimplify(rval)}_k{kval}".replace('/', '_'))
-                allok = allok and u
-            check(f"RESIDUAL HEAVY (cap d={Dcap}, msolve exact QQ): sector EMPTY at all "
-                  f"(r,kappa) in the grid  [{tag}]", allok)
+                if u is None:
+                    timed_out.append((rval, kval))
+                else:
+                    allok = allok and u
+            if timed_out:
+                skip(f"RESIDUAL HEAVY cap d={Dcap} grid [{tag}]", f"msolve timeout at {timed_out}")
+            if len(timed_out) < len(HEAVY_GRID):
+                check(f"RESIDUAL HEAVY (cap d={Dcap}, msolve exact QQ): sector EMPTY at every "
+                      f"completed (r,kappa) grid point  [{tag}]", allok)
 else:
     why = "set HEAVY=1" if not HEAVY else "msolve not found"
     skip("RESIDUAL HEAVY: msolve emptiness grid at cap d=2,3,4 (diff-1, diff-2)", why)
@@ -521,12 +545,13 @@ print("        diff-1: (E-r)|a_2 + coupled correction a_2(r-1)+a_2(r+1)=0;")
 print("        diff-2: clean proper-factor (E-r)(E-r-1)|a_2 (no coupling);")
 print("        mult-root (E-r)^2: cube-separated => CLOSED arbitrary degree.")
 print("     TASK 2 (cascade): general Q_3 identity; a_3 double nodes; generic Q_4")
-print("        does NOT extend to Q_3; clean h h^[1]|a_2 NOT restored -- no")
-print("        modified G=(factor)M', no clean new family: cascade only constrains.")
+print("        does NOT extend to Q_3; tested normal forms establish only ideal")
+print("        membership/nonmembership, not radical or geometric restoration status.")
 print("     TASK 3 (adjoint): jet/derivative-node criterion at double nodes;")
 print("        Lemma-P moment slope for the degenerate tops.")
-print("     TASK 4 (bounded): cap d=2 EMPTY, generic + specific (r,kappa), both")
-print("        classes (committed); msolve cap d=2,3,4 grid (HEAVY).")
+print("     TASK 4 (bounded): cap d=2 EMPTY on the generic fiber and tested")
+print("        specific (r,kappa) fibers, both classes; no uniform parameter claim")
+print("        (committed); msolve cap d=2,3,4 grid (HEAVY).")
 print("   OPEN (not claimed): diff-1, diff-2 at ARBITRARY degree (bounded only).")
 
 # ===========================================================================
@@ -540,7 +565,10 @@ if SKIPS:
     for name, why in SKIPS:
         print(f"   SKIP: {name}  ({why})")
 if n_pass == n_tot:
-    print("ALL BROKEN SEPARATION CHECKS PASSED")
+    if n_skip:
+        print("ALL EXECUTED BROKEN SEPARATION CHECKS PASSED; OPTIONAL CHECKS SKIPPED")
+    else:
+        print("ALL BROKEN SEPARATION CHECKS PASSED; NO SKIPS")
 else:
     print("SOME CHECKS FAILED:")
     for name, ok in CHECKS:

@@ -140,9 +140,12 @@ residual is located inside the saturated consistency ideal:
 i.e. `a_2(0)·W` vanishes on `{G_j=0} ∖ V(det_I)` — the det≠0 chart of the elimination
 variety. The `det_I=0` locus is covered chart-free by §2 (`am1_3 ∈ sqrt(cascade+tail)`).
 This is the finite certificate whose **structure** the degree-free argument must
-generalize: the covectors' fixed part lives on the `(a_3,b_2)` root necklace (degree-free,
-[`lambda-general-k.md`](lambda-general-k.md) Thm A′), while the datum-dependent part sits
-on the algebraic `(a_2,b_1)` necklace — the same open block as the joint-covector lemma
+generalize. The fixed `(a_3,b_2)` root necklace belongs to the joint `Q_0`/`Phi`
+operator (degree-free, [`lambda-general-k.md`](lambda-general-k.md) Thm A′), not to
+the pure `Q_-1,Q_-2,Q_-3` tail. The pure-tail necklace is algebraic after solving
+the cascade; its integer nodes are only the membership-window nodes (`{0,1}` for
+`a_-2=(E)_2V` and `{0,1,2}` for `b_-3=(E)_3C`). Its datum-dependent
+`(a_2,b_1)` block is the same open block as the joint-covector lemma
 ([`joint-covector.md`](joint-covector.md) §7).
 
 ## 4. The `d=4` linear-elimination route (bounded; the road around the GB wall)

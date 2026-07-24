@@ -30,14 +30,16 @@ together with the multiple-root top `h = (E-r)²`. The one-line summary:
 > midpoint `r+1`, **no coupling**); the clean `h h^{[1]} | a₂` fails (the
 > vanishings at `r-1, r+2` are lost).
 >
-> **The cascade constrains but does not restore.** The general `Q₃` identity is
-> re-derived with **no** shape assumption; `a₃` acquires **double nodes** (diff-1
-> at `r-1,r`; diff-2 at `r`). A **generic `Q₄` solution does not extend to `Q₃`**
-> (linear inconsistency over the coefficient field — `Q₃` cuts the `a₂` freedom
-> further), yet the clean `h h^{[1]} | a₂` is **not restored** on the `Q₄&Q₃`
-> locus (the gcd node `a₂(r)=0` is forced, the clean-extra node `a₂(r-1)=0` is
-> not). So **no** modified closed-form factorization `G = (factor)·M'` becomes
-> available, and **no** clean new solution family is exposed.
+> **The cascade adds bounded constraints; restoration remains unresolved.** The
+> general `Q₃` identity is re-derived with **no** shape assumption; `a₃` acquires
+> **double nodes** (diff-1 at `r-1,r`; diff-2 at `r`). In the verifier's fixed
+> coefficient ansatz, a generic `Q₄` solution does not extend to `Q₃`, so `Q₃` cuts
+> the sampled finite-dimensional freedom. At two specialized parameter points,
+> `a₂(r)` lies in the tested `(Q₄,Q₃)` ideal while `a₂(r-1)` has a nonzero normal
+> form. The latter proves only non-membership in the ideal, **not** non-membership
+> in its radical and therefore not geometric non-forcing. No exact solution violating
+> the clean node condition is supplied. Whether the cascade restores the clean
+> divisibility, or some other useful proper-factor mechanism, remains open.
 >
 > **Multiplicity-extended adjoint criterion.** The `Q₃` divisibility `a₃ | Src₃`
 > becomes the **jet criterion** `a₃ | P ⇔ P^{(j)}(ν)=0, j<m_ν`; at the double
@@ -46,19 +48,22 @@ together with the multiple-root top `h = (E-r)²`. The one-line summary:
 > a_{-i}(i)b_i(0))` is re-derived for the degenerate tops; its finite-cap
 > cokernel is the bounded emptiness below.
 >
-> **Bounded emptiness, both classes.** Committed (exact SymPy over `QQ(r,κ)`):
-> the full positive cascade `+ Q₀=1 +` membership is the **unit ideal at cap
-> `d=2` for generic `r` and generic `κ`**, and at a grid of specific
-> integer/half-integer `r` — an upgrade over the prior fixed-`r=0` evidence.
+> **Bounded emptiness, both classes.** Committed exact SymPy: with `r,κ` treated
+> as coefficient parameters (displayed domain `ZZ[r,κ]`), the full positive cascade
+> `+ Q₀=1 +` membership is the **unit ideal on the cap-`d=2` generic fiber over
+> `QQ(r,κ)`**. Separate exact checks cover a grid of specific integer parameter fibers
+> — an upgrade over the prior fixed-`r=0` evidence. This is not a uniform certificate
+> at every specialization of `r,κ`.
 > HEAVY (`msolve`, exact `QQ`): the unit ideal on a sampled `(r,κ)` grid at cap
 > `d=2,3,4`. **No arbitrary-degree exclusion; diff-1/diff-2 remain open.**
 
 Exact certificate:
-[`verify_broken_separation.py`](verify_broken_separation.py) — default run exact
-SymPy over QQ (`ALL BROKEN SEPARATION CHECKS PASSED`, 39 checks, ~18 s); heavier
-`msolve` grid behind `HEAVY=1` (45 checks, ~38 s). Every load-bearing upstream
-fact (the crossed-product ladder engine `Q_m = [D,X]_m`, `Q₀ = (T−1)G`, the `Q₅`
-wall, the general `Q₄`/`Q₃` identities) is **re-derived in file**, not cited.
+[`verify_broken_separation.py`](verify_broken_separation.py) — default exact SymPy;
+the optional `msolve` grid is behind `HEAVY=1`. Runtime and check counts are
+environment-dependent. The final summary distinguishes all checks passed from all
+executed checks passed with skips. Every load-bearing upstream fact (the crossed-product
+ladder engine `Q_m = [D,X]_m`, `Q₀ = (T−1)G`, the `Q₅` wall, the general `Q₄`/`Q₃`
+identities) is **re-derived in file**, not cited.
 
 Conventions frozen from the corpus: `A₁[x^{-1}] = ⊕_k x^k C[E]`, `E = x∂`,
 `(x^a f)(x^b g) = x^{a+b} f(E+b) g(E)`, `f^{[n]}(E) = f(E+n)`, `T f = f^{[1]}`,
@@ -145,7 +150,7 @@ It is **covered**, not a separate broken class. Verifier `§2`.
 
 ---
 
-## 3. Task 2 — the cascade `Q₃, Q₂`: constrains, does not restore
+## 3. Task 2 — the cascade `Q₃, Q₂`: constraints found; restoration unresolved
 
 ### 3.1 double nodes and the general `Q₃`
 
@@ -163,34 +168,34 @@ criterion of §4. Verifier `§3`.
 ### 3.2 a generic `Q₄` solution does **not** extend to `Q₃`
 
 Substituting the generic `Q₄` solution `(a₂, b₁)` (free parameters `θ`) into
-`Q₃`, the equation `Q₃ = 0` is **linear** in `(a₁, b₀)` over the field
-`QQ(θ, r, κ)` and is **inconsistent** — there is *no* polynomial `(a₁, b₀)`
-solving it for a generic `Q₄` solution. So `Q₃` genuinely **cuts the `a₂`
-freedom further**; the degraded classes are *more* constrained, not less.
-Verifier `§3` (both classes, symbolic `r, κ`).
+`Q₃`, the verifier's **fixed coefficient ansatz** gives a linear system in
+`(a₁,b₀)` that is inconsistent for generic symbolic parameters. Thus `Q₃` cuts the
+finite-dimensional `Q₄` solution space at the implemented caps. This is bounded
+symbolic-parameter evidence, not a theorem over fillers of arbitrary degree.
+Verifier `§3` (both classes; fixed caps, symbolic `r,κ`).
 
-### 3.3 the clean divisibility is **not** restored
+### 3.3 ideal-membership probe for clean divisibility (inconclusive geometrically)
 
-Does `Q₃` cut the `a₂` freedom back onto the clean `h h^{[1]} | a₂`? **No.** On
-the `Q₄&Q₃` locus, computed by **ideal membership** (Gröbner, not `sp.solve` —
-which drops components, the determinant-saturation pitfall of
-[`residual-identity.md`](residual-identity.md) /
-[`slope-forcing-degree-free.md`](slope-forcing-degree-free.md)):
+Does `Q₃` cut the `a₂` freedom back onto the clean `h h^{[1]} | a₂`? The
+committed probe does **not decide this**. At `(r,κ)∈{(2,1),(0,2)}`, Gröbner normal
+forms in the fixed-cap coefficient ideal give:
 
 ```
-gcd node   a₂(r)   = 0     IS forced   (∈ the (Q₄,Q₃) ideal),
-clean-extra a₂(r-1) = 0     NOT forced  (∉ the ideal).
+gcd node    a₂(r)    lies in the tested (Q₄,Q₃) ideal,
+clean-extra a₂(r-1) has nonzero normal form modulo that ideal.
 ```
 
-Since `h h^{[1]} | a₂` requires `a₂(r-1)=0` (and more), it is **not restored**.
-Verifier `§3` checks both classes at `(r,κ) ∈ {(2,1),(0,2)}`.
+The first is a valid ideal-membership statement at those specializations. The second
+shows only `a₂(r-1)∉I`; geometric forcing is controlled by `sqrt(I)`. For example,
+`x∉(x²)` although `x` vanishes on every point of `V(x²)`. A radical-membership
+certificate or an exact point with `a₂(r-1)≠0` is required before claiming
+non-restoration.
 
-> **Conclusion (Task 2).** The corrections propagate as *constraints* but neither
-> **(a)** restore enough divisibility for a modified closed-form factorization
-> `G = (factor)·M'` (the potential does **not** factor through `h^{[-1]}` or any
-> fixed proper factor — the residual block is genuinely coupled), nor **(b)**
-> expose a clean new solution family. The closed-form route of the 2-separated
-> theorem is unavailable, and the classes fall to bounded emptiness only.
+> **Conclusion (Task 2, corrected).** The cascade adds fixed-cap constraints, but the
+> committed calculation neither proves restoration nor non-restoration of the clean
+> divisor. It also cannot exclude factorization through some other fixed proper factor.
+> No clean new solution family is exhibited; the broken classes currently fall only to
+> the bounded emptiness results of §5.
 
 ---
 
@@ -246,13 +251,14 @@ The full positive cascade `Q₄=Q₃=Q₂=Q₁=0` with `Q₀=1`, gauge `b₃=0`,
 `b₂ = κ h h^{[1]}`, and genuine membership. Emptiness = the coefficient ideal is
 the **unit ideal**.
 
-**Committed (default run, exact SymPy over QQ / QQ(r,κ)):**
-- cap `d=2` **unit ideal for GENERIC `r` and GENERIC `κ`** (over `QQ(r,κ)`), both
-  diff-1 and diff-2 — an upgrade over the prior fixed-`r=0`, all-`κ` evidence of
+**Committed (default run, exact SymPy):**
+- cap `d=2` **unit ideal on the generic fiber over `QQ(r,κ)`**, both diff-1 and
+  diff-2. SymPy displays coefficient domain `ZZ[r,κ]` because `r,κ` are not Gröbner
+  variables; the result is generic-fiber evidence, not uniform emptiness under every
+  specialization. This upgrades the prior fixed-`r=0`, all-`κ` evidence of
   [`shifted-power-residuals.md`](shifted-power-residuals.md) §2.4 (Verifier `§5a`);
 - cap `d=2` unit ideal at specific `(r,κ) ∈ {(0,1),(1,1),(-1,2),(2,1)}`, both
-  classes — covering integer `r` off the generic denominator locus
-  (Verifier `§5b`).
+  classes (Verifier `§5b`).
 
 **HEAVY (`msolve`, exact `QQ`, SKIP if absent):**
 - cap `d=2, 3, 4` unit ideal on the sampled grid
@@ -261,7 +267,8 @@ the **unit ideal**.
 
 This is **corroboration**, not an arbitrary-degree exclusion. diff-1 and diff-2
 remain a genuine sub-wall, **open at arbitrary degree**, now with cap-`d=4`
-emptiness across a parameter grid and cap-`d=2` emptiness for **generic** `r,κ`.
+emptiness across a parameter grid and cap-`d=2` emptiness on the **generic fiber**
+over `QQ(r,κ)` plus the tested specific fibers.
 
 ---
 
@@ -273,13 +280,12 @@ emptiness across a parameter grid and cap-`d=2` emptiness for **generic** `r,κ`
    broken set is exactly diff-1 and diff-2, each a one-parameter family in `r`).
 2. The **exact degraded `Q₄` forcing** per class, symbolic in `r`:
    diff-1 `(E-r)|a₂` + coupled `a₂(r-1)+a₂(r+1)=0`; diff-2 clean `(E-r)(E-r-1)|a₂`.
-3. The cascade **constrains but does not restore**: generic `Q₄` does not extend
-   to `Q₃`, and the clean `h h^{[1]}|a₂` is not recovered on `Q₄&Q₃` — **no**
-   modified factorization, **no** clean new family. **Tier (audit): the
-   no-extension statement is a fixed-cap no-solution solve — degree-STABLE
-   (audit re-checked caps 6, 9, 12) bounded evidence, not an arbitrary-degree
-   proof object; the non-restoration is in fact symbolic in `(r,κ)` (audit
-   over-confirmed beyond the in-file two-point check).**
+3. The cascade **adds constraints, while restoration remains open**: generic `Q₄` does
+   not extend to `Q₃` in the fixed coefficient ansatz. At the two encoded parameter points,
+   the clean-extra evaluation has nonzero Gröbner normal form, proving only that it is not
+   in the tested ideal. This is inconclusive about radical membership and geometric forcing;
+   restoration and alternative proper-factor mechanisms remain open. The no-extension
+   statement is fixed-cap bounded evidence, not an arbitrary-degree proof object.
 4. The **multiplicity-extended adjoint criterion** (jet / `ev'_ν` derivative
    nodes) and the Lemma-P moment slope for the degenerate tops.
 5. Bounded emptiness upgraded: cap `d=2` **generic `(r,κ)`** (committed) and cap
@@ -289,9 +295,10 @@ emptiness across a parameter grid and cap-`d=2` emptiness for **generic** `r,κ`
    moment unit, so the emptiness certificates are meaningful, not vacuous.**
 
 **Still open (precisely delimited):**
-- **diff-1 and diff-2 at arbitrary degree.** The closed-form potential
-  factorization is provably unavailable (§3), so the 2-separated route does not
-  transcribe. An arbitrary-degree kill would need either (i) a degree-free
+- **diff-1 and diff-2 at arbitrary degree.** The tested normal form does not decide
+  whether the clean divisor is restored geometrically, nor whether an alternative proper
+  factor supports a modified potential factorization. An arbitrary-degree kill would need
+  either (i) a degree-free
   analysis of the coupled `Q₃` derivative-node system of §4.2 forcing the
   cokernel `[E−R] ∉ Im Φ` at all degrees for the degenerate top, or (ii) a new
   tame move on the coupled sector. Neither is supplied here.
@@ -304,8 +311,8 @@ After this memo the band-3 shifted-cube Gap-2 ledger reads:
 | class | status |
 |---|---|
 | cube-separated / 2-separated `h` (incl. diff-3, mult-root `(E-r)²`) | **closed, arbitrary degree** |
-| **diff-1** `(E-r)(E-r-1)` | degraded `Q₄` forcing exact; **bounded** emptiness (d≤4, all sampled `r,κ`; generic `r,κ` at d=2); **open** arbitrary degree |
-| **diff-2** `(E-r)(E-r-2)` | degraded `Q₄` forcing exact; **bounded** emptiness (d≤4, all sampled `r,κ`; generic `r,κ` at d=2); **open** arbitrary degree |
+| **diff-1** `(E-r)(E-r-1)` | degraded `Q₄` forcing exact; **bounded** emptiness (d≤4, all sampled `r,κ`; generic fiber over `QQ(r,κ)` at d=2); **open** arbitrary degree |
+| **diff-2** `(E-r)(E-r-2)` | degraded `Q₄` forcing exact; **bounded** emptiness (d≤4, all sampled `r,κ`; generic fiber over `QQ(r,κ)` at d=2); **open** arbitrary degree |
 
 **No Weyl pair and no counterexample is constructed; DC1/JC2 untouched.**
 
@@ -321,15 +328,18 @@ stated):**
   diff-1 `(E-r)|a₂` + coupled correction `a₂(r-1)+a₂(r+1)=0` (clean `h h^{[1]}|a₂`
   and `a₂'(r)=0` fail); diff-2 clean `(E-r)(E-r-1)|a₂` (no coupling; clean
   `h h^{[1]}|a₂` fails); mult-root `(E-r)²` cube-separated ⇒ closed (`§2`).
-- **Task 2:** the double-node multiset structure; the generic-`Q₄`-does-not-extend
-  -to-`Q₃` inconsistency (symbolic `r,κ`); the non-restoration (gcd node forced,
-  clean-extra node not forced) by exact ideal membership (`§3`).
+- **Task 2:** the double-node multiset structure and the fixed-ansatz
+  generic-`Q₄`-does-not-extend-to-`Q₃` inconsistency (`§3`). At the tested parameter
+  specializations, exact Gröbner reduction proves membership of the gcd-node evaluation
+  and ideal nonmembership of the clean-extra evaluation; it does not prove radical
+  nonmembership or geometric non-restoration.
 - **Task 3:** the jet/derivative-node divisibility criterion; the `ev'_ν` double-
   node equation; the Lemma-P moment slope for the degenerate tops (`§4`).
 
 **Bounded / finite evidence (exact scope):**
-- diff-1, diff-2 sector emptiness: cap `d=2` committed — **generic `(r,κ)`** over
-  `QQ(r,κ)` and a specific integer-`r` grid (exact SymPy); cap `d=2,3,4` HEAVY —
+- diff-1, diff-2 sector emptiness: cap `d=2` committed — the **generic fiber** over
+  `QQ(r,κ)` and a specific integer-parameter grid (exact SymPy), with no uniform
+  claim over every specialization; cap `d=2,3,4` HEAVY —
   a sampled `(r,κ)` grid (`msolve`, exact `QQ`). This is corroboration, **not** an
   arbitrary-degree exclusion.
 
@@ -339,8 +349,8 @@ stated):**
   `0`), hence **closed at arbitrary degree**. It is not a broken class.
 
 **Open / NOT claimed:**
-1. diff-1, diff-2 at arbitrary degree (bounded evidence only; the closed-form
-   factorization is provably unavailable).
+1. diff-1, diff-2 at arbitrary degree (bounded evidence only); restoration and
+   alternative proper-factor mechanisms remain open.
 2. Everything inherited open from `shifted-power-residuals.md` §5:
    `κ₂ ≠ 0` constant-`h`, imbalanced coprime walls, general-`k` tail, **W2**.
 No Weyl pair, no counterexample; DC1/JC2 untouched.
@@ -354,10 +364,13 @@ uv run --with sympy python research/dc1-program/verify_broken_separation.py
 HEAVY=1 uv run --with sympy python research/dc1-program/verify_broken_separation.py
 ```
 
-Exact SymPy over QQ: `§0` engine; `§1` wall + general `Q₄`/`Q₃` identities; `§2`
-Task 1 (degraded `Q₄` forcing per class, symbolic `r`; mult-root closure); `§3`
-Task 2 (double nodes, generic-`Q₄`-no-`Q₃`-extension, non-restoration by ideal
-membership); `§4` Task 3 (jet criterion, `ev'_ν` double-node equations, moment
-slope); `§5` Task 4 (cap-`d=2` generic + specific `(r,κ)` emptiness; HEAVY
-`msolve` grid at `d=2,3,4`); `§6` bookkeeping. A successful default run ends
-`ALL BROKEN SEPARATION CHECKS PASSED` (39 checks, ~18 s; 45 with `HEAVY=1`, ~38 s).
+Exact SymPy checks (with domains stated by each section): `§0` engine; `§1` wall +
+general `Q₄`/`Q₃` identities; `§2` Task 1 (degraded `Q₄` forcing per class,
+symbolic `r`; mult-root closure); `§3` Task 2 (double nodes,
+generic-`Q₄`-no-`Q₃`-extension, and tested ideal membership/nonmembership, which is
+inconclusive about radical membership and geometric restoration); `§4` Task 3 (jet
+criterion, `ev'_ν` double-node equations, moment slope); `§5` Task 4 (cap-`d=2`
+generic-fiber + tested specific `(r,κ)` emptiness; HEAVY `msolve` grid at `d=2,3,4`); `§6`
+bookkeeping. Runtime is environment-dependent. The final summary distinguishes a run
+in which all checks passed from one in which all executed checks passed but optional
+checks were skipped.
