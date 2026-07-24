@@ -67,7 +67,15 @@ identically. On it the moment slope **collapses to a single monomial**:
 
 where `a2_0 = a_2(0)` and `am1_3` is the top coefficient of the membership quotient of
 `a_-1`. (`R(1)` is *filler-independent* — the both-ends Lemma P, re-derived in file —
-so it is a function of the positive data alone.) So the entire question becomes:
+so it is a function of the positive data alone.)
+
+> **Normalization note ([`slope-forcing-degree-free.md`](slope-forcing-degree-free.md)):
+> the exact rational identity is `R(1) = -(4/9)·a2_0·am1_3`; the `-108` here is the
+> `clear_denoms`-normalized numerator (factor `243`). Same vanishing locus, identical
+> forcing conclusion. The degree-free generalization is the factorization
+> `R(1)=a_2(0)·W` with `W=-(4/9)·am1_3` exactly at `d=3`.**
+
+So the entire question becomes:
 
 > **does the tail force `a2_0 · am1_3 = 0`?**  — and the answer is **yes**.
 

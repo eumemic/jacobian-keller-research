@@ -1,0 +1,82 @@
+# W2 degree-free slope-forcing: the certificate structure (d=3, branch B).
+#
+# Companion to slope-forcing-degree-free.md / verify_slope_forcing_degree_free.py.
+# Two layers: (I) the DEGREE-FREE collapse certificate (the a_2(0) factorization),
+# and (II) the d=3 tail-forcing elimination path (why a_2(0)*am1_3 in sqrt(tail)).
+#
+# ======================================================================
+# I.  THE DEGREE-FREE COLLAPSE CERTIFICATE  (R(1) = a_2(0)*W, arbitrary degree)
+# ======================================================================
+# Inputs, all machine-checked as identities in verify_slope_forcing_degree_free.py:
+#
+#   Lemma-P (both ends, level-3 drop):
+#       R(1) = G(1) = a_1(0) b_-1(1) + a_2(0) b_-2(2) - a_-1(1) b_1(0).
+#
+#   Two single-point cascade evaluations (fully generic coefficients; uses only the
+#   roots a_3(0)=b_2(0)=0 and pivots a_3(1)=15, b_2(1)=4, b_2(2)=10):
+#       Q_4(0) = 10 a_2(0) - 15 b_1(0),
+#       Q_3(0) =  4 a_1(0) + a_2(0) b_1(2) - a_2(1) b_1(0).
+#
+#   On the cascade (Q_4(0)=Q_3(0)=0):
+#       b_1(0) = (2/3) a_2(0),
+#       a_1(0) = (a_2(0)/4)[(2/3) a_2(1) - b_1(2)].
+#
+#   Substitute into Lemma-P:
+#       R(1) = a_2(0) * W,
+#       W = b_-2(2) - (2/3) a_-1(1) + (1/4)[(2/3) a_2(1) - b_1(2)] * b_-1(1).
+#
+# This is the certificate that the moment slope is DIVISIBLE by the top boundary value
+# a_2(0) at every degree.  Slope forcing reduces to: the tail forces a_2(0)*W = 0.
+# On the parametrized cascade: W = 0 (d<=2), W = -(4/9) am1_3 (d=3), W a degree-growing
+# polynomial (d>=4).
+#
+# ======================================================================
+# II. THE d=3 TAIL-FORCING ELIMINATION PATH  (branch B, parametrized cascade)
+# ======================================================================
+# After the greedy cascade parametrization the free data are the 9 coordinates
+#       free = [a2_0, a2_2, a2_3, a1_3, a0_0, a0_2, am1_2, am1_3, b0cK0]
+# and R(1) = -(4/9) a2_0 am1_3.  The two admissible fillers are
+#       a_-2 = (E)_2 V  (V deg 3 -> V-coeffs am2_0..am2_3),
+#       b_-3 = (E)_3 C  (C deg 3 -> C-coeffs bm3f_0..bm3f_3),
+# i.e. 8 filler unknowns
+#       fillers = [am2_0, am2_1, am2_2, am2_3, bm3f_0, bm3f_1, bm3f_2, bm3f_3].
+#
+# The depth-3 tail Q_-1, Q_-2, Q_-3 is:
+#   * 24 scalar coefficient equations,
+#   * ALL LINEAR in the 8 fillers (Fredholm structure), row block [M | N]:
+#         M  (24 x 8)  the filler-coefficient matrix (entries in the 9 free params),
+#         N  (24)      the non-filler residual (positive-data part).
+#   * rank(M) = 8 (full column rank): the filler map is injective.
+#   * cokernel dim = 24 - 8 = 16: sixteen covectors lam with lam.M = 0.
+#     The pairings lam.N are the elimination conditions on the positive data; on the
+#     variety they cut, R(1) = -(4/9) a2_0 am1_3 = 0.  This is the joint-covector
+#     Fredholm mechanism of joint-covector.md applied to the depth-3 tail WITHOUT Q_0=1.
+#
+# EXPLICIT ELIMINATION (fillers solved, projected to the 9 free params):
+#   Rows 0..7 of the tail give an invertible 8x8 filler block; solving them expresses
+#   all 8 fillers as rational functions of the 9 free params (denominator = det of that
+#   8x8 block).  Substituting into the remaining 16 rows and clearing that determinant
+#   yields 12 nonzero elimination conditions in the 9 free params, of total degrees
+#         { 10, 11, 12 }.
+#   The high degree (from clearing the 8x8 determinant) is exactly why an explicit
+#   low-degree Nullstellensatz multiplier set does NOT exist / the elimination Groebner
+#   basis does not terminate in a sane budget (matching slope-forcing-verdict.md: the
+#   minimal power m is left bounded, finite, >= 1).
+#
+# THE MACHINE-CHECKED RADICAL CERTIFICATE (the positive result):
+#   The parametrized-tail Rabinowitsch ideal
+#         < Q_-1..Q_-3 coefficients (parametrized) ,  1 - t * a2_0 * am1_3 >
+#   is the UNIT ideal over QQ, GF(65003), GF(32003), both branches
+#   (verify_slope_forcing_degree_free.py S4, sympy grevlex).  Equivalently
+#         a2_0 * am1_3  in  sqrt( cascade + Q_-1 + Q_-2 + Q_-3 ),
+#   a Hilbert-Nullstellensatz radical certificate that R(1) = 0 is forced.  With the
+#   factorization of Layer I this is a2_0 * W in sqrt(cascade+Q_-1..Q_-3) at d=3.
+#
+# THE UNION (not a single factor):
+#   a2_0 is NOT in sqrt(cascade+Q_-1..Q_-3) (msolve '^', mod 65003): the tail does not
+#   force a_2(0)=0.  So the forcing is genuinely on the PRODUCT a2_0 * am1_3 = a2_0 * W.
+#
+# DEPTH:
+#   kmin > 1 (explicit witness on cascade+Q_-1 with R(1) != 0); depth-3 tail is unit;
+#   rigorously 1 < kmin <= 3, pinned to kmin = 3 by the verdict.  Depth does not grow
+#   through d=4 (msolve '^', HEAVY).
