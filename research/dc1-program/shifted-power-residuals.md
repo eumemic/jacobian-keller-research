@@ -1,10 +1,11 @@
-# Shifted-power residuals at band 3: h | a_1 derived, 2-separation, and the kappa_2 invariant
+# Shifted-power residuals at band 3: h | a_1 derived, 2-separation, and the kappa_2 one-step chart obstruction
 
 **INDEPENDENTLY DERIVED — EXACT ALGEBRA / MACHINE-CHECKED IDENTITIES — NOT PEER
 REVIEWED — PARTIAL RESULT WITH NAMED GAPS**
 
-This memo closes and sharpens the three named residuals of the band-3
-shifted-cube wall — the band-3 instance of band-reduction **Gap 2** — left open
+This memo derives the first named residual, closes the 3-gap subcase of the
+second, and sharpens the open status of the third for the band-3 shifted-cube
+wall — the band-3 instance of band-reduction **Gap 2** — left open
 in [`shifted-power-descent.md`](shifted-power-descent.md) §6/§7. It supplies one
 of the two inputs the conditional band-reduction framework
 ([`band-reduction.md`](band-reduction.md) §9, post-`727ce8a` form) is waiting on.
@@ -33,7 +34,9 @@ The one-line summary of each residual:
 > **RESIDUAL 3 (constant-h, `κ₂ ≠ 0`) — one-step obstruction only.** No listed
 > gauge-preserving generator removes `κ₂`: `D ↦ D − λX` preserves `b₃ = 0` only for
 > `λ = 0`; higher transvections overshoot to band `≥ 6`; pair-exchange relabels the
-> band-3 top; Fourier breaks membership. This does **not** establish invariance under
+> band-3 top. Genuine Weyl Fourier preserves `A₁` membership but reverses support and
+> exits the displayed top-wall/gauge chart, so `κ₂` is not directly comparable there;
+> formal coefficient reflection is not Fourier. This does **not** establish invariance under
 > an arbitrary composite tame word, which may leave and later return to the displayed
 > gauge/band sector. The positive cascade permits `κ₂ ≠ 0`; both composite tame escape
 > and the **A\*-band3 negative-tail closure** remain open.
@@ -229,10 +232,12 @@ The only transvection `D ↦ D − p'(X)` reaching band `2` with band `≤ 3` is
 Preserving the gauge `b₃ = 0` forces `λ = 0`, leaving `b₂ = κ₂` **unchanged**. Any
 higher transvection `p'(X) = X², …` has band `≥ 6` (overshoots band `2`).
 Pair-exchange `(X,D) ↦ (D,−X)` keeps `band = max(2,3) = 3` — it merely relabels
-which generator carries the band-3 top. Fourier `E ↦ −E−1` sends the constant top
-`a₃ = 1` to an `x^{-3}`-coefficient `1`, **not** divisible by `E(E−1)(E−2)`,
-breaking `A₁`-membership (as in [`../band3/astar-band3.md`](../band3/astar-band3.md)
-§6). All four facts are machine-checked (`§3`).
+which generator carries the band-3 top. Genuine Weyl Fourier sends a positive
+coefficient by `a_i↦a'_{-i}=(-1)^i(E)_i a_i(-E−1)`, so `a₃=1` maps to
+`−(E)_3`, which satisfies negative-band membership. Fourier instead reverses
+support and exits the displayed top-wall/gauge chart; `κ₂` in that chart is not
+directly comparable after the move. Formal coefficient reflection must not be
+conflated with Weyl Fourier. These direct-move facts are machine-checked (`§3`).
 
 > **Scope.** These checks obstruct each displayed move when applied directly while
 > retaining the stated low-band/gauge description. They do not exclude a composite
@@ -283,13 +288,13 @@ as follows (in the conditional-framework terms of `band-reduction.md` §9).
    > (constant top), gauge `b₃ = 0`, `b₂ = κ₂ ≠ 0`, and membership-valid negative
    > tail solving `Q_{-1} = ⋯ = Q_{-6} = 0`, `Q₀ = 1`.
 
-   This is the **top-mirror of the open quantum A\*-I / negative-tail closure**:
-   `b₂ = κ₂ ≠ 0` (a top-wall constant) is the mirror, under the falling-factorial
-   reflection `E ↦ −E−1`, of A\*'s bottom-wall residue `μ̃ ≠ 0`. Reflection breaks
-   `A₁`-membership for the constant top `a₃ = 1` (§3.1, exactly the obstruction of
-   [`../band3/astar-band3.md`](../band3/astar-band3.md) §6 (i)), so the classical
-   reflection route does not transcribe and the sector needs its own negative-tail
-   analysis — the same inhomogeneous `μ`-source tail that keeps quantum A\*-I open.
+   This is formally the **top/bottom analogue of the open quantum A\*-I /
+   negative-tail closure**. Genuine Weyl Fourier preserves `A₁` membership and
+   reverses support, but also exits the displayed top-wall/gauge chart, so its
+   `κ₂` coordinate is not directly comparable with the bottom-wall residue.
+   A bare coefficient reflection `E↦−E−1` is not Weyl Fourier and cannot supply
+   the import. The sector therefore still needs its own negative-tail analysis —
+   the same inhomogeneous `μ`-source frontier that keeps quantum A\*-I open.
    Supplying *(κ₂-closure)* is exactly what remains of RESIDUAL 3.
 
 Beyond band 3, unchanged: the **imbalanced coprime walls** (`q ∤ k`, `q ≥ 2`) reduce

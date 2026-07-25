@@ -148,7 +148,8 @@ def ladder_to_weyl(X):
             j = -i
             g = sp.expand(f)
             quo, rem = sp.div(sp.Poly(g, E), sp.Poly(falling(j), E))
-            assert sp.expand(rem.as_expr()) == 0, "not in A_1 (membership fails)"
+            if sp.expand(rem.as_expr()) != 0:
+                raise ValueError("not in A_1 (membership fails)")
             base = {(0, j): sp.Integer(1)}
             P = sp.Poly(quo.as_expr(), E)
         else:
@@ -164,6 +165,14 @@ def ladder_to_weyl(X):
 _tst = {3: E * (E + 2) * (E + 4), 0: E**2 + 1, -2: falling(2) * (E + 5)}
 check("ladder <-> A_1 bridge is an isomorphism on a band-3 test element",
       weyl_to_ladder(ladder_to_weyl(_tst)) == {k: sp.expand(v) for k, v in _tst.items()})
+try:
+    ladder_to_weyl({-2: E})
+except ValueError:
+    rejected_nonmember = True
+else:
+    rejected_nonmember = False
+check("ladder bridge rejects a negative-band coefficient outside A_1 membership",
+      rejected_nonmember)
 
 # ===========================================================================
 # §1  the invariant and the degree-1 generation floor
@@ -222,17 +231,18 @@ for a in range(5):
         alpha_syms[(a, b)] = s
         gen[(a, b)] = s
 cm = w_add(w_mul(gen, WX), w_mul(WX, gen), -1)
-sol = sp.solve([sp.expand(v) for v in cm.values()],
-               list(alpha_syms.values()), dict=True)
-zero_forced = set()
-if sol:
-    s0 = sol[0]
-    for key, s in alpha_syms.items():
-        val = s0.get(s, s)
-        if sp.expand(val) == 0:
-            zero_forced.add(key)
-check("centralizer of x in A_1 (deg<=4 window) = C[x]: [Z,x]=0 forces every d-power coeff to 0",
-      all((a, b) in zero_forced for a in range(5) for b in range(1, 5)))
+centralizer_vars = list(alpha_syms.values())
+centralizer_eqs = [sp.expand(v) for v in cm.values()]
+Acent, bcent = sp.linear_eq_to_matrix(centralizer_eqs, centralizer_vars)
+cent_kernel = Acent.nullspace()
+derivative_columns = [centralizer_vars.index(alpha_syms[(a, b)])
+                      for a in range(5) for b in range(1, 5)]
+forced_derivatives = all(all(vec[idx] == 0 for vec in cent_kernel)
+                         for idx in derivative_columns)
+check("centralizer of x in A_1 (deg<=4 window) = C[x]: exact linear algebra gives "
+      "kernel dimension 5 and forces every d-power coefficient to 0",
+      bcent == sp.zeros(Acent.rows, 1) and Acent.rank() == 20
+      and len(cent_kernel) == 5 and forced_derivatives)
 # (ii) X affine + [D,X]=1  ==>  <X,D> = A_1 (transport + centralizer)
 #      concrete witness: X = x, D = d + c(x) has  D - c(X) = d.
 cpoly = sum(sp.Symbol(f'c{i}') * x**i for i in range(4))
@@ -374,9 +384,10 @@ check("Fourier PRESERVES bdeg and width, and REVERSES the band support "
 
 # --- (2e) exchange / scaling / translation ---------------------------------
 Xw, Dw = {3: E * (E + 2) * (E + 4), 1: E**2}, {2: E * (E + 3)}
-check("pair-exchange (X,D)->(D,-X): invariant (n+m,k) unchanged, degrees swapped",
-      invariant({k: -v for k, v in Xw.items()}, Dw)[0] == invariant(Xw, Dw)[0]
-      and (bdeg(Dw), bdeg(Xw)) == (bdeg(Dw), bdeg(Xw)))
+Xex, Dex = Dw, cp_scale(Xw, -1)
+check("pair-exchange (X,D)->(D,-X): invariant preserved and component degrees swapped",
+      invariant(Xex, Dex) == invariant(Xw, Dw)
+      and (bdeg(Xex), bdeg(Dex)) == (bdeg(Dw), bdeg(Xw)))
 lam = sp.Symbol('lam', nonzero=True)
 check("scaling (X,D)->(lam X, D/lam) preserves [D,X]=1 and the invariant",
       invariant(cp_scale(Xt, lam), cp_scale(Dt, 1 / lam)) == invariant(Xt, Dt)
@@ -559,10 +570,27 @@ def delta(poly):
     """
     P = sp.Poly(sp.expand(poly), E)
     rts = sp.roots(P)
-    assert sum(rts.values()) == P.degree(), "non-split necklace"
+    if sum(rts.values()) != P.degree():
+        raise ValueError("non-split necklace")
     for r in rts:
-        assert sp.Rational(r).is_Integer, f"non-integer necklace root {r}: not a root divisor"
+        if not (r.is_Rational and sp.Rational(r).is_Integer):
+            raise ValueError(f"non-integer necklace root {r}: not a root divisor")
     return sp.expand(sum(mult * sig**int(-r) for r, mult in rts.items()))
+
+try:
+    delta(2 * E + 3)
+except ValueError:
+    rejected_nonintegral_root = True
+else:
+    rejected_nonintegral_root = False
+check("necklace divisor rejects a non-integral root exactly", rejected_nonintegral_root)
+try:
+    delta(E**5 - E + 1)
+except ValueError:
+    rejected_nonsplit = True
+else:
+    rejected_nonsplit = False
+check("necklace divisor rejects a non-split polynomial", rejected_nonsplit)
 
 def cyc(k, d):
     return sp.expand(sp.cancel((sig**k - 1) / (sig**d - 1)))
@@ -772,10 +800,13 @@ check("p-EQUIVARIANCE under Fourier: p |-> p o phi (x,xi)->(-xi,x), so deg p = e
       "is preserved (W2: x^2 xi -> xi^2 x)",
       eF == eW
       and sp.expand(pF - sp.expand(pW.subs({x: -xi, xi: x}, simultaneous=True))) == 0)
-print("    => e = deg p is a T-ORBIT INVARIANT on every trajectory all of whose states\n"
-      "       have n+m > 2 (Dixmier's lemma applies): a transvection leaves the OTHER\n"
-      "       member's symbol -- hence p -- untouched; affine/Fourier act linearly on\n"
-      "       (x,xi), preserving deg p; pair-exchange swaps (a,b).", flush=True)
+print("    => Conditional on Dixmier's common-primitive leading-symbol lemma over C (or an\n"
+      "       algebraically closed characteristic-zero field), e = deg p is a tame-orbit\n"
+      "       invariant while n+m>2. Ambient linear symplectic changes carry p by an\n"
+      "       invertible substitution. For invertible linear recombination of (X,D),\n"
+      "       unequal degrees retain the higher symbol in at least one component and\n"
+      "       Dixmier controls any cancellation in the other; at equal degrees the two\n"
+      "       proportional equal-exponent powers cannot both cancel. Exchange swaps (a,b).", flush=True)
 
 # (5.2) the exponent floor for e >= 2:  a,b >= 2, (a,b) != (2,2), so n+m >= 5e
 def floor_chain(a, b, e, trace=None):
@@ -805,8 +836,8 @@ check("GIVEN the paper exclusions: min(a+b) over the admissible exponent set = 5
       "attained only at {2,3} (pure arithmetic; falsifiable)",
       min(a + b for (a, b) in adm) == 5
       and {tuple(sorted(ab)) for ab in adm if sum(ab) == 5} == {(2, 3)})
-check("W2 hatch datum sits AT the floor of its orbit: n+m = 5e (one datum, e=3; "
-      "the general n+m >= 5e is the paper FLOOR THEOREM, not checked here)",
+check("W2 formal datum has the floor arithmetic n+m = 5e (one datum, e=3; "
+      "it is not a Weyl pair, and the general n+m >= 5e is the paper FLOOR THEOREM)",
       nXw + mDw == 5 * eW)
 
 # (5.3) e-quantisation blocks the exit to n+m = 2 and to band <= 2
@@ -852,11 +883,11 @@ check("REFUTED: the mutually-non-dividing property of (a,b) is destroyed by one 
       pdata(Xw2, transvect_D(Xw2, Dw2, {2: sp.Integer(1)}))[1] == 3
       and bdeg(transvect_D(Xw2, Dw2, {2: sp.Integer(1)})) == 18)
 
-# THE KEY NEGATIVE RESULT: a degree-only monovariant cannot exist.
+# LIMIT OF THIS OVER-APPROXIMATE DEGREE TRANSITION MODEL.
 def degree_model_escape(n0, m0, S=3, depth=2):
     """cancelling moves allowed whenever divisibility holds, any depth of drop."""
     best = None
-    def rec(n, m, side, dep):
+    def rec(n, m, side, dep, word):
         nonlocal best
         if dep == 0:
             return
@@ -864,25 +895,33 @@ def degree_model_escape(n0, m0, S=3, depth=2):
             if side != 'D':
                 if s * n == m:
                     for mm in range(0, m):
+                        witness = word + [(f'D{s}', (n, m), (n, mm), 'cancel')]
                         if best is None or n + mm < best[0]:
-                            best = (n + mm, (n, m), s, mm)
-                        rec(n, mm, 'D', dep - 1)
+                            best = (n + mm, witness)
+                        rec(n, mm, 'D', dep - 1, witness)
                 else:
-                    rec(n, max(m, s * n), 'D', dep - 1)
+                    target = (n, max(m, s * n))
+                    rec(*target, 'D', dep - 1,
+                        word + [(f'D{s}', (n, m), target, 'noncancel')])
             if side != 'X':
                 if s * m == n:
                     for nn in range(0, n):
+                        witness = word + [(f'X{s}', (n, m), (nn, m), 'cancel')]
                         if best is None or nn + m < best[0]:
-                            best = (nn + m, (n, m), s, nn)
-                        rec(nn, m, 'X', dep - 1)
+                            best = (nn + m, witness)
+                        rec(nn, m, 'X', dep - 1, witness)
                 else:
-                    rec(max(n, s * m), m, 'X', dep - 1)
-    rec(n0, m0, None, depth)
+                    target = (max(n, s * m), m)
+                    rec(*target, 'X', dep - 1,
+                        word + [(f'X{s}', (n, m), target, 'noncancel')])
+    rec(n0, m0, None, depth, [])
     return best
 esc = degree_model_escape(9, 6, S=3, depth=2)
-check("KEY NEGATIVE RESULT: the DEGREE-ONLY model (n,m) admits a length-2 escape from "
-      f"(9,6) down to sum {esc[0]} < 15 -- so NO monovariant depending only on (n,m,k) "
-      "can prove Gap 1", esc is not None and esc[0] < 15)
+check("DEGREE-MODEL LIMIT: the tested over-approximate transition relation admits "
+      f"witness {esc[1] if esc else None}, ending at sum {esc[0] if esc else None} < 15; "
+      "therefore that relation alone is insufficient, without excluding monovariants "
+      "that use actual (n,m,k) trajectories", esc is not None and esc[0] < 15
+      and len(esc[1]) <= 2)
 # ... and the true algebra blocks that very word:
 c_ = sp.Symbol('c_')
 D1 = transvect_D(Xw2, Dw2, {1: sp.Integer(1)})          # D - X : degrees (9,9)
@@ -891,11 +930,11 @@ check("...but the ALGEBRA blocks it: the (9,6)->(9,9)->cancel word gives X'' = D
       "(degree 6) and D' = D - X (degree 9): sum back to 15, never below",
       bdeg(D1) == 9 and bdeg(X1) == 6 and bdeg(X1) + bdeg(D1) == 15)
 
-# (5.6) where the ABSOLUTE floor of the non-generating strata sits ------------
+# (5.6) lowest arithmetically admissible e>=2 floor case ---------------------
 floors = {e: 5 * e for e in range(2, 7)}
-check("floor ladder 5e: e=2 -> 10, e=3 -> 15 (W2), e=4 -> 20, ... so the ABSOLUTE "
-      "minimal non-generating leading-form stratum is e=2, n+m=10, BELOW the W2 "
-      "stratum at 15", floors[2] == 10 and floors[3] == 15 and min(floors.values()) == 10)
+check("floor ladder 5e: among arithmetically admissible e>=2 cases, e=2 gives the "
+      "lowest floor 10, below the W2 e=3 floor 15; realizability and e=1 sectors remain open",
+      floors[2] == 10 and floors[3] == 15 and min(floors.values()) == 10)
 check("a primitive binary quadratic has two DISTINCT roots (a double root is a square, "
       "hence imprimitive), so e=2 forces p ~ x*xi up to SL_2",
       primitive_data(sp.expand(x * xi))[2] == 2
@@ -904,11 +943,11 @@ check("a primitive binary quadratic has two DISTINCT roots (a double root is a s
 # which bands can carry sigma_X = (x xi)^2 ?  i + d = 2, d = 2  =>  i = 0, and the
 # competing bands at Bernstein degree 4 are i + 2d = 4.
 bands4 = [(i, d) for i in range(-4, 5) for d in range(0, 5) if i + 2 * d == 4]
-check("e=2 in p=x*xi coordinates puts the top on band 0 ((i+d,d)=(2,2) => i=0); in "
-      f"general {len(bands4)} bands compete at Bernstein degree 4: {bands4} -- the e=2 "
-      "stratum is a MULTI-BAND top (band-reduction Gap 3), and the band grading is "
-      "NOT SL_2-invariant so the normalisation cannot be assumed",
-      (0, 2) in bands4 and len(bands4) == 5)
+p2_band, p3_band = 2 - 2, 3 - 3
+check("e=2 in p=x*xi coordinates puts both p^2 and p^3 on band 0; after a generic "
+      f"SL2 change a top may occupy several fixed-coordinate slots (p^2 slots: {bands4}). "
+      "Band is not SL2-invariant, so fixed single-band classifications do not automatically transfer",
+      p2_band == p3_band == 0 and (0, 2) in bands4 and len(bands4) == 5)
 _pq = sp.expand(x * (x + xi))                     # another primitive quadratic
 _top = sp.expand(_pq**2)
 _spread = {sp.Poly(_top, x, xi).monoms()[i] for i in range(len(sp.Poly(_top, x, xi).monoms()))}
@@ -972,7 +1011,7 @@ def successors(X, D, S, last):
 
 def word_search(X0, D0, S, depth, cap, label):
     I0 = invariant(X0, D0)
-    best, best_word, seen, nodes = I0, [], {key(X0, D0)}, 0
+    best, best_word, seen, nodes = I0, [], {(key(X0, D0), None)}, 0
     frontier = [(X0, D0, None, [])]
     for lev in range(depth):
         nxt = []
@@ -984,7 +1023,7 @@ def word_search(X0, D0, S, depth, cap, label):
                     best, best_word = I2, w + [nm]
                 if I2[0] > cap:
                     continue
-                kk = key(X2, D2)
+                kk = (key(X2, D2), side)
                 if kk in seen:
                     continue
                 seen.add(kk)
@@ -1040,16 +1079,17 @@ print(f"""
 """, flush=True)
 
 if not HEAVY:
-    skip("depth-4 leg of the §6 word search", "set HEAVY=1 (adds ~1-2 min)")
+    skip("depth-4 leg of the §6 word search", "set HEAVY=1; runtime is machine-dependent")
 
 # ===========================================================================
 # §7  the assembled conditional statement
 # ===========================================================================
 banner("§7  assembled statement")
 
-print("""    FLOOR THEOREM (proved here, arbitrary degree, modulo the two CITED classical
-    inputs: Dixmier's 1968 leading-symbol lemma, and -- only for the band clause --
-    the campaign's band-1 rigidity P3 and band-2 theorem 84978b9):
+print("""    CONDITIONAL PAPER FLOOR THEOREM over C (or an algebraically closed
+    characteristic-zero field), assuming Dixmier's common-primitive leading-symbol
+    lemma; the band clause additionally uses the cited band-1 rigidity and band-2 theorem.
+    The bounded verifier is regression support, not a proof object:
 
       Let (X,D) in A_1 with [D,X]=1 and let p be the primitive Dixmier form,
       sigma_X = alpha p^a, sigma_D = beta p^b, e = deg p, n = ae, m = be.
@@ -1059,14 +1099,16 @@ print("""    FLOOR THEOREM (proved here, arbitrary degree, modulo the two CITED 
       (2) If e >= 2 then a >= 2, b >= 2 and (a,b) != (2,2); hence n+m >= 5e. (§5.2)
       (3) Hence a pair with e >= 2 can never reach n+m = 2, and (with the band
           floors) never reaches band <= 2: it is never tame-equivalent to (x,d). (§5.3-4)
-      (4) The W2 hatch configuration has e = 3, (a,b) = (3,2), n+m = 15 = 5e --
-          EXACTLY the floor.  So NO tame word lowers n+m from it, and its band 3
-          is already the minimum for a non-generating pair.  The composite-move
-          escape (Gap 1) is therefore EXCLUDED at the W2 leading-form stratum.
+      (4) Any GENUINE pair with the W2 or shifted-cube leading forms has e = 3,
+          {a,b} = {2,3}, n+m = 15 = 5e. Conditional on the cited inputs, such a
+          floor-attaining genuine pair is tame-orbit minimal in the claimed invariant.
+          The formal wall/top representatives tested here are not Weyl pairs and are
+          never themselves asserted tame-minimal.
 
-    WHAT THIS DOES NOT DO.  It is a statement about the LEADING-FORM stratum
-    (e,a,b), not about a particular hatch datum's lower bands; it does not show any
-    W2 pair exists; it does not close Gap 1 for strata above the floor (e.g. the
+    WHAT THIS DOES NOT DO.  It is a statement about GENUINE pairs in a leading-form
+    stratum, not about a particular formal datum's lower bands; it does not show any
+    such pair exists or that orbit-minimal/minimal counterexamples attain equality;
+    descent from a+b>5 to the floor is open. It does not close Gap 1 above the floor (e.g. the
     band-4 census hatch has e=3, (a,b)=(4,3), n+m=21 > 15, so a composite descent
     to a band-3 configuration is NOT excluded); and it says nothing about e = 1
     strata (the constant-h / kappa_2 sector), where p is linear and the floor

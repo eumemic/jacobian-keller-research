@@ -73,9 +73,10 @@ membership `(E)_r = E(E−1)⋯(E−r+1) | a_{-r}, b_{-r}`, gauge `b_3 = 0`,
 > At band 3 the raw Band-2-shaped ansatz is obstructed; the Wave-C compensated
 > integral (`Φ' = C₋₁`, `I₂' = C₋₂ − (2/3)a₂'Φ`) exists only in the classical face
 > and yields a **conditional** determinant / tropical `6:5` degree gap, **not** a
-> `mod 3` lattice — and the classical `e ≠ 0` sector is itself **open**. The quantum
-> reflection `E ↦ −E−1` breaks `A₁`-membership for the constant top, so the
-> classical route does not even transcribe. **No clean degree-free closure is
+> `mod 3` lattice — and the classical `e ≠ 0` sector is itself **open**. Genuine
+> Weyl Fourier preserves `A₁` membership and reverses support, but exits the
+> displayed top-wall/gauge chart, so its chart parameter is not directly
+> comparable; formal coefficient reflection is not Fourier. **No clean degree-free closure is
 > available; the exact obstruction is named.**
 
 ---
@@ -201,19 +202,22 @@ successive points, and this memo pins each:
    **tropical `6:5`** degree signature (not a `mod 3` lattice). Even classically this
    leaves the sector **OPEN** (denominator cancellation, polynomiality, `det = 0`,
    `a₂ = const` strata).
-3. **The quantum reflection does not transcribe.** The classical import route used
-   reflection `R:(x,ξ) ↦ (ξ,x)`; its quantum analogue `E ↦ −E−1` sends the constant
-   top `a₃ = 1` to a reflected `x^{-3}`-coefficient `1`, which is **not** divisible
-   by `E(E−1)(E−2)` — `A₁`-membership breaks (`astar-band3.md` §6(i)). And the
-   inhomogeneous `μ₃`-source (§4) has no band-2 mirror to cancel against.
+3. **Genuine Fourier reverses the chart rather than breaking membership.** Weyl
+   Fourier sends `a_i` to `a'_{−i}=(-1)^i(E)_i a_i(-E−1)`; in particular, the
+   constant top `a₃=1` maps to `−(E)_3`, so the reflected negative-band coefficient
+   satisfies `A₁` membership. The move reverses support and exits the displayed
+   top-wall/gauge chart, however, so `κ₂` is not directly comparable there. A bare
+   coefficient reflection `E↦−E−1` is not Weyl Fourier. The inhomogeneous
+   `μ₃`-source (§4) still has no band-2 mirror to cancel against.
 
 > **Exact obstruction.** The `(κ₂-closure)` degree-free proof would require a
 > quantum first integral of the `μ₃`-sourced tail that determines the trailing pair
 > `(a₋₂, a₋₃)` and forces a degree contradiction. The classical mirror shows such an
 > integral is at best **conditional** (determinant locus + tropical gap, no `mod 3`
-> lattice), and the quantum face additionally loses the reflection import and gains
-> the `μ₃`-source. This is precisely where the closure sits, and it is **open** —
-> the same frontier as classical `e ≠ 0` and quantum A\*-I.
+> lattice), while genuine Fourier reverses/exits the displayed chart rather than
+> importing that closure into it. Composite tame escape and arbitrary-degree tail
+> closure remain open, alongside the `μ₃`-source frontier — the same frontier as
+> classical `e ≠ 0` and quantum A\*-I.
 
 ## 6. The bounded certificate
 

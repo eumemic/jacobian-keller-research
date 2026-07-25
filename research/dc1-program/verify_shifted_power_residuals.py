@@ -440,8 +440,9 @@ print("\n=== §3  RESIDUAL 3: constant-h, gauged wall constant kappa_2 != 0 ==="
 # With h constant (normalize a_3 = 1), the Q_5 wall gives b_2 = kappa_2 (a CONSTANT).
 # The tame family lives in kappa_2 = 0 (the B0-band3 gauge collapse D->D-lam X kills
 # b_3,b_2,b_-3 at once).  QUESTION: does a tame move map kappa_2 != 0 into kappa_2 = 0?
-# ANSWER (gauge obstruction, PROVED arbitrary degree): NO gauge-preserving transvection
-# alters kappa_2, so kappa_2 is a genuine invariant of the gauge-b_3=0 sector.
+# ANSWER for the displayed one-step chart: NO gauge-preserving transvection alters
+# kappa_2.  This is not invariance under arbitrary composite tame words; escape from
+# the chart and the membership-valid negative-tail question remain open.
 
 lam2, kap2 = sp.symbols('lam2 kap2')
 # generic constant-top X (a_3=1) and D in gauge b_3=0 with b_2 = kap2:
@@ -477,11 +478,18 @@ check("RESIDUAL 3: pair-exchange keeps band=max(2,3)=3 (relabels top; does not l
 print("   => one-step gauge obstruction only: these generators do not remove kappa_2 while")
 print("      staying in the displayed sector; composite tame-word escape remains open.")
 
-# Fourier E->-E-1 sends the constant top a_3=1 to an x^{-3}-coefficient 1, NOT divisible
-# by E(E-1)(E-2) -- breaks A_1 membership (astar-band3.md sec.6 (i)). Machine witness:
-check("RESIDUAL 3: Fourier-reflected constant top (coeff 1) is NOT divisible by E(E-1)(E-2) "
-      "(membership break; the classical reflection route does not transcribe)",
-      not divides(sp.expand(E * (E - 1) * (E - 2)), sp.Integer(1)))
+# Genuine Weyl Fourier reverses support and sends a positive ladder coefficient by
+# a_i -> a'_{-i}=(-1)^i(E)_i a_i(-E-1). Thus a_3=1 maps to -(E)_3: membership is
+# preserved, but the displayed top-wall/gauge chart is reversed, so kappa_2 is not
+# directly comparable there. Formal coefficient reflection is not Weyl Fourier.
+fourier_a3 = sp.expand(-E * (E - 1) * (E - 2))
+fourier_single_top = {-3: fourier_a3}
+check("RESIDUAL 3: genuine Fourier sends a_3=1 to the sole band -3 coefficient "
+      "-(E)_3, reversing support and preserving A_1 membership",
+      set(fourier_single_top) == {-3}
+      and divides(sp.expand(E * (E - 1) * (E - 2)), fourier_single_top[-3]))
+print("   => genuine Fourier preserves A_1 membership and reverses support; kappa_2 in the")
+print("      displayed top-wall/gauge chart is not directly comparable after Fourier.")
 
 # BOUNDED disposition of the kappa_2 != 0 sector: the constant-top positive cascade
 #   Q_4 = kappa_2 (a_2 - a_2^[2]) + (b_1^[3] - b_1)

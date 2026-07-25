@@ -1,22 +1,22 @@
-# Walls as checkpoints: band-reduction Gap 1, and a primitive-degree floor that closes it at the W2 stratum
+# Walls as checkpoints: band-reduction Gap 1 and a conditional primitive-degree floor for the W2 leading-form stratum
 
-**INDEPENDENTLY DERIVED — EXACT ALGEBRA / MACHINE-CHECKED IDENTITIES — NOT PEER
-REVIEWED — EXPLORATORY, WITH ONE NEW ARBITRARY-DEGREE THEOREM AND NAMED GAPS**
+**INDEPENDENTLY DERIVED — EXACT ALGEBRA / BOUNDED MACHINE REGRESSIONS — NOT PEER
+REVIEWED — EXPLORATORY, WITH A CONDITIONAL PAPER THEOREM AND NAMED GAPS**
 
 [`band-reduction.md`](band-reduction.md) §9 **Gap 1** — the composite-move escape —
 is the campaign's classical core: reducedness is proved only against *single*
 transvections, so a tame *word* could temporarily raise the invariant `(n+m,k)`
 and come back down outside the classified stratum. This memo formulates the
-"walls as checkpoints" attack precisely, machine-checks the exact invariant
-arithmetic of every tame generator and the wall-data transformation table,
-**refutes the proposed local-minimum lemma as stated**, and then — from the
-monovariant hunt — proves a new arbitrary-degree floor that **excludes the escape
-at the W2 leading-form stratum**.
+"walls as checkpoints" attack, checks bounded instances of the generator and
+wall-data arithmetic, explains why the proposed local-minimum implication is not
+established, and gives a conditional paper proof of a primitive-degree floor.
+For any genuine pair attaining that floor, the cited inputs exclude tame descent
+below it; descent from strata above the floor remains open.
 
-Exact certificate: [`verify_gap1_checkpoints.py`](verify_gap1_checkpoints.py)
-(75 checks, ~45 s, ends `ALL EXECUTED CHECKS PASSED; OPTIONAL CHECKS SKIPPED`;
-`HEAVY=1` adds the depth-4 search leg, ~115 s, then ends
-`ALL GAP1 CHECKPOINT CHECKS PASSED`). Base commit `201c2f6`. Every load-bearing
+Exact bounded regression support:
+[`verify_gap1_checkpoints.py`](verify_gap1_checkpoints.py). It reports check and
+search counts dynamically; runtime is machine-dependent. `HEAVY=1` adds the
+optional depth-4 search leg. Base commit `201c2f6`. Every load-bearing
 upstream fact (the ladder engine, `Q_0=(T-1)G`, the `W(k,q)` wall and its cofactor
 parametrisation, the Fourier ladder rule, the leading-monomial rule) is
 **re-derived in file**; the Fourier rule is additionally re-derived against a
@@ -32,10 +32,15 @@ Bernstein, `k=max(width X, width D)`, lexicographic.
 
 ## 0. Headline
 
-> **The primitive degree `e=deg p` is a tame-orbit invariant, and every Weyl pair
-> with `e≥2` has `n+m ≥ 5e`. The W2 configuration sits exactly on that floor, so
-> no composite tame word escapes from it — Gap 1 is closed at the W2
-> leading-form stratum, and open above it.**
+> **Conditional paper statement.** Over `C` (more generally an algebraically closed
+> characteristic-zero field), assuming Dixmier's common-primitive leading-symbol
+> lemma, every genuine Weyl pair with primitive degree `e≥2` has `a,b≥2`,
+> `(a,b)≠(2,2)`, and therefore `n+m≥5e`, with equality exactly when
+> `{a,b}={2,3}`. Conditional on the cited tame and fixed-band inputs, a genuine
+> floor-attaining pair is tame-orbit minimal in `(n+m,k)`. This does not say that
+> every orbit-minimal or minimal counterexample attains equality: descent from
+> `a+b>5` to the floor is open. The verifier is bounded regression support, not a
+> proof object.**
 >
 > **TIER (audit, 2026-07-25) — read this before citing anything below.** The
 > headline is a **PAPER PROOF, CONDITIONAL** on four inputs not re-derived in
@@ -54,9 +59,11 @@ Bernstein, `k=max(width X, width D)`, lexicographic.
 >    `sn<m` ⟹ `m'=m`; `sn=m` ⟹ strict drop **iff** `σ_D=cσ_X^s`. Fourier and
 >    pair-exchange preserve `(n+m,k)` exactly; affine `X↦X+bD` sends `n↦max(n,m)`.
 >    **Corollary:** a single generator lowers `n+m` only if `a|b` or `b|a`.
-> 2. **The proposed local-minimum lemma is FALSE as stated (REFUTED).** A local
+> 2. **The proposed local-minimum proof/implication is not established.** A local
 >    minimum of the trajectory certifies only that the two *adjacent* letters do
->    not lower the invariant — not that *no* generator does. What survives is the
+>    not lower the invariant; that observation does not prove that *no* generator
+>    lowers it. No committed genuine-pair witness refuting the statement is supplied.
+>    What survives is the
 >    **last-ascent checkpoint lemma** (§3): the escape must leave the
 >    mutually-non-dividing stratum and re-enter below `μ`, and its final move is a
 >    *deep* cancellation whose every unit of depth is one more `p`-power condition.
@@ -68,25 +75,24 @@ Bernstein, `k=max(width X, width D)`, lexicographic.
 >    `(k,q)`; **Fourier is not a symmetry of the top wall at all** — it maps the
 >    top wall to the *bottom* wall (machine-checked refutation: two elements with
 >    identical top data have different Fourier tops).
-> 4. **Monovariant hunt (one winner, four refutations).** `gcd(k,q)`, cofactor
->    effectivity, and the non-dividing property of `(a,b)` are all **refuted** as
->    monovariants by explicit two-letter words. Worse: the **degree-only model
->    `(n,m,k)` admits a length-2 escape** from `(9,6)` to sum `9`, so **no
->    monovariant that depends only on the invariant can ever prove Gap 1**;
->    leading-form data is unavoidable. The winner is the **primitive degree**
+> 4. **Monovariant hunt.** `gcd(k,q)`, cofactor effectivity, and the non-dividing
+>    property of `(a,b)` fail in the tested transformations. The over-approximate
+>    degree-transition relation admits a short escape from `(9,6)`, so that tested
+>    relation is insufficient by itself. This does not refute every conceivable
+>    monovariant depending on actual `(n,m,k)` trajectories. The useful invariant is
+>    the conditional **primitive degree**
 >    `e=deg p`, invariant along every trajectory (§5).
-> 5. **FLOOR THEOREM (new, arbitrary degree).** For `[D,X]=1` with `e≥2`:
->    `a≥2`, `b≥2`, `(a,b)≠(2,2)`, hence `n+m=(a+b)e ≥ 5e`; and `e≥2` pairs never
->    reach `n+m=2` or band `≤2`. The **W2 hatch and the shifted cube both have
->    `e=3`, `(a,b)=(3,2)`, `n+m=15=5e`** — the floor — and band `3`, the minimum
->    for a non-generating pair. **They are T-minimal: Gap 1's escape is
->    excluded there.**
-> 6. **Bounded search (consistency).** An exhaustive depth-3 (HEAVY: depth-4)
->    word search over `{optimal transvection, unit raising transvections `s≤2`,
->    exchange, Fourier}` at the W2 datum and the shifted cube finds **no escape**
->    (538 words each at depth 4), while the same search *does* find the known
->    reductions on both tame positive controls. **No escape witness exists in the
->    searched space.**
+> 5. **FLOOR THEOREM (conditional paper proof, arbitrary degree).** Over the stated
+>    characteristic-zero field and assuming Dixmier's lemma, a genuine pair with
+>    `e≥2` has `a≥2`, `b≥2`, `(a,b)≠(2,2)`, hence `n+m=(a+b)e≥5e`, with equality
+>    iff `{a,b}={2,3}`. The W2 and shifted-cube displayed data are only formal
+>    wall/top representatives. The conclusion applies conditionally to any genuine
+>    pair having those leading forms; the representatives themselves are not called
+>    tame-minimal.
+> 6. **Bounded search (consistency).** A bounded, history-aware depth-3 search
+>    (`HEAVY`: depth 4) over the disclosed alphabet finds no escape at the formal
+>    W2 and shifted-cube data, while finding known reductions on tame controls.
+>    Counts are reported dynamically. This is not a proof or realizability test.
 
 ---
 
@@ -118,9 +124,10 @@ Two floors are proved in file before anything else:
 
 ---
 
-## 2. Exact generator arithmetic (machine-checked, degree-free)
+## 2. Exact generator arithmetic (paper proof with bounded regression support)
 
-Verifier `§2`. The degree-free engine identity is
+Verifier `§2` supplies the bounded scope recorded in §8. The arbitrary-degree paper
+argument uses the engine identity
 
 ```
    extreme-band coeff of X^s  =  ∏_{j=0}^{s-1} a_k^{[jk]}  ≠ 0   in the domain C[E],
@@ -155,27 +162,29 @@ normal-ordered `A_1`:
 ```
 
 which preserves the Bernstein degree band-by-band and reverses the band support.
-(Note: the naive "`E↦-E-1`, drop the falling factorial" reading — which
-[`shifted-power-residuals.md`](shifted-power-residuals.md) §3.1 appeals to when it
-says a constant top `a_3=1` goes to an `x^{-3}`-coefficient `1` — is **not** the
-`A_1` Fourier map; with the falling factorial the image is `-(E)_3`, which *is*
-membership-valid. The `κ₂` gauge obstruction there should be re-derived with the
-rule above before being relied on.)
+A bare coefficient reflection `E↦-E-1` that drops the falling factorial is not
+the `A_1` Fourier map. In particular, `a_3=1` maps to `-(E)_3`, which is
+membership-valid. As recorded in
+[`shifted-power-residuals.md`](shifted-power-residuals.md) §3.1, genuine Fourier
+instead reverses/exits the displayed top-wall/gauge chart, so `κ₂` is not directly
+comparable there; composite tame escape remains open.
 
 ---
 
 ## 3. The checkpoint lemma — what is true, and what the proposal got wrong
 
-> **REFUTED (as proposed).** *"At every local minimum of the trajectory the pair is
-> single-transvection-reduced, hence lies in the classified stratum."* A local
-> minimum only certifies that `g_j` did not lower it and `g_{j+1}` does not lower
-> it — two letters, not the whole generating set. The implication
-> "local minimum ⟹ single-move-reduced" is a quantifier error. (The
+> **NOT ESTABLISHED by the proposed argument.** *"At every local minimum of the
+> trajectory the pair is single-transvection-reduced, hence lies in the classified
+> stratum."* A local minimum only certifies that `g_j` did not lower it and
+> `g_{j+1}` does not lower it — two letters, not the whole generating set. Thus the
+> proposed inference to single-move-reduced does not follow. No explicit committed
+> genuine-pair counterexample is given here. (The
 > *trajectory-global* minimum of a length-minimal word achieving the orbit minimum
 > *is* single-move-reduced, but that is the orbit minimum by definition and carries
 > no new information.)
 
-What survives, and is proved (verifier `§3`):
+What survives is the following prose lemma; verifier `§3` prints the result and
+checks only the same-side collapse arithmetic listed in §8:
 
 > **Checkpoint lemma (last ascent).** Let `V_0` be single-move-reduced with
 > `I(V_0)=μ`, and let `w=g_N⋯g_1` satisfy `I(wV_0)<μ`. Put
@@ -193,8 +202,9 @@ What survives, and is proved (verifier `§3`):
 >    collapse: `(D-f(X))-g(X)=D-(f+g)(X)`), and `V_{j+1}=(X_j,D_j-f(X_j))` is again
 >    a genuine Weyl pair (`f(X)` commutes with `X`).
 
-Also proved in file: **non-cancelling words never lower `n+m`** (exhaustive over
-`7` starting states, length `≤5`, `s≤4`, `13448` transitions) — every escape
+Also checked in the bounded degree model: **non-cancelling words never lower
+`n+m`** over the disclosed `7` starting states, length `≤5`, and `s≤4`; the
+transition count is reported dynamically. Every escape in that bounded model
 contains a cancelling step.
 
 ---
@@ -244,7 +254,7 @@ word class must exclude Fourier.
 | `d=gcd(k,q)` | **non-decreasing under raising** (`d'=k≥d`), but **refuted globally**: explicit word with `d: 1→3→1` |
 | cofactor effectivity | destroyed by raising, restored by the inverse — **refuted** |
 | `(a,b)` mutually non-dividing | one raising move gives `(3,2)↦(3,6)` — **refuted** |
-| **anything depending only on `(n,m,k)`** | **refuted decisively**: the degree-only model, with cancelling moves allowed whenever divisibility holds, escapes from `(9,6)` to sum `9` in two letters. The true algebra blocks that very word (`X''=D`, `D'=D-X`, sum back to `15`) — **so leading-form data is unavoidable in any proof of Gap 1** |
+| the tested over-approximate `(n,m,k)` transition relation alone | **insufficient by itself**: it permits a short escape that the true algebra blocks. This does not rule out every monovariant depending on actual `(n,m,k)` trajectories |
 
 ### 5.2 The winner: the primitive degree `e=deg p`
 
@@ -252,22 +262,28 @@ Dixmier's 1968 leading-symbol lemma (classical input, cited, instance-verified i
 file) gives, for `n+m>2`, `σ_X=αp^a`, `σ_D=βp^b` with `p` **primitive**
 homogeneous; set `e=deg p`, so `n=ae`, `m=be` and `e | gcd(n,m)`.
 
-> **Invariance (PROVED, verifier `§5.1`).** `e` is constant along every tame
-> trajectory all of whose states satisfy `n+m>2`; `p` itself is constant up to the
-> linear symplectic action of the affine/Fourier letters.
+> **Invariance (conditional paper proof; bounded verifier support in `§5.1`).** Over
+> `C` or an algebraically closed characteristic-zero field, assuming Dixmier's
+> lemma, `e` is constant along tame trajectories whose states satisfy `n+m>2`.
 >
-> *Reason.* A transvection changes one member only, so the **other** member's
-> symbol — hence its primitive `p` — is untouched, and Dixmier's lemma applied to
-> the new pair forces the new symbol to be a power of the *same* `p`. Exchange
-> swaps `(a,b)`. Affine/Fourier act linearly on `(x,ξ)`, preserving `deg p` (if an
-> affine move cancels the top, the lemma re-applies with the untouched member's
-> `p`). Machine-checked on the W2 datum and the tame control for transvections
-> `s=1,2,3` on both sides, exchange, and Fourier (`x²ξ ↦ xξ²`).
+> *Reason.* A transvection changes one member only, so the other member retains its
+> primitive, and Dixmier applied to the new pair controls the changed member.
+> Ambient linear symplectic changes of `x,ξ` are a separate action: they carry `p`
+> by an invertible linear substitution and preserve `deg p`. For an invertible
+> linear recombination of the pair `(X,D)`, if the degrees differ, the higher
+> leading form is retained in at least one component; cancellation in the other is
+> controlled by Dixmier using that retained member. If the degrees agree, the two
+> common leading forms are proportional powers with equal exponent; an invertible
+> matrix cannot cancel both, and a retained component fixes the same primitive.
+> Pair exchange is the special recombination swapping `(a,b)`. The verifier checks
+> only bounded instances of transvections, exchange, and Fourier.
 
 ### 5.3 FLOOR THEOREM
 
-> **Theorem (arbitrary degree; classical input: Dixmier's lemma).** Let `[D,X]=1`
-> with primitive degree `e≥2`. Then `a≥2`, `b≥2`, and `(a,b)≠(2,2)`; hence
+> **Theorem (conditional paper proof, arbitrary degree).** Over `C` (or an
+> algebraically closed characteristic-zero field), assume Dixmier's
+> common-primitive leading-symbol lemma. Let `[D,X]=1` have primitive degree
+> `e≥2`. Then `a≥2`, `b≥2`, and `(a,b)≠(2,2)`; hence
 > ```
 >        n + m = (a+b)·e  ≥  5e ,     with equality iff {a,b}={2,3}.
 > ```
@@ -296,11 +312,12 @@ homogeneous; set `e=deg p`, so `n=ae`, `m=be` and `e | gcd(n,m)`.
 > minimum. Both components of the lexicographic invariant are therefore at their
 > orbit floor.
 
-**This closes Gap 1 at the W2 stratum.** The W2 hatch (`σ_X=(x²ξ)³`,
-`σ_D=(x²ξ)²`) and the shifted cube share `e=3`, `(a,b)=(3,2)`, `n+m=15=5·3`,
-`k=3`: **no composite tame word lowers the invariant from either.** (The corollary
-is a statement about the *leading-form stratum*, so it applies to *every* genuine
-pair with that stratum, not merely to the specific data.)
+**Conditional consequence for the W2 leading-form stratum.** The W2 hatch
+(`σ_X=(x²ξ)³`, `σ_D=(x²ξ)²`) and shifted-cube top data share `e=3`,
+`(a,b)=(3,2)`, `n+m=15=5·3`, `k=3`. The displayed representatives are formal,
+not Weyl pairs, so no orbit-minimality claim is made about them. Rather, the
+corollary says that **if a genuine Weyl pair has this leading-form stratum, no
+composite tame word lowers its invariant** (conditional on the stated inputs).
 
 ### 5.4 Two consequences the campaign should record
 
@@ -308,17 +325,14 @@ pair with that stratum, not merely to the specific data.)
   `(a,b)=(k,k-1)`, `n+m=(2k-1)·3 > 15`. A composite descent to a band-3
   configuration is *not* excluded for them (they die at the moment unit anyway,
   [`hatch-census.md`](hatch-census.md)).
-- **The absolute minimal non-generating leading-form stratum is `e=2`, not
-  `e=3`**: `n+m=10 < 15`, with `p ~ xξ` up to `SL₂` (a primitive binary quadratic
-  has two distinct roots, so a double root is excluded — it would be imprimitive),
-  `σ_X=(xξ)²`, `σ_D=(xξ)³`. In coordinates where `p=xξ` the top is carried by the
-  **band-0** coefficient (`i+d=2, d=2 ⟹ i=0`); in general the degree-4 top spreads
-  over the five bands with `i+2d=4` (the band grading is *not* `SL₂`-invariant, so
-  the normalisation cannot be assumed). Either way the `e=2` stratum is a
-  **multi-band-top** configuration — exactly what `band-reduction.md` §9 **Gap 3**
-  explicitly leaves unclassified — while every hatch the campaign has attacked has
-  `e=3`, `p=x²ξ`, single-band-dominated. **The floor ladder ranks lowest precisely
-  the stratum that Gap 3 leaves open.**
+- **The lowest arithmetically admissible `e≥2` floor case is `e=2`**:
+  `n+m=10<15`, with `p~xξ` up to `SL₂`, `σ_X=(xξ)²`, `σ_D=(xξ)³` after choosing
+  suitable coordinates. In those `p=xξ` coordinates, both `p²` and `p³` are band
+  `0`. A generic ambient `SL₂` change can spread either top across several bands
+  in the original fixed ladder coordinates. Band is not `SL₂`-invariant, so
+  existing fixed single-band classifications do not automatically transfer; it is
+  also wrong to call the stratum intrinsically multi-band. Realizability remains
+  open, and candidate `e=1` sectors remain open independently.
 
 ---
 
@@ -333,10 +347,10 @@ Fourier (when membership holds). Consecutive same-side transvections are exclude
 
 | seed | `[D,X]=1`? | start `I` | best reached | words |
 |---|---|---|---|---|
-| `(x³-∂, x)` (positive control) | yes | `(4,3)` | **`(2,1)` via `oX`** | 72 (depth 2, `S=3`) |
-| tame family `c₁≠0` (positive control) | yes | `(6,3)` | **`(2,1)` via `oD·oX`** | 78 (depth 2, `S=3`) |
-| **W2 hatch datum** | **no** — positive cascade `Q_{m>0}=0` and `Q₀=1` hold, the negative tail does not | `(15,3)` | `(15,3)` — **no escape** | 172 (depth 3), 538 (depth 4, HEAVY) |
-| **shifted-cube top** `a₃=E(E+1)(E+2)`, `b₂=E(E+1)` | top-only representative | `(15,3)` | `(15,3)` — **no escape** | 172 / 538 |
+| `(x³-∂, x)` (positive control) | yes | `(4,3)` | **`(2,1)` via `oX`** | reported dynamically |
+| tame family `c₁≠0` (positive control) | yes | `(6,3)` | **`(2,1)` via `oD·oX`** | reported dynamically |
+| **W2 formal wall datum** | **no** — positive cascade `Q_{m>0}=0` and `Q₀=1` hold, the negative tail does not | `(15,3)` | no drop found within the bound | reported dynamically |
+| **shifted-cube formal top datum** `a₃=E(E+1)(E+2)`, `b₂=E(E+1)` | not a Weyl pair | `(15,3)` | no drop found within the bound | reported dynamically |
 
 **Not covered** (exact scope): non-unit raising coefficients; transvections of
 degree `>S` (`S=2` for the band-3 data, `S=3` for the controls); affine-symplectic
@@ -353,18 +367,18 @@ weight, since it is a statement about leading forms only.
 
 ## 7. The precise conditional statement
 
-> **Gap 1 holds for a pair `V` if `e(V)≥2` and `{a,b}={2,3}`** — unconditionally,
-> by §5.3 (given Dixmier's 1968 lemma and the campaign's band floors).
+> **Conditional floor statement.** Over the stated characteristic-zero field,
+> assuming Dixmier's lemma and the cited band inputs, a genuine pair `V` with
+> `e(V)≥2` and `{a,b}={2,3}` is tame-orbit minimal in the claimed invariant.
 >
 > **Gap 1 for the remaining strata** reduces to: *for a single-move-reduced pair
 > `V` with `e(V)≥2` and `a+b>5`, no tame word reaches a state with the same `e` and
 > a strictly smaller `(a+b, k)`.* By §3 such a word must contain a cancelling step
 > at a state with dividing exponents, and by §3.4 that step's cancellation depth is
-> a stack of `p`-power conditions on the sub-leading symbols. **A sufficient
-> finite condition:** for each `(a,b)` with `a+b>5` and each admissible `s`,
-> show that no Weyl pair with `σ_X=αp^a` admits `D` with `σ_D=βp^{sa}` whose
-> sub-leading symbols are `p`-powers to depth `(s+1)a-(a+b)+1`. This is a *finite*
-> system per `(a,b,s)` once `e` is fixed — but it is **not** carried out here.
+> a stack of `p`-power conditions on the sub-leading symbols. A **proposed
+> per-parameter condition** is to test those cancellation equations for each fixed
+> `(a,b,s,e)`. This is not a completed or global finite reduction: polynomiality
+> and uniform degree control remain open.
 >
 > **For `e=1` the floor argument is vacuous** (`5e=5` is below everything of
 > interest and the exponents are the degrees themselves): the constant-`h`/`κ₂`
@@ -382,11 +396,11 @@ replaces it here is the primitive-degree invariant `e`. In these terms:
    generates  ⟹  automorphism  ⟹ (Makar-Limanov) tame  ⟹  e = 1.
 ```
 
-So `e≥2` is exactly the *candidate-counterexample* condition at the symbol level,
-and DC1 decomposes as **(i)** no Weyl pair has `e≥2`, **and** **(ii)** every `e=1`
-Weyl pair generates. §5.3 says a minimal counterexample of type (i) has
-`{a,b}={2,3}` and `n+m=5e` — which is precisely the configuration the campaign has
-been attacking at `e=3`, and (§5.4) *not* the one it has been attacking at `e=2`.
+Thus `e≥2` describes a candidate-counterexample sector at symbol level, while
+`e=1` candidate sectors remain open. The floor theorem says only that equality,
+when attained by a genuine pair, is exactly `{a,b}={2,3}`. It does **not** imply
+that a minimal counterexample or every orbit-minimal pair attains equality; descent
+from `a+b>5` to the floor is the open Gap 1 problem.
 
 ---
 
@@ -436,48 +450,48 @@ been attacking at `e=3`, and (§5.4) *not* the one it has been attacking at `e=2
 **Bounded / finite evidence (exact scope):**
 - The non-cancelling-word monotonicity: exhaustive in the degree model over 7
   starts, length `≤5`, `s≤4`.
-- The short-word escape search: depth 3 committed (172 words/seed), depth 4 under
-  `HEAVY=1` (538 words/seed), `S=2` at the band-3 seeds, unit raising coefficients
-  only.
+- The history-aware short-word escape search: depth 3 by default, depth 4 under
+  `HEAVY=1`, `S=2` at the band-3 seeds, unit raising coefficients only. Explored
+  state/word counts are printed dynamically; runtime is machine-dependent.
 - The centraliser-of-`x` computation is a degree-≤4 window.
 - Census/wall checks at `k=3,4,5`; `(k,s)∈{(3,2),(3,3),(4,2)}` for the symbolic
   raising-wall identity.
 
-**Refuted:**
-- The proposed **local-minimum lemma** ("at every local minimum the pair is
-  single-move-reduced") — a quantifier error; only the last-ascent form survives.
-  *In-file this is a printed observation, not a witness; a quantifier gap shows
-  the proposed proof invalid, not the statement false. The audit constructed the
-  missing explicit witness, so the refutation stands on that.*
+**Disposition of proposed implications and monovariants:**
+- The proposed proof of the **local-minimum implication** ("at every local minimum
+  the pair is single-move-reduced") is not established: adjacent-letter information
+  does not supply the universal single-move claim. No explicit committed genuine-pair
+  witness is included, so this memo does not label the implication false/refuted.
 - `gcd(k,q)`, cofactor effectivity, and non-dividing `(a,b)` as monovariants
   (explicit words, machine-checked).
-- **Any monovariant depending only on the `(n,m,k)` transition relation of the
-  over-approximate degree model** — that model escapes from `(9,6)`. *Corrected
-  statement (audit): this refutes arguments using only that relation; it does not
-  refute every conceivable `(n,m,k)`-valued monovariant, since the true algebra
-  blocks the escaping move.*
+- The tested over-approximate `(n,m,k)` transition relation is insufficient by
+  itself: it permits an escape that the true algebra blocks. This does not refute
+  every conceivable monovariant depending on actual `(n,m,k)` trajectories.
 - Top-wall data as a Fourier covariant.
 
 **Open / NOT claimed:**
-1. Gap 1 **above** the floor (`e≥2`, `a+b>5`) — the finite condition of §7 is
-   stated, not discharged.
+1. Gap 1 **above** the floor (`e≥2`, `a+b>5`) — the proposed per-parameter
+   conditions of §7 are stated, not discharged; polynomiality and uniform degree
+   control remain open.
 2. Gap 1 for **`e=1`** strata (the `κ₂≠0` constant-`h` sector) — untouched.
-3. The **`e=2` stratum** (`n+m=10`, `p~xξ`, multi-band top) — newly identified as
-   the absolute floor of the non-generating ladder, and completely unexamined; it
-   is `band-reduction.md` Gap 3 territory.
+3. The **`e=2` case** (`n+m=10`, `p~xξ`) — the lowest arithmetically admissible
+   `e≥2` floor case, not a realized stratum. In `p=xξ` coordinates `p²,p³` are band
+   0; generic `SL₂` changes may spread them in fixed coordinates, and fixed-band
+   results do not automatically transfer.
 4. Whether any Weyl pair with `e≥2` **exists** at all: nothing here constructs one
    or rules one out. No Weyl pair, no DC1 counterexample, no DC1/JC2 progress
    beyond the stated leading-form statements.
-5. The `κ₂` gauge obstruction of `shifted-power-residuals.md` §3.1 should be
-   re-derived with the corrected Fourier rule of §2.
+5. The corrected Fourier calculation preserves membership but reverses/exits the
+   displayed `κ₂` chart. Composite tame escape and arbitrary-degree negative-tail
+   closure remain open.
 
 ---
 
 ## 9. Verification
 
 ```sh
-uv run --with sympy python research/dc1-program/verify_gap1_checkpoints.py          # 75 checks, ~45 s
-HEAVY=1 uv run --with sympy python research/dc1-program/verify_gap1_checkpoints.py  # + depth-4 search, ~115 s
+uv run --with sympy python research/dc1-program/verify_gap1_checkpoints.py
+HEAVY=1 uv run --with sympy python research/dc1-program/verify_gap1_checkpoints.py  # optional depth-4 search
 ```
 
 `§0` engine + normal-ordered `A_1` bridge; `§1` invariant + degree floor; `§2`
