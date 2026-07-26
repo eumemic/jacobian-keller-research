@@ -33,8 +33,10 @@ The one-line summary:
 > shapes** `h h^{[1]} | a₂` **and** `h | b₁`. From there `gcd(h,h^{[2]}) = 1`
 > gives `h | a₁`, the potential factorises as `G = h^{[-1]}M`, and
 > `Q₀ = 1 ⇒ G = E ⇒ h^{[-1]} | E` is impossible for `deg h^{[-1]} = 2`.
-> **The diff-1 sector is EMPTY at arbitrary degree for `κ ≠ 0`, and also for
-> `κ = 0` with `b₁ ≠ 0`.**
+> **The diff-1 sector is EMPTY at arbitrary degree with no `κ`/`b₁` side
+> condition.** This memo proves the two nonzero branches; Nonpositive-D Exclusion Theorem of
+> [`shifted-cube-completion.md`](shifted-cube-completion.md) supplies the remaining
+> `κ=0,b₁=0` branch.
 >
 > **diff-2 — RESTORATION IS REFUTED.** Explicit exact solution of `Q₄ = Q₃ = 0`
 > at **symbolic `(r, κ)`**:
@@ -45,10 +47,13 @@ The one-line summary:
 > dead — a different mechanism is required.** diff-2 remains open at arbitrary
 > degree, with bounded emptiness at cap `d ≤ 3` (committed) and `d = 4` (HEAVY).
 
-Exact certificate: [`verify_band3_sectors.py`](verify_band3_sectors.py) —
-**117 checks, all passing, ~43 s default run** (3 `HEAVY` skips, all listed); heavier legs behind `HEAVY=1`.
-Every load-bearing upstream fact (the crossed-product ladder engine
-`Q_m = [D,X]_m`, `Q₀ = (T−1)G`, `G(0)=0` under membership, the `Q₅` wall, the
+Exact certificate: [`verify_band3_sectors.py`](verify_band3_sectors.py) — the current
+no-`msolve` run recorded **145 passed, 0 failed, 3 skipped in 87.0 s**; an independent
+`python -O` rerun recorded the same status in **90.1 s**. The skipped groups were the `HEAVY` cap-`d=4` leg, all
+load-bearing `msolve`/live-parser legs, and the Task C `msolve` probe. Historical
+solver-backed results below were not rerun in this environment. Every load-bearing upstream
+fact (the crossed-product ladder engine `Q_m = [D,X]_m`, `Q₀ = (T−1)G`, `G(0)=0` under
+membership, the `Q₅` wall, the
 general `Q₄`/`Q₃` identities, `(T^n−1)` surjectivity) is **re-derived in file**,
 not cited.
 
@@ -232,9 +237,10 @@ the coprimality it needs: `gcd(h, h^{[2]}) = gcd(h, h^{[3]}) = 1` (only
 > **Theorem (diff-1 closure, ARBITRARY DEGREE).** There is no genuine pair
 > `[D,X] = 1` with `a₃ = h h^{[1]}h^{[2]}`, `h = (E-r)(E-r-1)`, `b₃ = 0`,
 > `b₂ = κ h h^{[1]}` with `κ ≠ 0`, membership-valid tail and `Q₀ = 1`.
-> **The diff-1 broken class is closed** — *for `κ ≠ 0`, and (§4.1) for `κ = 0` with
-> `b₁ ≠ 0`. The sub-branch `κ = 0` **and** `b₁ = 0` remains open, and is inherited and
-> `h`-independent: it affects the cube-separated classes equally (§4.1).*
+> **The diff-1 broken class is closed at arbitrary degree with no side condition.**
+> Sections 3–4 close `κ ≠ 0`, §4.1 closes `κ=0,b₁≠0`, and Nonpositive-D Exclusion Theorem of
+> [`shifted-cube-completion.md`](shifted-cube-completion.md) closes the remaining
+> `κ=0,b₁=0` branch independently of `h`.
 
 ### 4.1 The `κ = 0` branch, and one inherited gap
 
@@ -247,17 +253,35 @@ the coprimality it needs: `gcd(h, h^{[2]}) = gcd(h, h^{[3]}) = 1` (only
 `V(r+1) = 2a₁(r+1)`, `V(r-1) = −2a₁(r)`, so `h | a₁`. The closure of §4 runs.
 **All degree-free (verifier `§5`).**
 
-> **Named residual, and it is INHERITED, not new.** The sub-branch `κ = 0` **and**
-> `b₁ = 0` is not closed here. In it `Q₃ = a₃(T³−1)b₀` only forces `b₀` constant
-> and puts no condition on `a₂`. This gap is **`h`-independent**: the corpus's
-> cube-separated `κ = 0` chain ([`shifted-power-residuals.md`](shifted-power-residuals.md)
-> §1.2, "`Q₄ ⇒ b₁ = c h`, `Q₃ ⇒ h h^{[1]} | a₂`") silently assumes `c ≠ 0` in the
-> second step. **This memo flags that as a corpus gap; it is not introduced by
-> diff-1 and it is not closed by this memo.**
+> **Historical residual, now closed.** This memo correctly identified that when
+> `κ=0` and `b₁=0`, `Q₃=a₃(T³−1)b₀` only forces `b₀` constant and does not constrain
+> `a₂`; it also correctly located the same silent `c≠0` assumption in the old
+> cube-separated chain. Nonpositive-D Exclusion Theorem of
+> [`shifted-cube-completion.md`](shifted-cube-completion.md) bypasses that rung:
+> `κ=0,b₁=0` gives `band D≤0`, which is impossible for a membership-valid Weyl pair
+> with `band X=3`. Thus this inherited, `h`-independent hole is closed at arbitrary
+> degree in every shifted-cube class.
 
 ---
 
-## 5. diff-2 — restoration is REFUTED (explicit exact witness)
+### 4.2 The symbolic `Q₂` congruence on `κ=0`, `b₁=ch`, `c≠0`
+
+After `b₁=ch` and the restored shape `a₂=h h^{[1]}g`, direct construction of the
+crossed-product rung gives
+
+```text
+V = h^{[1]}a₁ - h a₁^{[1]},
+Q₂ - cV ∈ (h h^{[1]}).
+```
+
+The verifier constructs `Q₂` symbolically and divides the difference exactly; this is not a
+node sample. It records the congruence needed by the `κ=0,b₁≠0` closure. The complementary
+`c=0`, equivalently `b₁=0`, branch is closed independently by Nonpositive-D Exclusion Theorem of
+[`shifted-cube-completion.md`](shifted-cube-completion.md).
+
+---
+
+## 5. diff-2 — restoration is REFUTED (explicit exact `(Q₄,Q₃)`-locus witness)
 
 On the `Q₄` locus, `a₂(r) = a₂(r+1) = 0`, `b₁(r) = b₁(r+2) = κ a₂(r-1)/3`, and
 `a₂(r+2) = a₂(r-1)` (the tie). Then `Q₃(r) ≡ 0` identically, and the *only*
@@ -286,11 +310,14 @@ two classes are separated by the mathematics, not by the setup.
 > The scaled family `(λ a₂, λ b₁, λ² a₁, 0)` solves `Q₄ = Q₃ = 0` for every `λ`, so
 > this is a one-parameter family, not an isolated accident.
 
-> **Corollary (refutation).** For diff-2 the cascade `Q₄ ∧ Q₃` forces **exactly**
-> the degraded `(E-r)(E-r-1) | a₂` of `broken-separation.md` §2.2 and nothing
-> more. The clean `h h^{[1]} | a₂` is **not** restored, and no proper factor
-> beyond `(E-r)(E-r-1)` is forced either. **The clean-divisibility route to
-> diff-2 is closed off; a different mechanism is required.**
+> **Corollary (refutation, with exact scope).** For diff-2, the displayed
+> `(Q₄,Q₃)`-locus family proves that the cascade does **not** restore the clean
+> divisibility `h h^{[1]} | a₂`: every point in the family has `Q₄=Q₃=0`, while
+> `h h^{[1]} ∤ a₂`. The witness does not prove that the degraded
+> `(E-r)(E-r-1) | a₂` is the strongest universally forced divisor, nor does it
+> exclude every possible intermediate factor. It is **not** a genuine polynomial-tail
+> or Weyl-pair point; in general its `Q₂` is nonzero. **Only the clean-divisibility
+> restoration route is refuted; a different mechanism is required.**
 
 ### 5.2 The surviving family, and why it is a genuine wall
 
@@ -331,15 +358,28 @@ factorisation (`h = 1 ⇒ h^{[-1]} = 1`, `G = M`); the bottom proportionality
 `Q₋₆ ⇒ b₋₃ = μ₃a₋₃`; the inhomogeneous `μ₃`-source in `Q₋₅`; and the Lemma-P
 moment slope `G(1) = ∑_i(a_i(0)b_{-i}(i) − a_{-i}(i)b_i(0))` with `G(0) = 0`.
 
+There is also an exact scaling normalization over `C̄`. Under
+
+```text
+x ↦ sx,   ∂ ↦ s⁻¹∂,   X ↦ s⁻³X,   D ↦ s³D,
+```
+
+one has `a_k ↦ s^{k-3}a_k`, `b_k ↦ s^{k+3}b_k`, each rung `Q_m ↦ s^mQ_m`, and
+`κ₂ ↦ s⁵κ₂`. Thus `[D,X]=1`, `a₃=1`, the E-degree caps, and negative-band
+falling-factorial membership are preserved. For `κ₂≠0`, choose `s⁵=κ₂⁻¹` to normalize
+`κ₂` to `1` over `C̄`. Such a fifth root need not lie in `Q`, so this is not generally a
+rational normalization.
+
 **Controls, committed:**
 - **`κ₂ = 0` slice nonempty, explicit point.** `U = x + 2∂`, `X = U³ − ∂`,
   `D = U`. The verifier *computes* `[D,X]` in the crossed product and checks it
   equals `1` with `a₃ = 1`, `b₃ = 0`, `b₂ = 0` and genuine membership.
-- **msolve parser validated in-file**, before any load-bearing call: a known
-  **unit** ideal `(x−1, x−2)` must report `[-1]` (empty) and a known **feasible**
-  ideal `(x²−2, y−x)` must report nonempty. Both trap guards are **unit-tested**
-  (a body carrying `2*x^2/3` and a body carrying `**` are each rejected; a clean
-  integer body passes) — no check in this file is true by construction.
+- **Strict complete-record msolve parsing.** A result is accepted only when one complete
+  balanced bracket record consumes the output (apart from the documented suffix); no prefix
+  acceptance is allowed. Deterministic regressions reject `[-1]garbage`,
+  `[-1]\nSECOND_RECORD`, `[totally malformed`, and `[]garbage`. When msolve is available,
+  live known-unit and known-feasible ideals validate the parser before load-bearing calls.
+  Integer-body guards still reject rational literals and Python `**` syntax.
 
 **Engine finding (recorded for the corpus, and it corrects the previous
 diagnosis).** SymPy's Gröbner engine does **not** finish the A\*-band3 cap-`d = 1`
@@ -351,60 +391,52 @@ rational-coefficient misparsing — trap #2 is real and is guarded here, but it 
 not what made `d = 3` unreachable. Every A\*-band3 emptiness leg in this verifier
 is msolve-only.
 
-**Results (run of record):**
+**Historical msolve run results (not reproduced by the current no-msolve run):**
 
 | leg (cap `d`, `κ₂ = 1`, integer system) | engine / tier | result |
 |---|---|---|
-| `d = 1` emptiness over `ℚ` | msolve char-0, **committed default** (0.1 s) | `[-1]` = **EMPTY over `C̄`** |
-| `d = 1` `κ₂ = 0` slice | msolve char-0, committed (0.3 s) | `[1,22,-1,[]]` = **NONEMPTY** (positive-dimensional) |
-| `d = 1` unit ideal mod `p = 2³⁰+3` | msolve `-g`, committed (0.1 s) | `[1]` — **corroboration only** |
+| `d = 1` emptiness over `ℚ` | historical characteristic-zero msolve run (0.1 s), not reproduced currently | `[-1]` = **EMPTY over `C̄`** |
+| `d = 1` `κ₂ = 0` slice | historical characteristic-zero msolve run (0.3 s), not reproduced currently | `[1,22,-1,[]]` = **NONEMPTY** (positive-dimensional) |
+| `d = 1` unit ideal mod `p = 2³⁰+3` | historical msolve `-g` run (0.1 s), not reproduced currently | `[1]` — **corroboration only** |
 | `d = 1` positive cascade alone | explicit point, instant | `a₂ = 5`, `b₁ = 7` const ⇒ **NONEMPTY** with `κ₂ = 1` |
 | `d = 1` drop `Q₀ = 1` | msolve char-0, `HEAVY=1`, 1200 s cap | slow (positive-dimensional); redundant with the two controls above |
 | `d = 2` (branch `a₋₃ = 0` and full) | msolve char-0, `HEAVY=1`, 3000 s cap | **not completed in this session** (>150 s probe; the corpus records ≈35 min) |
-| **`d = 3`** (branch `a₋₃ = 0` and full) | msolve char-0, `HEAVY=1`, 3000 s cap | **NOT ACHIEVED** — the leg is implemented and gated, and prints SKIP if it times out |
+| **`d = 3`** (branch `a₋₃ = 0` and full) | msolve char-0, `HEAVY=1`, 3000 s cap | **NOT ACHIEVED** — the leg is implemented and gated; timeout is an optional SKIP normally and a failure with `--require-msolve` |
 
-> **Honest statement of Task B.** The `d = 3` target is **not** met. What this
-> memo adds over [`astar-band3.md`](astar-band3.md) is: (i) the `d = 1` char-0
-> `ℚ` emptiness is now a **committed default-run** certificate rather than an
-> "additional/manual" computation; (ii) the `κ₂ = 0` nonemptiness at the *same*
-> cap and the positive-cascade nonemptiness are committed **controls**, so the
-> `d = 1` exclusion is a genuine separation and not a broken encoding; (iii) the
-> msolve parser is **validated in-file** (known unit ⇒ `[-1]`, known feasible ⇒
-> nonempty) and both traps are **unit-tested**; (iv) the branch split
-> (`a₋₃ = 0` / full) is implemented for `d = 2, 3`; (v) the real obstacle is
-> named — engine, not encoding.
+> **Honest statement of Task B.** The `d = 3` target is **not** met. Historical
+> characteristic-zero msolve runs established the cap-`d=1` statements above; finite-field
+> output is corroboration only and is not promoted to a characteristic-zero conclusion.
+> The newer verifier conditionally reruns every solver leg when msolve is available, reports
+> the resolved executable path and version/identity where available, and supports
+> `--require-msolve`. Without that flag, unavailable or unsuccessful invoked solver legs are
+> explicit optional SKIPs. With it, every solver leg actually invoked fails closed on timeout,
+> nonzero exit, missing output, or malformed/unrecognized output; HEAVY-only legs are invoked,
+> and therefore required, only when `HEAVY=1`. In the current environment msolve was absent,
+> so parser live-validation and all msolve-dependent mathematical legs were explicitly
+> `NOT RERUN/SKIPPED`; only the local strict-parser regressions and non-msolve controls ran.
 
 The `F_p` row is **corroboration only**. Unit mod `p` does *not* imply unit over
 `ℚ` — `(p x − 1)` is a counterexample — and the verifier says so at the check.
 
-## 7. TASK C — the slope-forcing probe: the route is DEAD at `d = 1`
+## 7. TASK C — formal constant-top A*-band3, `κ₂=1`, cap `d=1`
 
-The exact W2 analogue for the constant top: is the Lemma-P moment slope `G(1)`
-forced to `0` by the **tail alone** (all `Q_m = 0` for `m ≠ 0`, membership,
-`κ₂ = 1`, **no** `Q₀` condition)? If it were, `Q₀ = 1` — which needs `G(1) = 1` —
-would be impossible, and that would be a degree-free target.
+In this precisely bounded formal sector, ask whether the Lemma-P moment slope `G(1)` is
+forced to `0` by the tail alone (all `Q_m=0` for `m≠0`, membership, and no `Q₀` condition).
+A historical characteristic-zero msolve Rabinowitsch run returned the nonempty record
+`[1,23,-1,[]]`, so within this cap `G(1)` is not forced to zero. This is a bounded negative,
+not a degree-free conclusion and not a claim about the entire A*-band3 sector.
 
-Radical-correct test (verifier `§9`, committed at `d = 1`, ~34 s): Rabinowitsch on
-`{tail} ∪ {1 − t·G(1)}`. msolve char-0 returns `[1,23,-1,[]]` — a
-**positive-dimensional, hence nonempty** variety.
-
-> **TASK C VERDICT (cap `d = 1`, `κ₂ = 1`): `G(1)` is NOT forced to `0` by the
-> tail alone.** There is a genuine point of the tail with `G(1) ≠ 0`. This is an
-> *existence* statement, so it is radical-correct as a negative: **the slope route
-> is dead at this cap**, and the constant-top obstruction does **not** reduce to
-> the moment slope. `d = 2` is implemented behind `HEAVY=1`.
-
-This is a useful negative: it tells the program not to look for the `(κ₂-closure)`
-kill in the moment-slope covector, which is where the W2 analogy pointed.
+The current no-msolve validation did **not** rerun Task C and reported it as
+`NOT RERUN/SKIPPED`. Use `--require-msolve` in an environment where the solver leg is required.
 
 ## 8. What this changes in the band-3 ledger
 
 | class | status before | **status now** |
 |---|---|---|
-| cube-separated / 2-separated `h` (incl. diff-3, `(E-r)²`) | closed, arbitrary degree | unchanged |
-| **diff-1** `(E-r)(E-r-1)` | degraded `Q₄` forcing; restoration **unresolved**; bounded emptiness only | **CLOSED at arbitrary degree** (`κ ≠ 0`; and `κ = 0, b₁ ≠ 0`). Restoration **forced**, radical certificate exponent 2 |
-| **diff-2** `(E-r)(E-r-2)` | degraded `Q₄` forcing; restoration **unresolved** | restoration **REFUTED** (explicit exact witness at symbolic `r, κ`); forced divisor is **exactly** `(E-r)(E-r-1)`; **open** at arbitrary degree, bounded-empty `d ≤ 4` |
-| `κ = 0 ∧ b₁ = 0` sub-branch | (not previously isolated) | **named open gap, inherited and `h`-independent** — also affects the corpus's cube-separated `κ = 0` chain |
+| cube-separated / 2-separated `h` (incl. diff-3, `(E-r)²`) | closed, arbitrary degree, with an unnoticed `c=0` hole | **closed, arbitrary degree; hole repaired by [`shifted-cube-completion.md`](shifted-cube-completion.md), Nonpositive-D Exclusion Theorem** |
+| **diff-1** `(E-r)(E-r-1)` | degraded `Q₄` forcing; restoration **unresolved**; bounded emptiness only | **CLOSED at arbitrary degree, all three branches**: `κ ≠ 0` by the radical-correct certificate of §4; `κ = 0, b₁ ≠ 0` by direct cascade (§4.1); `κ = 0, b₁ = 0` **by Nonpositive-D Exclusion Theorem** ([`shifted-cube-completion.md`](shifted-cube-completion.md)). The direct residual/congruence route remains silent at `κ = 0, b₁ = 0`, but Nonpositive-D Exclusion Theorem closes it independently. |
+| **diff-2** `(E-r)(E-r-2)` | degraded `Q₄` forcing; restoration **unresolved** | `κ = 0, b₁ = 0` **CLOSED by Nonpositive-D Exclusion Theorem**; `κ = 0, b₁ ≠ 0` closed by direct cascade; surviving **`κ ≠ 0` branch open** at arbitrary degree (clean restoration refuted; bounded-empty `d ≤ 4`) |
+| `κ = 0 ∧ b₁ = 0` sub-branch | (not previously isolated) | **CLOSED at arbitrary degree by Nonpositive-D Exclusion Theorem**, inherited and `h`-independent |
 
 **No Weyl pair and no counterexample is constructed; DC1/JC2 untouched.**
 
@@ -422,8 +454,9 @@ anywhere in §§3–5, data entered as undetermined functions):**
 4. **diff-1 restoration:** the exponent-2 identity `144κ²a₂(r-1)² = …` with
    explicit integer cofactors, plus an independent second certificate and an
    independent Rabinowitsch certificate; hence `h h^{[1]} | a₂` and `h | b₁` (`§4`).
-5. **diff-1 closure at arbitrary degree** for `κ ≠ 0`, and for `κ = 0` with
-   `b₁ ≠ 0`: `h | a₁`, `G = h^{[-1]}M`, `Q₀ = 1 ⇒ h^{[-1]} | E` impossible (`§5`).
+5. **diff-1 closure at arbitrary degree with no side condition**: this memo's
+   `κ≠0` and `κ=0,b₁≠0` branches combine with Nonpositive-D Exclusion Theorem of
+   [`shifted-cube-completion.md`](shifted-cube-completion.md) for `κ=0,b₁=0`.
 6. Constant-top structure: wall, `Q₄` rung, vacuity of the potential
    factorisation, `Q₋₆ ⇒ b₋₃ = μ₃a₋₃`, the `μ₃`-source, the Lemma-P slope (`§8`).
 
@@ -440,24 +473,24 @@ anywhere in §§3–5, data entered as undetermined functions):**
   `κ = 1`, cap `d ≤ 3` committed (exact SymPy over `ℚ`, unit ideal), `d = 4`
   under `HEAVY=1`. Non-vacuity control in-file at `d = 2` (proper ideal without
   `Q₀ = 1`).
-- A\*-band3 `κ₂ ≠ 0`: cap `d = 1` **EMPTY over `ℚ`** (msolve char-0 `[-1]`,
-  committed default, 0.1 s), with committed controls (`κ₂ = 0` slice nonempty at
-  the same cap; positive cascade permits `κ₂ ≠ 0` by an explicit point; explicit
-  tame pair `[D,X] = 1`). `F_p` unit is corroboration only. **`d = 2` and `d = 3`
-  are implemented and `HEAVY`-gated but were NOT completed here.**
-- Task C: `G(1)` is **NOT** forced to `0` by the tail alone at cap `d = 1`
-  (Rabinowitsch system nonempty, committed, 27 s) — the slope route is dead at
-  that cap. `d = 2` `HEAVY`-gated, not run.
+- A\*-band3 `κ₂ ≠ 0`: a **historical characteristic-zero msolve run** found cap `d=1`
+  empty over `C̄` (`[-1]`), with controls (`κ₂=0` slice nonempty; positive cascade permits
+  `κ₂≠0`; explicit tame pair). The finite-field unit is corroboration only. These msolve legs
+  were **not rerun** in the current no-msolve environment; `d=2,3` remain uncompleted.
+- Task C is narrowed to the formal constant-top A\*-band3 sector, `κ₂=1`, cap `d=1`.
+  Historical characteristic-zero msolve found the slope Rabinowitsch system nonempty; the
+  current run skipped this solver-dependent leg. No degree-free conclusion is claimed.
 
 **Open / NOT claimed:**
-1. **diff-2 at arbitrary degree.** The clean-divisibility route is now *refuted*,
-   so the surviving branch `b₁(r+1) = 0` needs a genuinely different argument —
-   the natural next targets are the `Q₂` derivative-node system on that branch and
-   a `G`-factorisation through a divisor other than `h^{[-1]}`.
-2. **`κ = 0 ∧ b₁ = 0`** in *every* shifted-cube class, cube-separated included.
-3. A\*-band3 `(κ₂-closure)` at arbitrary degree; whether `κ₂` survives arbitrary
-   composite tame words; whether every `κ₂ = 0` pair is tame.
-4. Imbalanced coprime walls; general-`k` negative tail; **W2**.
+1. **diff-2 at arbitrary degree with `κ ≠ 0`.** The surviving branch remains a
+   tail problem; Nonpositive-D Exclusion Theorem of [`shifted-cube-completion.md`](shifted-cube-completion.md)
+   closes only `κ = 0, b₁ = 0`, so no full diff-2 closure is claimed.
+2. **A\*-band3 general `κ₂ ≠ 0` at arbitrary degree** remains open. Nonpositive-D Exclusion Theorem
+   closes only the corner `κ₂ = 0, b₁ = 0`; the existing `κ₂ = 0` tame witness
+   has positive band-one `D` (`b₁ ≠ 0`), so no contradiction with Nonpositive-D Exclusion Theorem.
+   Composite tame-word escape; whether every `κ₂ = 0` pair is tame; all open.
+3. Imbalanced coprime walls; general-`k` negative tail with `band D > 0`; **W2**;
+   radical forcing at coupling widths `k = 4, 5`.
 
 No Weyl pair, no counterexample; DC1/JC2 untouched.
 
@@ -467,15 +500,21 @@ No Weyl pair, no counterexample; DC1/JC2 untouched.
 
 ```sh
 uv run --with sympy python research/dc1-program/verify_band3_sectors.py
-HEAVY=1 uv run --with sympy python research/dc1-program/verify_band3_sectors.py
+uv run --with sympy python research/dc1-program/verify_band3_sectors.py --require-msolve
+HEAVY=1 uv run --with sympy python research/dc1-program/verify_band3_sectors.py --require-msolve
 ```
 
-Default run of record: **117 checks executed, 117 passed, 0 failed, 3 skipped,
-wall time 43.0 s** (`HEAVY=0`, `msolve=yes`). `§0` engine; `§1` wall + general rungs; `§2` normalisation; `§3`
-degree-free node table; `§4` diff-1 radical certificate; `§5` diff-1
-arbitrary-degree closure (+ the `κ = 0` branches); `§6` diff-2 witness; `§7`
-bounded emptiness + non-vacuity controls; `§8` Task B (msolve parser validation,
-`κ₂ = 0` control, `HEAVY` emptiness legs); `§9` Task C probe. Runtime is
-environment-dependent. The final banner distinguishes *all checks passed* from
-*all executed checks passed; optional checks skipped*, and lists every skip with
-its reason.
+The ordinary mode treats unavailable or unsuccessful invoked msolve legs as optional SKIPs.
+`--require-msolve` requires every invoked solver leg to complete with a recognized verdict;
+timeout, nonzero exit, missing output, and malformed/unrecognized output fail the run. The
+HEAVY-only legs are invoked, and hence required, only under `HEAVY=1`.
+
+Current recorded no-`msolve` run: **145 passed, 0 failed, 3 skipped, wall time 87.0 s**
+(`HEAVY=0`, `msolve=NOT RERUN/SKIPPED`); an independent `python -O` rerun recorded the
+same status in **90.1 s**. The skipped groups were the HEAVY cap-`d=4` leg, live msolve parser
+validation plus every load-bearing msolve-dependent proof leg, and the formal constant-top
+Task C msolve probe. No solver-backed conclusion was rerun. `§0` engine; `§1` wall +
+general rungs; `§2` normalisations; `§3` degree-free node table; `§4` diff-1 radical certificate; `§5` diff-1 closure and the
+symbolic `Q₂` congruence; `§6` diff-2 `(Q₄,Q₃)`-locus witness; `§7` bounded controls; `§8`
+Task B and strict parser; `§9` bounded Task C. Runtime is environment-dependent. The final
+banner excludes skipped checks from unconditional success statements and lists every skip.

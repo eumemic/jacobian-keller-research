@@ -17,19 +17,25 @@ The one-line summary of each residual:
 > §2.2 (the audit-flagged conditionality of `shifted-power-descent.md` §3), is now
 > **derived in-file** from the ladder rung `Q₃`: with the `Q₄`-forced shapes
 > `a₂ = h h^{[1]} g`, `b₁ = h β` substituted, `Q₃ = 0` with a **polynomial `b₀`**
-> forces `h | a₁` — **exactly, with no slack** — for `κ ≠ 0` (and via `Q₂` for
-> `κ = 0`). The closed-form factorization `G = h^{[-1]} M` therefore holds with
-> **every** divisibility derived; the conditionality is discharged.
+> forces `h | a₁` — **exactly, with no slack** — for `κ ≠ 0`. For `κ=0`, the route is
+> valid only on `b₁=ch` with `c≠0`: direct symbolic construction gives
+> `Q₂-c(h^{[1]}a₁-ha₁^{[1]}) ∈ (h h^{[1]})`. The `c=0` branch, equivalently
+> `b₁=0`, is now closed independently of `h` by Nonpositive-D Exclusion Theorem of
+> [`shifted-cube-completion.md`](shifted-cube-completion.md), since then `band D ≤ 0`.
+> Thus the former hole does not limit the current arbitrary-degree closure.
 >
 > **RESIDUAL 2 (non-cube-separated) — one class CLOSED arbitrary-degree.** The
 > h-forcing needs only **2-separation** `gcd(h,h^{[1]}) = gcd(h,h^{[2]}) = 1`,
 > **not** cube-separation. The `b₁` step needs *no coprimality at all* (a rational
 > `ψ` with `(T³−1)ψ` polynomial is polynomial); `a₂` and `a₁` need only `j = 1,2`.
 > Hence the entire **diff-3 class** (roots differing by exactly `3`, so `2`-separated
-> but not cube-separated) is **forced `h` constant at arbitrary degree** — one of
-> the three residual classes is eliminated. The genuinely broken classes **diff-1**
-> and **diff-2** (the `a₂` divisibility fails) have committed bounded emptiness at
-> cap `D = 2`; cap `D = 3,4` is an optional `HEAVY` `msolve` payload (`κ` free).
+> but not cube-separated) is **forced `h` constant at arbitrary degree**. Subsequent
+> radical-correct work separates the remaining classes: **diff-1 closes at arbitrary
+> degree with no `κ`/`b₁` side condition**, combining the nonzero branches of
+> [`band3-sectors.md`](band3-sectors.md) with Nonpositive-D Exclusion Theorem of
+> [`shifted-cube-completion.md`](shifted-cube-completion.md). **diff-2 restoration is
+> refuted** by an exact `(Q₄,Q₃)`-locus witness; Nonpositive-D Exclusion Theorem closes only its
+> `κ=0,b₁=0` branch, while the surviving `κ≠0` branch remains open at arbitrary degree.
 >
 > **RESIDUAL 3 (constant-h, `κ₂ ≠ 0`) — one-step obstruction only.** No listed
 > gauge-preserving generator removes `κ₂`: `D ↦ D − λX` preserves `b₃ = 0` only for
@@ -43,8 +49,10 @@ The one-line summary of each residual:
 
 Exact certificate:
 [`verify_shifted_power_residuals.py`](verify_shifted_power_residuals.py) — default
-run exact SymPy over QQ (`ALL SHIFTED POWER RESIDUAL CHECKS PASSED`); heavier
-`msolve` corroboration behind `HEAVY=1`. Every load-bearing upstream fact (the
+run exact SymPy over QQ; when optional solver checks are unavailable or HEAVY checks are
+not invoked, its success banner is `ALL EXECUTED SHIFTED POWER RESIDUAL CHECKS PASSED;
+OPTIONAL CHECKS SKIPPED`. Heavier `msolve` corroboration is behind `HEAVY=1`. Every
+load-bearing upstream fact (the
 crossed-product ladder engine `Q_m = [D,X]_m`, `Q₀ = (T−1)G`, the closed-form
 potential, the `Q₄` shapes) is **re-derived in file**, not merely cited.
 
@@ -105,26 +113,26 @@ The verifier machine-checks the forcing as **necessity** at two genuinely
 cube-separated tops — `h = E(2E−1)` (roots `{0, ½}`) and `h = (3E−1)(4E−1)` (roots
 `{⅓, ¼}`): solving `Q₃ = 0` for a *fully generic* `a₁` and *fully generic* `b₀`
 returns a locus on which `h | a₁` holds and the quotient `p` is free and nonzero
-(`§1`). The `κ = 0` branch is handled separately: `b₂ = 0`, `Q₄ ⇒ b₁ = c h`,
-`Q₃ ⇒ h h^{[1]} | a₂`, and then `Q₂ = 0` forces `h | a₁` (re-derived at symbolic
-`h`, `§1`).
+(`§1`). On `κ=0`, write `b₁=ch`. After `Q₃` gives
+`a₂=h h^{[1]}g`, direct symbolic construction gives
+`Q₂-cV ∈ (h h^{[1]})`, where `V=h^{[1]}a₁-ha₁^{[1]}`. Thus `c≠0` forces
+`h|a₁`; the formerly open sub-branch `c=0`, equivalently `b₁=0`, is closed by Nonpositive-D Exclusion Theorem of [`shifted-cube-completion.md`](shifted-cube-completion.md).
 
-### 1.3 The conditionality is discharged
+### 1.3 The conditionality is discharged on the stated nonzero branches
 
 With `h | a₁` **derived**, the three sub-leading divisibilities
-`h h^{[1]} | a₂`, `h | b₁`, `h | a₁` are all forced by the ladder itself
-(`Q₄, Q₃`), so the closed-form central factorization
+`h h^{[1]} | a₂`, `h | b₁`, `h | a₁` are forced by the ladder itself on `κ≠0`,
+and likewise on `κ=0,b₁=ch,c≠0`, so the closed-form central factorization
 
 ```
    G = h^{[-1]} · M,     M(0) = 0   (membership),
 ```
 
-holds with **no imported hypothesis** (`§1`, re-verified at linear `h`). The
-affine kill (`Q₀ = 1 ⇒ G = E ⇒ h^{[-1]} | E ⇒ deg h ≤ 1`, and `deg h = 1` killed by
+holds there with **no imported hypothesis**. The affine kill
+(`Q₀ = 1 ⇒ G = E ⇒ h^{[-1]} | E ⇒ deg h ≤ 1`, and `deg h = 1` killed by
 `M(0) = 0` vs `M = 1/α`) then runs exactly as in
-[`shifted-power-descent.md`](shifted-power-descent.md) §3. **The §3 conditionality
-note is retired: "`Q₀ = 1 ⇒ h` constant (cube-separated)" is now unconditional on
-the ladder.**
+[`shifted-power-descent.md`](shifted-power-descent.md) §3. Thus its conditionality
+is retired for `κ≠0` and for `κ=0,b₁≠0`; the `κ=0,b₁=0` branch is closed independently by Nonpositive-D Exclusion Theorem of [`shifted-cube-completion.md`](shifted-cube-completion.md).
 
 ---
 
@@ -207,8 +215,14 @@ failure (`§2`). Only **bounded** evidence excludes these tops:
   ideal at **cap `D = 3` and cap `D = 4`** for `E(E−1)`, `E(E−2)`, `(E−1)(E−3)`
   (behind `HEAVY=1`; SKIPs cleanly if `msolve` absent).
 
-This is corroboration, **not** an arbitrary-degree exclusion; diff-1/diff-2 remain
-a genuine sub-wall, open at arbitrary degree, now with cap-`D=4` emptiness.
+These cap computations are corroboration, **not** the source of the later
+arbitrary-degree conclusions. Radical-correct analysis closes the nonzero diff-1
+branches, and Nonpositive-D Exclusion Theorem of [`shifted-cube-completion.md`](shifted-cube-completion.md)
+closes `κ=0,b₁=0`; together they close diff-1 at arbitrary degree with no side
+condition. For diff-2, the same theorem newly closes only `κ=0,b₁=0`; an exact
+symbolic `(Q₄,Q₃)`-locus witness refutes clean restoration, and the surviving
+`κ≠0` branch remains open at arbitrary degree. See
+[`band3-sectors.md`](band3-sectors.md).
 
 ---
 
@@ -268,20 +282,24 @@ as follows (in the conditional-framework terms of `band-reduction.md` §9).
 
 **Discharged / newly closed:**
 
-1. **RESIDUAL 1 (h | a₁):** derived in-file from `Q₃` (arbitrary degree, no slack).
-   The propagation `Q₀ = 1 ⇒ h` constant is now **unconditional on the ladder** for
-   `2`-separated `h` — the audit-flagged conditionality of `shifted-power-descent.md`
-   §3 is retired.
-2. **RESIDUAL 2, diff-3 class:** closed at arbitrary degree; the closed
-   shifted-cube class is **`2`-separated `h`**, not merely cube-separated.
+1. **RESIDUAL 1 (h | a₁):** derived at arbitrary degree from `Q₃` for `κ≠0`,
+   and from the symbolic `Q₂-cV` congruence for `κ=0,b₁=ch,c≠0`. The remaining
+   `κ=0,b₁=0` arm has `band D≤0` and is closed, without any `h` hypothesis, by
+   Nonpositive-D Exclusion Theorem of [`shifted-cube-completion.md`](shifted-cube-completion.md).
+2. **RESIDUAL 2, diff-3 class:** closed at arbitrary degree; the formerly silent
+   `c=0` hole in this and every cube-separated/2-separated closure is repaired by
+   the same Nonpositive-D Exclusion Theorem.
+3. **RESIDUAL 2, diff-1:** closed at arbitrary degree with no side condition:
+   radical-correct restoration closes `κ≠0` and `κ=0,b₁≠0`, and Nonpositive-D Exclusion Theorem closes
+   `κ=0,b₁=0`.
 
 **Still needed for full band-3 shifted-power closure (open, precisely delimited):**
 
-3. **RESIDUAL 2, diff-1 & diff-2 classes** (`gcd(h,h^{[1]}) ≠ 1` or
-   `gcd(h,h^{[2]}) ≠ 1`): the `a₂` divisibility genuinely fails and `G = h^{[-1]}M`
-   is unavailable. Bounded emptiness only: cap `D = 2` committed, with cap `D = 3,4`
-   optional under `HEAVY` when `msolve` is available. A new sub-wall, open at arbitrary degree.
-4. **RESIDUAL 3, `κ₂ ≠ 0`:** the direct gauge-reduction move stalls (§3.1), but
+4. **RESIDUAL 2, remaining broken class:** for diff-2, Nonpositive-D Exclusion Theorem closes the
+   `κ=0,b₁=0` arm, but clean restoration is refuted on the surviving `κ≠0`
+   branch; that arbitrary-degree branch remains open. The cap `D=2` committed and
+   cap `D=3,4` optional `HEAVY` emptiness results remain bounded corroboration.
+5. **RESIDUAL 3, `κ₂ ≠ 0`:** the direct gauge-reduction move stalls (§3.1), but
    composite tame-word escape is not excluded. Independently, the exact tail statement is:
 
    > *(κ₂-closure)* There is **no** genuine Weyl pair `[D,X] = 1` with `a₃ = 1`
@@ -310,9 +328,11 @@ counterexample is constructed; DC1/JC2 untouched.**
 stated):**
 - Engine `Q_m = [D,X]_m`, `Q₀ = (T−1)G` (`§0`).
 - **RESIDUAL 1:** the exact three-term `Q₃` identity; the coprimality forcing
-  `h | a₁` (arbitrary degree, `gcd(h,h^{[2]})=1`, `κ ≠ 0`; `κ = 0` via `Q₂`),
-  machine-verified as necessity at two cube-separated tops; the chain closes
-  `G = h^{[-1]}M`, `M(0)=0` with `h|a₁` derived. **No slack.**
+  `h | a₁` (arbitrary degree, `gcd(h,h^{[2]})=1`, `κ ≠ 0`; for `κ=0`, via the
+  symbolic `Q₂-cV` congruence on `b₁=ch`, `c≠0`), machine-verified as necessity at
+  two cube-separated tops; the chain closes `G = h^{[-1]}M`, `M(0)=0` with
+  `h|a₁` derived. The complementary `κ=0,b₁=0` arm is closed by Nonpositive-D Exclusion Theorem of
+  [`shifted-cube-completion.md`](shifted-cube-completion.md).
 - **RESIDUAL 2:** the denominator-killing lemma (`h | b₁` needs no coprimality);
   the separation table (`a₂`: `j=1,2`; `a₁`: `j=2`; `b₁`: none); the **diff-3
   closure** at arbitrary degree (`2`-separated `h`), machine-verified at three
@@ -336,9 +356,19 @@ stated):**
   `2`-separation. The cube-separation hypothesis was not tight.
 
 **Open / NOT claimed:**
-1. diff-1, diff-2 non-separated tops at arbitrary degree (bounded evidence only).
-2. `κ₂ ≠ 0` constant-h: composite tame-word escape and the A\*-band3 negative-tail closure.
-3. Imbalanced coprime walls (`q ∤ k`, `q ≥ 2`); general-`k` negative tail; **W2**.
+1. The diff-2 `κ ≠ 0` surviving branch at arbitrary degree; clean restoration is
+   refuted, but only on the positive-cascade locus rather than by a full-tail point.
+   The `κ = 0, b₁ = 0` arm is closed by Nonpositive-D Exclusion Theorem of
+   [`shifted-cube-completion.md`](shifted-cube-completion.md) (the direct
+   residual/congruence route here stays silent at `κ = 0, b₁ = 0`, but Nonpositive-D Exclusion Theorem
+   closes it independently); no full diff-2 closure is claimed.
+2. **A\*-band3 general `κ₂ ≠ 0`** at arbitrary degree. Nonpositive-D Exclusion Theorem closes only
+   the corner `κ₂ = 0, b₁ = 0`; the existing `κ₂ = 0` tame witness in
+   [`astar-band3.md`](astar-band3.md) §6 has positive band-one `D` (`b₁ ≠ 0`),
+   so no contradiction with Nonpositive-D Exclusion Theorem. Composite tame-word escape and the
+   A\*-band3 negative-tail closure remain open.
+3. Imbalanced coprime walls (`q ∤ k`, `q ≥ 2`); general-`k` negative tail with
+   `band D > 0`; **W2**; radical forcing at coupling widths `k = 4, 5`.
 No Weyl pair, no counterexample; DC1/JC2 untouched.
 
 ---
@@ -350,9 +380,13 @@ uv run --with sympy python research/dc1-program/verify_shifted_power_residuals.p
 HEAVY=1 uv run --with sympy python research/dc1-program/verify_shifted_power_residuals.py
 ```
 
-Exact SymPy over QQ: `§0` engine; `§1` RESIDUAL 1 (`Q₃` identity, `h|a₁` forcing +
-necessity, `κ=0` via `Q₂`, chain closes); `§2` RESIDUAL 2 (denominator lemma,
+Exact SymPy over QQ: `§0` engine; `§1` RESIDUAL 1 (`Q₃` identity and `h|a₁`
+forcing/necessity in its original scope); `§2` RESIDUAL 2 (denominator lemma,
 diff-3 closure ×3 tops, diff-1/diff-2 slack + cap-`D=2` emptiness); `§3`
-RESIDUAL 3 (gauge obstruction, positive-cascade permits `κ₂≠0`). Behind `HEAVY=1`,
-`msolve` corroboration at cap `D = 3,4` for diff-1/diff-2/diff-2b. A successful run
-ends `ALL SHIFTED POWER RESIDUAL CHECKS PASSED`.
+RESIDUAL 3 (gauge obstruction, positive-cascade permits `κ₂≠0`). The newer
+`verify_band3_sectors.py` checks the `κ=0,b₁=ch,c≠0` symbolic `Q₂-cV`
+congruence and radical-correct sector updates. Historical `msolve` transcripts record
+cap `D = 3,4` corroboration for diff-1/diff-2/diff-2b; those computations are rerun in
+this checkout only when `HEAVY=1` and `msolve` is available. A successful run with optional
+omissions ends `ALL EXECUTED SHIFTED POWER RESIDUAL CHECKS PASSED; OPTIONAL CHECKS SKIPPED`;
+a no-skip run ends `ALL SHIFTED POWER RESIDUAL CHECKS PASSED`.

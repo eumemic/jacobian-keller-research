@@ -6,13 +6,12 @@ INDEPENDENTLY DERIVED - EXACT ALGEBRA / MACHINE-CHECKED IDENTITIES - NOT PEER RE
 
 MISSION CONTEXT.  The W2 endgame gap (residual-identity.md / slope-forcing-degree-free.md):
 at every positive-data degree d, does the depth-3 tail Q_-1=Q_-2=Q_-3=0 force the moment-
-slope residual W=0 on the W2 cascade (R(1)=a_2(0)*W)?  The obstruction to a degree-free
-proof is the covector on the ALGEBRAIC (a_2,b_1,...) necklace: its nodes are the roots of
-the cascade-solved data, not integers.  This file builds and machine-checks the tool the
-mission asked for -- the algebraic-node extension of the adjoint criterion Thm A'
-(lambda-general-k.md) and the trace-form descent to F(datum) -- and derives the exact two-
-block structure of the negative tail; then it reads the d=3 certificate through that lens
-and reports HONESTLY what a fixed trace-form recipe does and does not deliver.
+slope residual W=0 on the W2 cascade (R(1)=a_2(0)*W)?  This file builds and machine-checks
+the algebraic-node extension of the adjoint criterion Thm A' (lambda-general-k.md), the
+trace-form descent to F(datum), and the exact two-block structure of the negative tail; then
+it reads the d=3 certificate through that lens.  Later work in coupling-covector.md and
+verify_coupling_covector.py sharpens branch-B bookkeeping to a fixed integer-node
+staircase/window.  That staircase is not proved by this older verifier.
 
 W2 datum, gauge b_3=0, quantum band-3 conventions:
   Q_m = sum_(k+l=m)[ b_l^[k] a_k - a_k^[l] b_l ],   f^[n](E)=f(E+n),
@@ -21,17 +20,20 @@ W2 datum, gauge b_3=0, quantum band-3 conventions:
 
 WHAT THIS FILE ESTABLISHES
 ==========================
-PROVED (arbitrary degree / node-free, machine-checked identities):
-  * S0 engine Q_m=[D,X]_m, Q_0=(T-1)G;  S1 slope gate, both-ends Lemma-P, factorization
-    R(1)=a_2(0)*W (re-derived, degree-free).
+PROVED (arbitrary degree / node-free, machine-checked identities unless separately retiered):
+  * S0 engine Q_m=[D,X]_m, Q_0=(T-1)G; S1 slope gate and factorization
+    R(1)=a_2(0)*W (re-derived).
+  * S1 both-ends Lemma-P has fixed-d=4 in-file verification only. Its degree-free validity
+    comes from the separate structural Weyl-membership vanishing argument, not a degree-free
+    machine proof in this file.
   * S2 ALGEBRAIC-NODE THM A' (the tool):
       (i)  moving-sum adjoint identity  lambda(S_n g)=(S_n^* lambda)(g)  for SYMBOLIC nodes
            rho (integer OR algebraic) -- the criterion never needed integer nodes;
-      (ii) TRACE-FORM DESCENT: for a squarefree datum polynomial p (symbolic coeffs) and any
-           weight/test h, sum_{p(rho)=0} h(rho) = Tr_{F[E]/(p)}(h) is rational in the
-           arbitrary coefficients of p,h, and polynomial after monic normalization (companion
-           trace), computed with NO root named -- so a Galois-
-           symmetric node-functional lam=sum_{p(rho)=0} g(rho) ev_rho descends to F(datum);
+      (ii) TRACE-FORM CONSTRUCTION: at the stated bounded degree, the companion trace is
+           symbolic in the arbitrary coefficients of p,h and polynomial after monic
+           normalization, with NO root named. Equality to the root sum is the standard trace
+           theorem; this file supplies bounded numerical corroboration on random squarefree
+           cubic specializations, not a symbolic proof of that equality;
       (iii) trace forms are CLOSED under S_n^* (shift-window), so the algebraic-necklace
            support conditions are themselves trace-form/resultant-computable degree-freely.
   * S3 THE TWO BLOCKS: Q_-1,Q_-2,Q_-3 filler-linear parts are the explicit TWO-TERM operators
@@ -55,14 +57,14 @@ BOUNDED (d=3, exact; stated scope):
     filler columns exactly. The W-forcing covector's support meets the algebraic necklace (not the membership windows
     alone) -- the fixed part is silent, as at Q_0 (joint-covector.md).
 
-OPEN / NOT CLAIMED (the prize, obstruction LOCALIZED -- lead 5):
-  * A FIXED FINITE trace-form recipe producing a covector whose pairing is a unit multiple of
-    W at EVERY d.  The two-term coupling across the varying tops (a_2,a_1,a_0)/(b_1,b_0,b_-1)
-    does not reduce to one fixed node-selection+weight rule in these tests; that coupling is
-    the exact residual gap.  S6 verifies the linear-route data (filler map full column rank;
-    sampled W-forcing obstruction) at d=4 mod p, providing bounded supporting evidence
-    only, not a symbolic covector or degree-free recipe. The arbitrary-d W-forcing identity
-    remains OPEN.
+OPEN / NOT CLAIMED (current status; see coupling-covector.md and verify_coupling_covector.py):
+  * In W2 branch B, later bookkeeping collapses to a fixed integer-node staircase/window;
+    this older verifier does NOT prove that collapse.  At d=3 the relaxed k=3 window does not
+    force W.  For k=4,5, tests refute only a single maximal-minor/unit-multiple certificate;
+    radical window forcing is untested.  Quotient evaluation is surjective for k<=d+2, so
+    the tested windows do not probe polynomiality.  No fixed-width or degree-uniform
+    replacement for the degree-dependent interpolation relations is known.  S6 supplies
+    only bounded d=4 sampled linear-route evidence.  Global/unrestricted W2 remains OPEN.
 
 Run:  uv run --with sympy python research/dc1-program/verify_algebraic_covector.py
       HEAVY=1 ... (adds d=4 linear-route mod-p leg + depth-3 msolve kill + larger trace-form)
@@ -150,6 +152,28 @@ def sy_unit(eqs, vs, modulus=None):
     return list(G.exprs) == [sp.Integer(1)]
 
 
+def _strip_msolve_record(text):
+    lines = [line.strip() for line in text.splitlines()
+             if line.strip() and not line.lstrip().startswith("#")]
+    return "".join(lines).replace(" ", "")
+
+
+def _parse_msolve_gb_unit(text):
+    """Parse one exact reduced-GB record from msolve's -o interface."""
+    record = _strip_msolve_record(text)
+    if record == "[1]":
+        return True
+    raise RuntimeError(f"malformed or non-unit msolve reduced-GB record: {record[:200]!r}")
+
+
+def _rejects_msolve_gb_unit(text):
+    try:
+        _parse_msolve_gb_unit(text)
+    except RuntimeError:
+        return True
+    return False
+
+
 def msolve_unit(eqs, vs, char, tmo=200):
     xs = sp.symbols(f"z0:{len(vs)}")
     sub = dict(zip(vs, xs))
@@ -168,11 +192,14 @@ def msolve_unit(eqs, vs, char, tmo=200):
             raise RuntimeError(f"msolve produced no output file; stderr: {rr.stderr.strip()}")
         with open(out, encoding="utf-8") as f:
             r = f.read()
-    lines = [line for line in r.splitlines() if not line.lstrip().startswith("#")]
-    parsed = "".join(lines).replace(" ", "")
-    if not parsed.startswith("["):
-        raise RuntimeError(f"malformed msolve output: {parsed[:200]!r}")
-    return parsed.startswith("[1]:") or parsed == "[1]"
+    return _parse_msolve_gb_unit(r)
+
+
+check(_parse_msolve_gb_unit('[1]') is True
+      and all(_rejects_msolve_gb_unit(s) for s in
+              ('[garbage]', '[[nonsense]]', '[1]:garbage', 'garbage[1]:',
+               '[-1]garbage', '[1,23,-1,[garbage]]')),
+      "msolve reduced-GB parser accepts exact [1] and rejects malformed records")
 
 
 MSFAIL = (subprocess.TimeoutExpired,)
@@ -219,7 +246,7 @@ check_zero(q_m(Ag, Bg, 0) - (sh(potential(Ag, Bg), 1) - potential(Ag, Bg)),
            "Q_0 = (T-1)G telescoping identity")
 
 # =====================================================================
-print("\n--- S1. slope gate; both-ends Lemma-P; FACTORIZATION R(1)=a_2(0)*W (re-derived) ---", flush=True)
+print("\n--- S1. slope gate; both-ends Lemma-P (fixed-d=4 in-file evidence; degree-free by separate structural argument); FACTORIZATION ---", flush=True)
 # =====================================================================
 check(sp.rem(E - sp.expand(E + D * (E**2 + 7)), D, E) == 0,
       "slope gate: D | (E-R) when R(1)=1, R(-1)=-1 (R(0)=0)")
@@ -240,10 +267,12 @@ check_zero(Gw.subs(E, 0), "membership: G(0)=0  (=> R(1)=Q_0(0)=G(1))")
 G1 = sp.expand(Aw[1].subs(E, 0) * Bw[-1].subs(E, 1) + Aw[2].subs(E, 0) * Bw[-2].subs(E, 2)
                - Aw[-1].subs(E, 1) * Bw[1].subs(E, 0))
 check_zero(q_m(Aw, Bw, 0).subs(E, 0) - G1,
-           "both-ends Lemma-P: R(1)=a1(0)b-1(1)+a2(0)b-2(2)-a-1(1)b1(0)")
+           "both-ends Lemma-P at fixed d=4: R(1)=a1(0)b-1(1)+a2(0)b-2(2)-a-1(1)b1(0)"
+           " (bounded in-file verification; degree-free by separate structural membership argument)")
 fillsyms = set(Aw[-2].free_symbols) | set(Bw[-3].free_symbols) | {mu3s}
 check(not (sp.expand(q_m(Aw, Bw, 0).subs(E, 0)).free_symbols & fillsyms),
-      "R(1)=Q_0(0) INDEPENDENT of the fillers a_-2, b_-3")
+      "fixed-d=4 Lemma-P check: R(1)=Q_0(0) INDEPENDENT of fillers a_-2,b_-3"
+      " (bounded in-file evidence)")
 # factorization backbone (degree-free), re-derived symbolically:
 b1_0, a1_0, a2_0s, a2_1s, b1_2s = sp.symbols("b1_0 a1_0 a2_0 a2_1 b1_2")
 sol_b1_0 = R(2, 3) * a2_0s
@@ -400,8 +429,10 @@ pc = sp.symbols("pc0:4"); hc = sp.symbols("hc0:3")
 psym = sum(pc[i] * E**i for i in range(4)); hsym = sum(hc[i] * E**i for i in range(3))
 tf = companion_trace(psym, hsym)
 check(tf.free_symbols <= set(pc) | set(hc),
-      "trace form Tr_{F[E]/(p)}(h) is a function of coeffs(p),coeffs(h) ONLY -- no root named (degree-free)")
-# numeric confirmation across random squarefree specializations: trace form == actual root sum
+      "symbolic companion-trace construction at deg p=3, deg h=2 uses coeffs(p),coeffs(h) ONLY"
+      " -- no root named (bounded stated degree)")
+# Equality to the root sum is the standard trace theorem. This loop provides only bounded
+# numerical corroboration across random squarefree cubic specializations.
 _rt = random.Random(1)
 ntf = 0
 for _ in range(4):
@@ -412,7 +443,8 @@ for _ in range(4):
         continue
     rootsum = sp.nsimplify(sum(hsym.subs(sub).subs(E, r) for r in sp.Poly(pp, E).all_roots()))
     check_zero(sp.simplify(tf.subs(sub) - rootsum),
-               "trace form == sum_{p(rho)=0} h(rho) (random squarefree p,h; no root named)")
+               "bounded numerical corroboration of standard trace theorem: companion trace == root sum"
+               " (random squarefree cubic p, quadratic h)")
     ntf += 1
 if ntf == 0:
     skip("trace-form numeric confirmation: no squarefree sample drawn")
@@ -656,23 +688,32 @@ else:
     skip("S6 d=3 depth-3 msolve kill is HEAVY-only; S5 sympy full-tail control is the committed kill")
 
 print("\n" + "=" * 74, flush=True)
-print("PROVED (degree-free / node-free, machine-checked):", flush=True)
-print("  * engine; slope gate; both-ends Lemma-P; R(1)=a_2(0)*W factorization.", flush=True)
-print("  * ALGEBRAIC-NODE THM A': moving-sum adjoint for SYMBOLIC nodes; TRACE-FORM descent", flush=True)
-print("    (companion trace = root sum, no root named; closed under S_n^*) -- the tool the", flush=True)
-print("    (a_2,b_1) algebraic necklace needs.", flush=True)
+print("PROVED (degree-free / node-free, machine-checked unless separately retiered):", flush=True)
+print("  * engine; slope gate; R(1)=a_2(0)*W factorization.", flush=True)
+print("BOUNDED IN-FILE / DEGREE-FREE BY SEPARATE STRUCTURE:", flush=True)
+print("  * both-ends Lemma-P is verified here only at fixed d=4; degree-free validity comes", flush=True)
+print("    from the separate structural Weyl-membership vanishing argument, not this machine run.", flush=True)
+print("  * companion-trace construction is symbolic at deg p=3, deg h=2 with no root named;", flush=True)
+print("    equality to the root sum is the standard trace theorem, numerically corroborated here", flush=True)
+print("    only on random squarefree cubic specializations; trace forms close under S_n^*.", flush=True)
 print("  * TWO-BLOCK STRUCTURE: explicit two-term operators, level incidence; the negative-tail", flush=True)
 print("    necklace is ENTIRELY algebraic (no a_3,b_2); membership-window covectors annihilate;", flush=True)
-print("    no single-node kill on the tested generic a_2 b-block rung (coupling obstruction).", flush=True)
+print("    no single-node kill on the tested generic a_2 b-block rung; its terms require coupling.", flush=True)
+print("    Later staircase bookkeeping is established only in the cross-referenced verifier.", flush=True)
 print("  * BLOCK ADJOINT CRITERION: symbolic-node coefficient-of-filler-value vanishing =>", flush=True)
 print("    trace-form support conditions.", flush=True)
 print("BOUNDED (d=3, exact): cokernel dim 16; W-kill reproduced (am1_3 in sqrt(cascade+tail),", flush=True)
 print("  sympy QQ+prime); a_2(0) NOT forced (witness); specialized cokernel vectors", flush=True)
 print("  annihilate specialized filler columns exactly;", flush=True)
 print("  W enters the consistency conditions; Q_-1 alone does not force W (depth-3 coupling needed).", flush=True)
-print("OPEN (obstruction LOCALIZED): a FIXED finite trace-form recipe giving unit*W at every d --", flush=True)
-print("  blocked by the two-term coupling across the varying (a_2,a_1,a_0)/(b_1,b_0,b_-1) tops.", flush=True)
-print("  d=4 (HEAVY): sampled rank/solvability evidence only; no symbolic covector or degree-free recipe.", flush=True)
+print("OPEN (current status; see coupling-covector.md / verify_coupling_covector.py):", flush=True)
+print("  branch-B bookkeeping later collapses to a fixed integer-node staircase/window;", flush=True)
+print("  this older verifier does NOT prove that staircase.  At d=3, relaxed k=3 does not", flush=True)
+print("  force W; k=4,5 refute only a single maximal-minor/unit-multiple certificate, while", flush=True)
+print("  radical window forcing is untested.  For k<=d+2 quotient evaluation is surjective,", flush=True)
+print("  so tested windows do not probe polynomiality.  No fixed-width or degree-uniform", flush=True)
+print("  replacement for degree-dependent interpolation relations is known.  Global/unrestricted", flush=True)
+print("  W2 remains open; d=4 (HEAVY) here is sampled linear-route evidence only.", flush=True)
 print("=" * 74, flush=True)
 print(f"\n(total {time.time() - _T0:.1f}s; {_NP} checks passed, {_NSKIP} skipped)", flush=True)
 if _NSKIP:

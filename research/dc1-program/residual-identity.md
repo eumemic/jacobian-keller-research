@@ -25,7 +25,8 @@ reduces the lemma to: *the tail forces `a_2(0)·W = 0`*. This memo does four thi
 3. **The explicit `d=3` consistency-covector certificate** (with the `8×8` determinant
    saturation the naive elimination drops).
 4. **The `d=4` linear-elimination route** — the computation the raw `d=4` Gröbner basis
-   OOMs on — reaching a strong sampling verdict that `W` is forced at `d=4` too.
+   OOMs on — yielding bounded sampling support: no `W≠0` tail-solvable counterexample was
+   found among the sampled points.
 
 W2 datum, gauge `b_3=0`, quantum band-3 conventions
 (`Q_m=sum_(k+l=m)[b_l^[k]a_k - a_k^[l]b_l]`, `f^[n](E)=f(E+n)`,
@@ -156,16 +157,18 @@ still. The **linear** route removes the fillers first:
 
 - The depth-3 tail is `30` rows **linear** in the `10` fillers, `M` of **full column rank
   `10`** (§1 at `d=4`) — elimination is linear algebra.
-- **`W` forced (strong sampling evidence).** Among many random cascade points with `W≠0`,
-  the depth-3 tail is **never solvable** (`rank[M|N] > rank[M]`, tested over `GF(2^31-1)`
-  with `QQ` re-confirmation) — so tail-solvability forces `W=0` with probability one. This
-  is the `d=4` analogue of §2 and the `d=4` **verdict**.
+- **Bounded sampling support for `W`-forcing.** Among the sampled random cascade points with
+  `W≠0`, no depth-3 tail-solvable counterexample occurred (`rank[M|N] > rank[M]`, tested over
+  `GF(2^31-1)` with `QQ` re-confirmation for candidate solvable points). This finite sample is
+  supporting evidence only: it is not an exact theorem, a proof of `W`-forcing, or a
+  probability-one statement at `d=4`.
 - The consistency minors are **computable fraction-free mod `p`** (`DomainMatrix` over
   `GF(p)[free]`), degree `17`. The det-saturated Nullstellensatz GB is degree `~18` and is
   **not confirmed in budget** — reported as such, not claimed.
 
-So the linearity delivers a decisive `d=4` W-forcing verdict where the raw GB could not,
-while the exact `d=4` Nullstellensatz certificate remains out of budget.
+Thus linearity makes bounded `d=4` sampling feasible where the raw GB was not, but the sample
+only supports the W-forcing conjecture. It does not prove it; the exact `d=4` Nullstellensatz
+certificate remains out of budget.
 
 ## 5. The mirror and branch A
 
@@ -211,9 +214,10 @@ while the exact `d=4` Nullstellensatz certificate remains out of budget.
 - **`d=3` consistency-covector certificate:** explicit covectors `mu_j` (`mu_j·M=0`
   identically), the det-saturated conditions `G_j` (rank minors, degree `15–16`), and
   `a_2(0)·W ∈ sqrt(<G_j>:det_I^∞)` (msolve `^`, HEAVY) (`§S5`).
-- **`d=4` (HEAVY):** depth-3 tail linear, `M` full column rank `10`; `W` forced by sampling
-  (no `W≠0` tail-solvable witness); consistency minors computable fraction-free mod `p`
-  (`§S7`).
+- **`d=4` (HEAVY):** depth-3 tail linear, with `M` full column rank `10` at the tested
+  sample; no `W≠0` tail-solvable counterexample occurred among the sampled points. This is
+  bounded supporting evidence only, not an exact theorem or proof of W-forcing; consistency
+  minors are computable fraction-free mod `p` (`§S7`).
 
 **Refuted / corrected:**
 - [`slope-forcing-degree-free.md`](slope-forcing-degree-free.md) §4/§7 —
@@ -224,12 +228,18 @@ while the exact `d=4` Nullstellensatz certificate remains out of budget.
 
 **Open / not claimed:**
 - The residual identity at **arbitrary positive-data degree** — `W ∈ sqrt(cascade+Q_-1..Q_-3)`
-  for all `d`. Exact at `d=3` (both branches); strong **sampling** evidence at `d=4`; no
-  degree-free certificate. `W` grows with `d`, so this needs the degree-free covector for
-  the algebraic `(a_2,b_1)` necklace block — the same gap as the joint-covector lemma.
+  for all `d`. Exact at `d=3` (both branches); bounded **sampling** support at `d=4`; no
+  degree-free certificate. On W2 branch B there is now an explicit fixed integer-node
+  staircase. Its relaxed `k=3` window is explicitly nonforcing; at `k=4,5`, only the tested
+  single-minor/unit-multiple route fails and radical forcing is untested. Quotient evaluation
+  is surjective exactly for `k≤d+2`, so those widths do not test polynomiality, but that alone
+  does not prove nonforcing; the first potentially polynomiality-sensitive width is `k=d+3`.
+  The omitted true-tail coefficient equations are decisive at the `k=3` witness. No
+  fixed-width or degree-uniform replacement for degree-dependent interpolation is known; the
+  algebraic `(a_2,b_1)` necklace/joint-covector gap remains.
 - The `d≥4` det-saturated **Nullstellensatz GB** (degree `~18`) — not confirmed in budget.
-- Whether the `d=4` W-forcing sampling verdict is an exact identity (it is not a
-  Nullstellensatz certificate). No Weyl pair, no DC1 counterexample; all of Band 3, DC1,
+- Whether the W-forcing suggested by the bounded `d=4` sample is an exact identity (the
+  sample is not a Nullstellensatz certificate). No Weyl pair, no DC1 counterexample; all of Band 3, DC1,
   JC2 remain open. The infinite-dimensional `Im L_K ∩ Im L_H`
   ([`two-filler-cross-cancellation.md`](two-filler-cross-cancellation.md)) is untouched.
 

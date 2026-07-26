@@ -30,16 +30,15 @@ together with the multiple-root top `h = (E-r)²`. The one-line summary:
 > midpoint `r+1`, **no coupling**); the clean `h h^{[1]} | a₂` fails (the
 > vanishings at `r-1, r+2` are lost).
 >
-> **The cascade adds bounded constraints; restoration remains unresolved.** The
-> general `Q₃` identity is re-derived with **no** shape assumption; `a₃` acquires
-> **double nodes** (diff-1 at `r-1,r`; diff-2 at `r`). In the verifier's fixed
-> coefficient ansatz, a generic `Q₄` solution does not extend to `Q₃`, so `Q₃` cuts
-> the sampled finite-dimensional freedom. At two specialized parameter points,
-> `a₂(r)` lies in the tested `(Q₄,Q₃)` ideal while `a₂(r-1)` has a nonzero normal
-> form. The latter proves only non-membership in the ideal, **not** non-membership
-> in its radical and therefore not geometric non-forcing. No exact solution violating
-> the clean node condition is supplied. Whether the cascade restores the clean
-> divisibility, or some other useful proper-factor mechanism, remains open.
+> **Audit update: the classes have opposite outcomes.** The general `Q₃` identity has now
+> been used radical-correctly. For diff-1, `Q₄∧Q₃` forces the missing value with exponent
+> two and restores `h h^{[1]}|a₂`; those nonzero branches combine with Nonpositive-D Exclusion Theorem of
+> [`shifted-cube-completion.md`](shifted-cube-completion.md), which closes
+> `κ=0,b₁=0`, to close diff-1 at arbitrary degree with no side condition. For diff-2,
+> Nonpositive-D Exclusion Theorem closes only `κ=0,b₁=0`; an exact symbolic positive-cascade family shows
+> the surviving `κ≠0` branch remains open at arbitrary degree.
+> The older fixed-cap normal-form discussion below is superseded by these radical-correct
+> results; see [`band3-sectors.md`](band3-sectors.md).
 >
 > **Multiplicity-extended adjoint criterion.** The `Q₃` divisibility `a₃ | Src₃`
 > becomes the **jet criterion** `a₃ | P ⇔ P^{(j)}(ν)=0, j<m_ν`; at the double
@@ -54,8 +53,10 @@ together with the multiple-root top `h = (E-r)²`. The one-line summary:
 > `QQ(r,κ)`**. Separate exact checks cover a grid of specific integer parameter fibers
 > — an upgrade over the prior fixed-`r=0` evidence. This is not a uniform certificate
 > at every specialization of `r,κ`.
-> HEAVY (`msolve`, exact `QQ`): the unit ideal on a sampled `(r,κ)` grid at cap
-> `d=2,3,4`. **No arbitrary-degree exclusion; diff-1/diff-2 remain open.**
+> HEAVY (`msolve`, exact `QQ`): historically, the unit ideal on a sampled `(r,κ)` grid at
+> cap `d=2,3,4`. This bounded evidence is no longer the status statement: diff-1 is closed
+> in the branches above, while diff-2 remains open at arbitrary degree after restoration
+> was refuted.
 
 Exact certificate:
 [`verify_broken_separation.py`](verify_broken_separation.py) — default exact SymPy;
@@ -150,7 +151,7 @@ It is **covered**, not a separate broken class. Verifier `§2`.
 
 ---
 
-## 3. Task 2 — the cascade `Q₃, Q₂`: constraints found; restoration unresolved
+## 3. Task 2 — historical fixed-cap probes, superseded by radical-correct restoration tests
 
 ### 3.1 double nodes and the general `Q₃`
 
@@ -174,28 +175,31 @@ finite-dimensional `Q₄` solution space at the implemented caps. This is bounde
 symbolic-parameter evidence, not a theorem over fillers of arbitrary degree.
 Verifier `§3` (both classes; fixed caps, symbolic `r,κ`).
 
-### 3.3 ideal-membership probe for clean divisibility (inconclusive geometrically)
+### 3.3 ideal-membership probe for clean divisibility (historical and superseded)
 
-Does `Q₃` cut the `a₂` freedom back onto the clean `h h^{[1]} | a₂`? The
-committed probe does **not decide this**. At `(r,κ)∈{(2,1),(0,2)}`, Gröbner normal
-forms in the fixed-cap coefficient ideal give:
+The original fixed-cap probe asked whether `Q₃` cuts the `a₂` freedom back onto the
+clean `h h^{[1]} | a₂`. At `(r,κ)∈{(2,1),(0,2)}`, Gröbner normal forms in the
+coefficient ideal gave:
 
 ```
 gcd node    a₂(r)    lies in the tested (Q₄,Q₃) ideal,
 clean-extra a₂(r-1) has nonzero normal form modulo that ideal.
 ```
 
-The first is a valid ideal-membership statement at those specializations. The second
-shows only `a₂(r-1)∉I`; geometric forcing is controlled by `sqrt(I)`. For example,
-`x∉(x²)` although `x` vanishes on every point of `V(x²)`. A radical-membership
-certificate or an exact point with `a₂(r-1)≠0` is required before claiming
-non-restoration.
+The second statement alone was inconclusive because geometric forcing is controlled
+by `sqrt(I)`, not `I`: for example, `x∉(x²)` although `x` vanishes on every point of
+`V(x²)`. The later radical-correct calculation resolves the two classes differently.
+For diff-1, the missing evaluation is forced with exponent two, restoring
+`h h^{[1]}|a₂`; this closes the nonzero branches, while Nonpositive-D Exclusion Theorem of
+[`shifted-cube-completion.md`](shifted-cube-completion.md) closes `κ=0,b₁=0` and
+therefore completes diff-1 at arbitrary degree without a side condition. For diff-2,
+restoration is refuted on the surviving `κ≠0` branch; Nonpositive-D Exclusion Theorem closes only
+`κ=0,b₁=0`, not the full class. See [`band3-sectors.md`](band3-sectors.md).
 
-> **Conclusion (Task 2, corrected).** The cascade adds fixed-cap constraints, but the
-> committed calculation neither proves restoration nor non-restoration of the clean
-> divisor. It also cannot exclude factorization through some other fixed proper factor.
-> No clean new solution family is exhibited; the broken classes currently fall only to
-> the bounded emptiness results of §5.
+> **Conclusion (Task 2, updated).** The fixed-cap normal forms were useful diagnostics
+> but are no longer the status result. Radical-correct forcing closes the stated diff-1
+> branches; an exact `(Q₄,Q₃)`-locus witness refutes diff-2 restoration without
+> constructing a Weyl pair or resolving the full diff-2 tail.
 
 ---
 
@@ -265,10 +269,14 @@ the **unit ideal**.
   `(r,κ) ∈ {(0,1),(0,2),(1,1),(-1,1),(2,1),(½,1)}`, both classes; each `msolve`
   call is instant (0-dimensional/unit, `≤ 0.1 s`) (Verifier `§5d`).
 
-This is **corroboration**, not an arbitrary-degree exclusion. diff-1 and diff-2
-remain a genuine sub-wall, **open at arbitrary degree**, now with cap-`d=4`
-emptiness across a parameter grid and cap-`d=2` emptiness on the **generic fiber**
-over `QQ(r,κ)` plus the tested specific fibers.
+This bounded computation is **corroboration**, not the source of the later
+arbitrary-degree conclusions. The radical-correct argument closes the nonzero
+diff-1 branches, and Nonpositive-D Exclusion Theorem of
+[`shifted-cube-completion.md`](shifted-cube-completion.md) closes `κ=0,b₁=0`, so
+diff-1 is closed without side conditions. For diff-2, Nonpositive-D Exclusion Theorem closes only that
+zero branch; the surviving `κ≠0` branch remains open. The cap-`d=4` sampled
+emptiness and cap-`d=2` **generic-fiber** emptiness over `QQ(r,κ)` remain valid
+bounded evidence.
 
 ---
 
@@ -280,39 +288,37 @@ over `QQ(r,κ)` plus the tested specific fibers.
    broken set is exactly diff-1 and diff-2, each a one-parameter family in `r`).
 2. The **exact degraded `Q₄` forcing** per class, symbolic in `r`:
    diff-1 `(E-r)|a₂` + coupled `a₂(r-1)+a₂(r+1)=0`; diff-2 clean `(E-r)(E-r-1)|a₂`.
-3. The cascade **adds constraints, while restoration remains open**: generic `Q₄` does
-   not extend to `Q₃` in the fixed coefficient ansatz. At the two encoded parameter points,
-   the clean-extra evaluation has nonzero Gröbner normal form, proving only that it is not
-   in the tested ideal. This is inconclusive about radical membership and geometric forcing;
-   restoration and alternative proper-factor mechanisms remain open. The no-extension
-   statement is fixed-cap bounded evidence, not an arbitrary-degree proof object.
+3. The original cascade probes add fixed-cap constraints but were inconclusive about
+   radicals. The subsequent radical-correct update resolves restoration: diff-1 restores
+   `h h^{[1]}|a₂` and closes in the stated nonzero branches; diff-2 has an exact
+   `(Q₄,Q₃)`-locus witness refuting restoration. The latter is not a full-tail point and
+   generally has `Q₂≠0`.
 4. The **multiplicity-extended adjoint criterion** (jet / `ev'_ν` derivative
    nodes) and the Lemma-P moment slope for the degenerate tops.
 5. Bounded emptiness upgraded: cap `d=2` **generic `(r,κ)`** (committed) and cap
-   `d≤4` sampled grid (HEAVY), both classes. **Non-vacuity (audit-supplied): the
-   in-file run lacks the control; the audit verified externally that dropping
-   `Q₀=1` leaves a proper (non-unit) ideal — the sector is nonempty without the
-   moment unit, so the emptiness certificates are meaningful, not vacuous.**
+   `d≤4` sampled grid (HEAVY), both classes. **Non-vacuity is checked exactly in-file:
+   `verify_band3_sectors.py` §7 drops `Q₀=1` at cap `d=2` and obtains a proper
+   (non-unit) ideal for both diff-1 and diff-2. Thus each sector is nonempty without
+   the moment unit, so the emptiness certificates are meaningful, not vacuous.**
 
 **Still open (precisely delimited):**
-- **diff-1 and diff-2 at arbitrary degree.** The tested normal form does not decide
-  whether the clean divisor is restored geometrically, nor whether an alternative proper
-  factor supports a modified potential factorization. An arbitrary-degree kill would need
-  either (i) a degree-free
-  analysis of the coupled `Q₃` derivative-node system of §4.2 forcing the
-  cokernel `[E−R] ∉ Im Φ` at all degrees for the degenerate top, or (ii) a new
-  tame move on the coupled sector. Neither is supplied here.
+- **diff-1:** nothing; it is closed at arbitrary degree with no `κ`/`b₁` side
+  condition by combining the restored-divisibility branches with Nonpositive-D Exclusion Theorem of
+  [`shifted-cube-completion.md`](shifted-cube-completion.md).
+- **diff-2 at arbitrary degree:** only the surviving `κ≠0` branch remains open;
+  the `κ=0,b₁=0` arm is closed by Nonpositive-D Exclusion Theorem. A different tail obstruction is
+  still needed, so no full diff-2 closure is claimed.
 - Everything the 2-separation memo left open is unchanged: **RESIDUAL 3**
   (`κ₂ ≠ 0` constant-`h`, the A\*-band3 negative tail); imbalanced coprime walls;
   general-`k` negative tail; **W2**.
 
-After this memo the band-3 shifted-cube Gap-2 ledger reads:
+After the radical-correct update, the band-3 shifted-cube Gap-2 ledger reads:
 
 | class | status |
 |---|---|
-| cube-separated / 2-separated `h` (incl. diff-3, mult-root `(E-r)²`) | **closed, arbitrary degree** |
-| **diff-1** `(E-r)(E-r-1)` | degraded `Q₄` forcing exact; **bounded** emptiness (d≤4, all sampled `r,κ`; generic fiber over `QQ(r,κ)` at d=2); **open** arbitrary degree |
-| **diff-2** `(E-r)(E-r-2)` | degraded `Q₄` forcing exact; **bounded** emptiness (d≤4, all sampled `r,κ`; generic fiber over `QQ(r,κ)` at d=2); **open** arbitrary degree |
+| cube-separated / 2-separated `h` (incl. diff-3, mult-root `(E-r)²`) | **closed, arbitrary degree**; old `c=0` hole repaired by [`shifted-cube-completion.md`](shifted-cube-completion.md), Nonpositive-D Exclusion Theorem |
+| **diff-1** `(E-r)(E-r-1)` | **closed, arbitrary degree, no side condition**; restored divisibility handles the nonzero branches and Nonpositive-D Exclusion Theorem handles `κ=0,b₁=0` |
+| **diff-2** `(E-r)(E-r-2)` | `κ=0,b₁=0` **closed** by Nonpositive-D Exclusion Theorem; surviving `κ≠0` branch **open** at arbitrary degree |
 
 **No Weyl pair and no counterexample is constructed; DC1/JC2 untouched.**
 
@@ -328,11 +334,11 @@ stated):**
   diff-1 `(E-r)|a₂` + coupled correction `a₂(r-1)+a₂(r+1)=0` (clean `h h^{[1]}|a₂`
   and `a₂'(r)=0` fail); diff-2 clean `(E-r)(E-r-1)|a₂` (no coupling; clean
   `h h^{[1]}|a₂` fails); mult-root `(E-r)²` cube-separated ⇒ closed (`§2`).
-- **Task 2:** the double-node multiset structure and the fixed-ansatz
-  generic-`Q₄`-does-not-extend-to-`Q₃` inconsistency (`§3`). At the tested parameter
-  specializations, exact Gröbner reduction proves membership of the gcd-node evaluation
-  and ideal nonmembership of the clean-extra evaluation; it does not prove radical
-  nonmembership or geometric non-restoration.
+- **Task 2:** the double-node multiset structure and the historical fixed-ansatz
+  generic-`Q₄`-does-not-extend-to-`Q₃` inconsistency (`§3`). The old normal forms are
+  retained only as bounded diagnostics. The radical-correct update restores the clean
+  divisor for diff-1 in the stated nonzero branches and gives an exact diff-2
+  `(Q₄,Q₃)`-locus witness refuting restoration.
 - **Task 3:** the jet/derivative-node divisibility criterion; the `ev'_ν` double-
   node equation; the Lemma-P moment slope for the degenerate tops (`§4`).
 
@@ -349,10 +355,17 @@ stated):**
   `0`), hence **closed at arbitrary degree**. It is not a broken class.
 
 **Open / NOT claimed:**
-1. diff-1, diff-2 at arbitrary degree (bounded evidence only); restoration and
-   alternative proper-factor mechanisms remain open.
-2. Everything inherited open from `shifted-power-residuals.md` §5:
-   `κ₂ ≠ 0` constant-`h`, imbalanced coprime walls, general-`k` tail, **W2**.
+1. The diff-2 `κ ≠ 0` surviving branch at arbitrary degree. The `κ = 0, b₁ = 0`
+   arm is closed by Nonpositive-D Exclusion Theorem of
+   [`shifted-cube-completion.md`](shifted-cube-completion.md); the direct
+   residual/congruence route remains silent at `κ = 0, b₁ = 0`, but Nonpositive-D Exclusion Theorem
+   closes it independently. No full diff-2 closure is claimed.
+2. **A\*-band3 general `κ₂ ≠ 0`** at arbitrary degree remains open. Nonpositive-D Exclusion Theorem
+   closes only the corner `κ₂ = 0, b₁ = 0`; the existing `κ₂ = 0` tame witness
+   has positive band-one `D` (`b₁ ≠ 0`), so no contradiction with Nonpositive-D Exclusion Theorem.
+3. Everything inherited open from `shifted-power-residuals.md` §5:
+   composite tame-word escape, imbalanced coprime walls, general-`k` tail with
+   `band D > 0`, **W2**, and radical forcing at coupling widths `k = 4, 5`.
 No Weyl pair, no counterexample; DC1/JC2 untouched.
 
 ---
@@ -366,10 +379,10 @@ HEAVY=1 uv run --with sympy python research/dc1-program/verify_broken_separation
 
 Exact SymPy checks (with domains stated by each section): `§0` engine; `§1` wall +
 general `Q₄`/`Q₃` identities; `§2` Task 1 (degraded `Q₄` forcing per class,
-symbolic `r`; mult-root closure); `§3` Task 2 (double nodes,
-generic-`Q₄`-no-`Q₃`-extension, and tested ideal membership/nonmembership, which is
-inconclusive about radical membership and geometric restoration); `§4` Task 3 (jet
-criterion, `ev'_ν` double-node equations, moment slope); `§5` Task 4 (cap-`d=2`
+symbolic `r`; mult-root closure); `§3` Task 2 (double nodes and the historical
+fixed-cap probes, now superseded as status evidence by the radical-correct checks in
+`band3-sectors.md`); `§4` Task 3 (jet criterion, `ev'_ν` double-node equations,
+moment slope); `§5` Task 4 (cap-`d=2`
 generic-fiber + tested specific `(r,κ)` emptiness; HEAVY `msolve` grid at `d=2,3,4`); `§6`
 bookkeeping. Runtime is environment-dependent. The final summary distinguishes a run
 in which all checks passed from one in which all executed checks passed but optional

@@ -33,14 +33,15 @@ five things:
 4. **Reads the `d=3` certificate through the calculus (BOUNDED, exact).** The depth-3
    cokernel is 16-dimensional; the W-kill is reproduced; `a_2(0)` is not forced; `W`
    enters the consistency conditions; `Q_-1` alone does not force `W` (lead 3).
-5. **Tests the fixed trace-form recipe and localizes the obstruction (OPEN, lead 4/5).**
-   On a rung where the two terms use independently variable filler evaluations, a single
-   algebraic node would need a shared root of `top(E)` and `top(E-3)`, generically none;
-   the sought covector must therefore **couple** terms and rungs across the **varying**
-   tops `(a_2,a_1,a_0)/(b_1,b_0,b_-1)`. That coupling is the exact residual gap: a fixed
-   finite trace-form recipe producing a unit multiple of `W` at **every** `d` is **not**
-   obtained. At `d=4`, full filler-column rank and random mod-`p` samples give supporting
-   evidence only; they do **not** construct a W-forcing covector or prove one exists.
+5. **Tests fixed recipes and localizes the remaining gap (OPEN, lead 4/5).**
+   A single generic algebraic node is insufficient. On W2 branch B, however, the coupling
+   bookkeeping does collapse to an explicit fixed integer-node staircase
+   ([`coupling-covector.md`](coupling-covector.md)). Its `k=3` relaxed window is explicitly
+   nonforcing; at `k=4,5`, only the tested single-minor/unit-multiple certificate fails and
+   radical forcing is untested. Exact interpolation shows that widths `k≤d+2` do not probe
+   polynomiality, but does not by itself prove nonforcing. No fixed-width or degree-uniform
+   replacement for the degree-dependent interpolation data and omitted coefficient equations
+   is known. The `d=4` samples remain supporting evidence only.
 
 W2 datum, gauge `b_3=0`, quantum band-3 conventions
 (`Q_m=sum_(k+l=m)[b_l^[k]a_k - a_k^[l]b_l]`, `f^[n](E)=f(E+n)`,
@@ -56,7 +57,8 @@ environment-dependent; `HEAVY=1` adds the `d=4` linear-route mod-`p` leg and the
 depth-3 `msolve` kill. The final summary distinguishes a run in which all checks passed from
 one in which all executed checks passed but optional checks were skipped. Every load-bearing
 upstream fact — the crossed-product engine, `Q_0=(T-1)G`, the slope gate, the both-ends Lemma
-P, the factorization `R(1)=a_2(0)·W` — is **re-derived in file**.
+P, the factorization `R(1)=a_2(0)·W` — is **re-derived in file**, with Lemma P's in-file
+machine check explicitly bounded to `d=4`.
 
 ## 0. Headline
 
@@ -65,11 +67,13 @@ P, the factorization `R(1)=a_2(0)·W` — is **re-derived in file**.
 > Galois-symmetric annihilators descend to `F(datum)` as **trace forms** computable
 > without naming a root (PROVED, machine-checked on symbolic blocks). The depth-3 negative
 > tail is two explicit **two-term** block operators on a **purely algebraic** necklace
-> (PROVED, degree-free). But on the tested generic b-block rung a single algebraic
-> node does not suffice; the sought annihilator must **couple** terms and rungs across
-> the varying tops `(a_2,a_1,a_0)/(b_1,b_0,b_-1)`. A **fixed finite trace-form recipe**
-> yielding a unit multiple of `W` at
-> every degree is **not** obtained. The residual identity
+> (PROVED, degree-free). A single generic algebraic node does not suffice. W2 branch B
+> does admit a fixed integer-node staircase coupling. Its relaxed `k=3` window does not force
+> `W`; at `k=4,5`, only the tested single-minor/unit-multiple route fails, while radical forcing
+> remains untested. These windows omit coefficient equations needed by the true polynomial
+> tail. No fixed-width or degree-uniform substitute is known. A **fixed finite trace-form
+> recipe** yielding a unit multiple of `W` at every degree is **not**
+> obtained. The residual identity
 > `W ∈ sqrt(cascade+Q_-1..Q_-3)` at arbitrary `d` is therefore still **open**; what is new
 > is the degree-free calculus in which it lives and the precise coupling that blocks it.
 
@@ -194,7 +198,7 @@ This is the explicit structural form of the `d=3` certificate (lead 3): the cons
 covectors of the two-block operator, on the algebraic necklace, with the membership windows
 silent.
 
-## 5. The fixed recipe and the coupling obstruction (OPEN, localized — lead 4/5)
+## 5. Fixed recipes and the sharpened residual gap (OPEN, localized — lead 4/5)
 
 **Why a single algebraic node is insufficient for the tested generic b-block.** On a
 rung where the two filler evaluations are independent, `ev_rho` on `lambda_m` kills the
@@ -202,17 +206,21 @@ first term iff `a_{m+3}(rho)=0` and the second iff `a_{m+3}(rho-3)=0`; it kills 
 whole rung only at a **shared** root of `a_{m+3}(E)` and `a_{m+3}(E-3)`. The verifier
 checks the generic `a_2` instance, where `gcd(a_2(E),a_2(E-3))=1` (`verify §S3`). This
 argument is not a blanket theorem for every block and rung: coincident filler evaluations
-can cancel, and lower tops require separate analysis. For the tested generic b-block, the
-annihilator must **couple** its two terms and ultimately the rungs with different tops
-`a_2,a_1,a_0` (and analogously on the a-block side). In the integer-node band-3 AP family the
-analogous coupling telescoped because the tops were shifts of one polynomial
-([`lambda-general-k.md`](lambda-general-k.md) Thm C); here the tops are **independent
-datum**, and no fixed telescoping is available.
+can cancel, and lower tops require separate analysis.
 
-**The recipe test.** A fixed finite trace-form recipe — a fixed node-selection rule at the
-block root-sets through fixed shift windows, with trace-form weights, producing a covector
-whose `N`-pairing is a unit multiple of `W` at every `d` — is **not obtained**. What is
-verified degree by degree:
+**Audit sharpening from the later branch-B calculation.** The conclusion that no fixed
+coupling is available is superseded by [`coupling-covector.md`](coupling-covector.md): on
+W2 branch B the rungs couple explicitly through fixed integer-node Cramer minors. The open
+limitation is their **content**, not the existence of coupling. The relaxed `k=3` window is
+provably nonforcing; at `k=4,5`, only the tested single-minor/unit-multiple route fails and
+radical forcing is untested. Moreover, widths `k≤d+2` do not test polynomiality, and no
+fixed-width or degree-uniform replacement for the degree-dependent interpolation relations
+and omitted coefficient equations is known.
+
+**The older trace-form recipe test.** A fixed finite trace-form recipe — a fixed
+node-selection rule at the block root-sets through fixed shift windows, with trace-form
+weights, producing a covector whose `N`-pairing is a unit multiple of `W` at every `d` — is
+**not obtained by this verifier**. What it checks degree by degree:
 
 - `d=1,2,3`: `R(1)=a_2(0)·W` exact on the parametrized cascade; forcing vacuous for `d≤2`
   (cascade alone kills the slope) (`verify §S6`).
@@ -225,22 +233,23 @@ verified degree by degree:
 
 At `d=3` the exact covector kill exists. At `d=4` the nonempty cokernel and samples only
 motivate the same search; whether its algebraic-necklace part pairs the residual to a unit
-multiple of `W` remains unproved. The coupled two-term structure across varying tops does
-not, in these tests, reduce to one fixed trace-form rule. **That coupling is the named residual gap** — the exact obstruction between
-the built calculus and the arbitrary-`d` residual identity.
+multiple of `W` remains unproved. This older test does not reduce the two-term structure to
+one fixed trace-form rule. The later branch-B staircase supplies explicit coupling, but no
+fixed-width or degree-uniform way is known to recover the interpolation relations and omitted
+coefficient equations needed for the arbitrary-`d` residual identity.
 
 ## 6. Evidence ledger — proved / bounded / refuted / open
 
-**Proved (node-free / degree-free, char 0, machine-checked identities):**
+**Proved (node-free / degree-free, char 0, machine-checked identities unless separately retiered):**
 - Engine `Q_m=[D,X]_m` (`m∈[-6,6]`), `Q_0=(T-1)G` (generic degree-2 coefficients); slope
-  gate; both-ends Lemma P `R(1)=a_1(0)b_-1(1)+a_2(0)b_-2(2)-a_-1(1)b_1(0)`,
-  filler-independent; the factorization `R(1)=a_2(0)·W` (`§S0,§S1`).
+  gate; and the factorization `R(1)=a_2(0)·W` (`§S0,§S1`).
 - **Algebraic-node Thm A′:** the moving-sum adjoint identity `lambda(S_n g)=(S_n^* lambda)(g)`
-  for a **symbolic** node `rho` (`n=2,3,4`, generic degree-5 `g`); the **trace-form
-  descent** `sum_{p(rho)=0} h(rho)=Tr_{F[E]/(p)}(h)` — a rational function in
-  `coeffs(p,h)` (polynomial after monic normalization), equal to the root sum with
-  multiplicity and **no root named** (in-file symbolic scope `deg p=3, deg h=2`, plus
-  random squarefree root-sum confirmation); trace forms **closed under `S_n^*`** (`§S2`).
+  for a **symbolic** node `rho` (`n=2,3,4`, generic degree-5 `g`). The companion-trace
+  construction is symbolic at the stated in-file scope `deg p=3, deg h=2`: it produces a
+  rational function in `coeffs(p,h)` (polynomial after monic normalization) with no root
+  named. Equality of that trace with the root sum (with multiplicity) is the standard trace
+  theorem; this file adds only bounded numerical corroboration on 4 random squarefree cubic
+  specializations. Trace forms are **closed under `S_n^*`** (`§S2`).
 - **Two-block structure:** the explicit two-term operators `a-block`, `b-block` with tops
   `(b_1,b_0,b_-1)`, `(a_2,a_1,a_0)` (level incidence, generic data); the negative-tail
   necklace is **entirely algebraic** — `a_3,b_2` occur in **no** `Q_-1,Q_-2,Q_-3`;
@@ -249,6 +258,13 @@ the built calculus and the arbitrary-`d` residual identity.
   (`gcd(a_2(E),a_2(E-3))=1`) (`§S3`).
 - **Block adjoint criterion:** the symbolic-node coefficient-of-`C(sigma)`/`V(sigma)`
   identities, whence the algebraic-necklace support conditions are trace forms (`§S4`).
+
+**Bounded-in-file, degree-free by separate structure:**
+- Both-ends Lemma P
+  `R(1)=a_1(0)b_-1(1)+a_2(0)b_-2(2)-a_-1(1)b_1(0)`, filler-independent: the in-file
+  verifier check is fixed at `d=4` (`§S1`), so its machine evidence is bounded. Its
+  degree-free validity is supplied separately by the structural Weyl-membership vanishing
+  argument, consistent with [`residual-identity.md`](residual-identity.md) §6.
 
 **Bounded-finite (exact scope stated):**
 - `d=3`: at the tested exact datum specialization, the depth-3 tail has 24 filler-linear
@@ -275,10 +291,11 @@ the built calculus and the arbitrary-`d` residual identity.
 
 **Open / not claimed:**
 - **A fixed finite trace-form recipe** producing a covector whose `N`-pairing is a unit
-  multiple of `W` at **every** `d` — blocked by the two-term coupling across the varying
-  tops `(a_2,a_1,a_0)/(b_1,b_0,b_-1)` (§5). The residual identity
-  `W ∈ sqrt(cascade+Q_-1..Q_-3)` at arbitrary `d` therefore remains **open**; the calculus
-  and the localized obstruction are the contribution.
+  multiple of `W` at **every** `d`. On W2 branch B, the later fixed integer-node staircase
+  resolves the coupling bookkeeping, but no fixed-width or degree-uniform replacement for
+  degree-dependent interpolation and the omitted coefficient equations is known (§5). The
+  residual identity `W ∈ sqrt(cascade+Q_-1..Q_-3)` at arbitrary `d` therefore remains
+  **open**; the calculus and the sharpened residual gap are the contribution.
 - Everything the parent memos leave open: the arbitrary-degree slope forcing
   ([`slope-forcing-degree-free.md`](slope-forcing-degree-free.md) §6,
   [`residual-identity.md`](residual-identity.md) §6); no Weyl pair; all of Band 3, DC1, JC2.

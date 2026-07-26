@@ -19,7 +19,7 @@ the gauge b_3 = 0, the wall b_2 = kappa h h^{[1]} = 0 and b_1 = 0 leave
 This file proves, at ARBITRARY DEGREE and for ARBITRARY band k >= 2 and
 ARBITRARY nonzero top a_k (no shifted-cube shape used anywhere):
 
-    THEOREM A.  There is no pair (X, D) with band X = k >= 2, band D <= 0,
+    NONPOSITIVE-D EXCLUSION THEOREM.  There is no pair (X, D) with band X = k >= 2, band D <= 0,
     membership-valid negative tail ((E)_j | b_{-j}), and [D,X] = 1.
 
 so the sub-branch is EMPTY, and the corpus's cube-separated / 2-separated /
@@ -52,6 +52,7 @@ Run:
 """
 
 import os
+import re
 import sys
 import time
 import shutil
@@ -176,14 +177,23 @@ def _guard_body(body):
     return True
 
 
-def _msolve(eqs, unk, characteristic, args, timeout_s, tag):
-    vs = ",".join(str(u) for u in unk)
+def _serialize_msolve_body(eqs, unk):
+    """Clear coefficient-only denominators; reject rational functions in unknowns."""
+    unknowns = set(unk)
     cleared = []
     for e in eqs:
         num, den = sp.fraction(sp.together(xp(e)))
-        cleared.append(xp(num))                                          # TRAP #2
-    body = ",\n".join(str(xp(e)).replace('**', '^').replace(' ', '') for e in cleared)
+        if den.free_symbols & unknowns:
+            raise ValueError("msolve equation denominator depends on an unknown")
+        cleared.append(xp(num))
+    body = ",\n".join(str(e).replace('**', '^').replace(' ', '') for e in cleared)
     _guard_body(body)
+    return body
+
+
+def _msolve(eqs, unk, characteristic, args, timeout_s, tag):
+    vs = ",".join(str(u) for u in unk)
+    body = _serialize_msolve_body(eqs, unk)
     t1 = time.time()
     with tempfile.TemporaryDirectory(prefix='scc-') as tmp:
         fn = os.path.join(tmp, 'in.ms')
@@ -211,15 +221,26 @@ def _msolve(eqs, unk, characteristic, args, timeout_s, tag):
     return parsed
 
 
+def _parse_empty_QQ_record(parsed):
+    """Parse only complete canonical char-zero msolve verdict records."""
+    if parsed == '[-1]':
+        return True
+    if re.fullmatch(r'\[1,[1-9][0-9]*,-1,\[\]\]', parsed or ''):
+        return False
+    return None
+
+
 def msolve_empty_QQ(eqs, unk, tag, timeout_s=900):
     parsed = _msolve(eqs, unk, 0, [], timeout_s, tag)
     if parsed is None:
         return None
-    if parsed.startswith('[-1]'):
-        return True
-    if parsed.startswith('['):
-        return False
-    return None
+    verdict = _parse_empty_QQ_record(parsed)
+    if verdict is None:
+        # DIAGNOSTIC: unrecognized/malformed record must not become a math verdict.
+        print(f"        msolve[{tag}] DIAGNOSTIC: unrecognized/malformed record "
+              f"{(parsed or '')[:80]!r} -- no EMPTY/NONEMPTY verdict extracted",
+              flush=True)
+    return verdict
 
 
 # ===========================================================================
@@ -258,11 +279,12 @@ print("\n=== S1  TARGET A: the sector kappa = 0 AND b_1 = 0 is 'band D <= 0' ===
 # ===========================================================================
 # gauge b_3 = 0 ; wall b_2 = kappa h h^{[1]} with kappa = 0 => b_2 = 0 ; b_1 = 0.
 hsym = sp.Function('h')(E)
-# AUDIT FIX (2026-07-25, house rule 5): the former condition was
-# xp(0*hsym*sh(hsym,1)) == 0, i.e. "zero times anything is zero" -- unfalsifiable.
-# The real content is the NECESSITY half of the Q_5 wall: Q_5 = 0 forces b_2 to be
-# a kappa-multiple of h h^{[1]}, so kappa = 0 => b_2 = 0.  Test that, falsifiably,
-# by solving Q_5 = 0 for a generic b_2 against the shifted-cube top.
+# AUDIT SCOPE (2026-07-26): this is a BOUNDED CONCRETE CROSS-CHECK only.
+# We solve Q_5 = 0 for a b_2 ansatz of degree <= 5 against ONE concrete
+# 2-separated h = (E-1)(E-4).  The output on this specific h is a scalar multiple
+# of h h^{[1]}, which is compatible with the wall shape b_2 = kappa h h^{[1]}
+# on this h.  It is NOT an arbitrary-h, arbitrary-degree necessity proof and it
+# does NOT classify the whole solution space of Q_5 across all h.
 _b2c = sp.symbols('scb2_0:6'); _b2g = sum(_b2c[i] * E**i for i in range(6))
 _hnum = (E - 1) * (E - 4)                      # a concrete 2-separated h
 _a3num = xp(_hnum * sh(_hnum, 1) * sh(_hnum, 2))
@@ -270,9 +292,11 @@ _Q5 = xp(sh(_b2g, 3) * _a3num - sh(_a3num, 2) * _b2g)
 _sol = sp.solve([sp.Poly(_Q5, E).coeff_monomial(E**i)
                  for i in range(sp.Poly(_Q5, E).degree() + 1)], list(_b2c), dict=True)
 _b2sol = xp(_b2g.subs(_sol[0])) if _sol else None
-check("Q_5 wall NECESSITY (falsifiable): solving Q_5 = 0 for a GENERIC b_2 (deg <= 5) "
-      "against a_3 = h h^{[1]}h^{[2]} returns exactly the multiples of h h^{[1]}, so "
-      "kappa = 0 forces b_2 = 0 -- hence the sub-branch lies in the band-D <= 0 sector",
+check("Q_5 wall BOUNDED CONCRETE CROSS-CHECK (falsifiable, one h, deg-<=5 b_2): for the "
+      "specific 2-separated h = (E-1)(E-4), solving Q_5 = 0 for a degree-<=5 b_2 returns "
+      "exactly the (E)_1-multiples of h h^{[1]}.  This is a BOUNDED cross-check consistent "
+      "with the wall shape on this h; it is NOT an arbitrary-h/degree necessity proof and "
+      "NOT a complete solution-space classification for Q_5",
       _b2sol is not None and sp.rem(sp.Poly(_b2sol, E), sp.Poly(xp(_hnum * sh(_hnum, 1)), E)) == 0
       and sp.Poly(_b2sol, E).degree() == 4)
 
@@ -462,7 +486,7 @@ for jv in (1, 2, 3):
             sweep_ok &= (cN1 == 2 * 3 * (3 * (jv + dq) + jv * da)) and cN1 != 0
             sweep_ok &= (W != 0) and (W != 1)
             saw_nonzero += 1
-check(f"INSTANCE SWEEP of THEOREM A's conclusion at k = 3: over {saw_nonzero} "
+check(f"INSTANCE SWEEP of NONPOSITIVE-D EXCLUSION THEOREM's conclusion at k = 3: over {saw_nonzero} "
       f"(j, deg b_{{-j}}, deg a_3) combinations with membership imposed, the rung's "
       f"E^{{N-1}} coefficient matches the key formula and is NONZERO -- so the rung "
       f"is never 0 and never 1", sweep_ok)
@@ -471,14 +495,14 @@ check("NEGATIVE CONTROL for the sweep: WITHOUT membership the rung CAN equal 1 -
       sp.expand(sh(E / 3, 3) * 1 - sh(sp.Integer(1), -3) * (E / 3)) == 1)
 # AUDIT FIX (house rule 5): formerly hardcoded integer arithmetic.  Now EXECUTED:
 # at k = 1 the same construction yields a CONSTANT rung equal to 1 -- the moment
-# unit itself -- which is exactly why band 1 escapes Theorem A.
+# unit itself -- which is exactly why band 1 escapes Nonpositive-D Exclusion Theorem.
 _r1 = xp(sh(xp(fall(1)), 1) * sp.Integer(1) - sh(sp.Integer(1), -1) * xp(fall(1)))
 check("k=1 CONTROL (executed): the same rung construction at k = 1 gives the CONSTANT "
       f"{_r1} -- degree N-1 = 0, so it is the moment unit rather than a contradiction. "
-      "Band 1 survives Theorem A, and the test is therefore not vacuous",
+      "Band 1 survives Nonpositive-D Exclusion Theorem, and the test is therefore not vacuous",
       _r1 == 1 and sp.Poly(_r1 + E, E).degree() == 1)
 
-print("  THEOREM A (arbitrary degree, arbitrary k >= 2, ARBITRARY nonzero top a_k):")
+print("  NONPOSITIVE-D EXCLUSION THEOREM (arbitrary degree, arbitrary k >= 2, ARBITRARY nonzero top a_k):")
 print("    band X = k >= 2, band D <= 0, membership on b_{-j}, [D,X] = 1  is IMPOSSIBLE.")
 
 
@@ -508,7 +532,7 @@ check("CONTROL 2 (membership is load-bearing): X = x^3, D = c + x^{-3}(E/3) sati
       "[D,X] = 1 EXACTLY in A_1[x^{-1}] -- band D <= 0, band X = 3, Q_0 = 1",
       C3 == {0: sp.Integer(1)})
 check("CONTROL 2b: and it is killed ONLY by membership -- (E)_3 = E(E-1)(E-2) does NOT "
-      "divide b_{-3} = E/3, so D is NOT in A_1.  Theorem A's hypothesis is exactly "
+      "divide b_{-3} = E/3, so D is NOT in A_1.  Nonpositive-D Exclusion Theorem's hypothesis is exactly "
       "the one that fails.",
       not divides(fall(3), D3[-3]))
 check("CONTROL 2c: the key formula predicts precisely this -- deg b_{-3} = 1 < 3 = j, "
@@ -516,7 +540,7 @@ check("CONTROL 2c: the key formula predicts precisely this -- deg b_{-3} = 1 < 3
       "membership forces deg b_{-3} >= 3 and then N >= 3",
       sp.Poly(D3[-3], E).degree() == 1)
 
-# CONTROL 3 -- bounded Groebner cross-check of THEOREM A at k = 3, several tops.
+# CONTROL 3 -- bounded Groebner cross-check of NONPOSITIVE-D EXCLUSION THEOREM at k = 3, several tops.
 def sectorA(hpoly, d, withQ0=True, membership=True):
     """band-3 sector with kappa = 0 AND b_1 = 0 (so band D <= 0), coefficient cap d."""
     a3 = sp.expand(hpoly * sh(hpoly, 1) * sh(hpoly, 2))
@@ -561,7 +585,7 @@ for nm, hp in TOPS:
         check(f"CONTROL 3 [{nm}]: kappa = 0 AND b_1 = 0 sector, full cascade + Q_0 = 1 "
               f"+ membership at cap d = {d} is the UNIT ideal => EMPTY over C-bar "
               f"[{len(un)} vars, {time.time() - t1:.1f}s]  (independent cross-check "
-              f"of THEOREM A)", ok)
+              f"of NONPOSITIVE-D EXCLUSION THEOREM)", ok)
 
 # CONTROL 4 -- NON-VACUITY by EXPLICIT POINTS (house rule: 'nonempty' needs a point,
 # never a normal form).  Both drops are exhibited, not Groebner-inferred.
@@ -581,7 +605,7 @@ for nm, hp in TOPS:
           okp)
 check("CONTROL 4b NON-VACUITY: dropping MEMBERSHIP leaves an EXPLICIT POINT WITH the "
       "moment unit -- CONTROL 2's (X = x^3, D = c + x^{-3}E/3) has [D,X] = 1 exactly.  "
-      "So membership alone does the killing, exactly as THEOREM A says.",
+      "So membership alone does the killing, exactly as NONPOSITIVE-D EXCLUSION THEOREM says.",
       C3 == {0: sp.Integer(1)} and not divides(fall(3), D3[-3]))
 
 
@@ -598,7 +622,7 @@ check("the NAMED GAP is real (not a mis-statement): Q_3 = a_3 (T^3 - 1) b_0 carr
       "occurrence of a_2 whatsoever -- so the corpus chain's first rung really does "
       "say nothing about a_2  (degree-free, abstract Functions)",
       not sp.simplify(Qm(XN, DN, 3)).has(XN[2]))
-check("...and THEOREM A closes it anyway, WITHOUT ever constraining a_2: the kill uses "
+check("...and NONPOSITIVE-D EXCLUSION THEOREM closes it anyway, WITHOUT ever constraining a_2: the kill uses "
       "only a_3, b_0, b_{-1}, b_{-2}, b_{-3}  (degree-free)",
       all(not sp.simplify(Qm(XN, {**DN, 0: sp.Symbol('nc'),
                                   **{-i: sp.Integer(0) for i in range(1, j)}}, 3 - j)
@@ -616,7 +640,7 @@ REPAIRED = [
 ]
 # AUDIT FIX (house rule 5): the former condition was len(REPAIRED) == 5, the length
 # of a hardcoded list -- it never exercised h-independence.  Now EXECUTED: run the
-# Theorem-A rung collapse against SEVERAL genuinely different tops (including ones
+# nonpositive-D-exclusion rung collapse against SEVERAL genuinely different tops (including ones
 # outside every shifted-cube class) and confirm the kill coefficient is nonzero for
 # each -- that is what "no property of h is used" means.
 _tops = {'h=1 (constant)': sp.Integer(1),
@@ -633,7 +657,7 @@ for _nm, _a3 in _tops.items():
         _N = _j + _A
         _okh &= (_rung != 0 and sp.Poly(_rung, E).coeff_monomial(E**(_N - 1))
                  == sp.LC(sp.Poly(_a3, E)) * (3 * _j + _j * _A))
-check("the repair is h-INDEPENDENT (executed): the Theorem-A rung kill is nonzero with "
+check("the repair is h-INDEPENDENT (executed): the nonpositive-D-exclusion rung kill is nonzero with "
       "the predicted coefficient for FIVE structurally different tops -- constant, "
       "diff-1, diff-2, the W2 hatch and a non-wall generic cubic -- so no property of "
       "h (or of the wall at all) is used, and every listed class inherits the repair",
@@ -746,13 +770,16 @@ XW = {3: a3D2, 2: a2W, 1: sp.Integer(-3), 0: sp.Integer(0)}
 DW = {3: sp.Integer(0), 2: b2D2, 1: b1W, 0: sp.Integer(0)}
 check("band3-sectors.md 5.1 witness re-derived independently: a_2 = 3(E-r)(E-r-1), "
       "b_1 = 2k(E-r-1)^2, a_1 = -3, b_0 = 0 solves Q_5 = Q_4 = Q_3 = 0 at symbolic "
-      "(r, kappa), with a_2(r-1) = 6 != 0 and b_1(r+1) = 0",
+      "(r, kappa), with a_2(r-1) = 6 != 0 and b_1(r+1) = 0 -- CORRECT for its stated "
+      "Q_4, Q_3 scope",
       all(Qm(XW, DW, m) == 0 for m in (5, 4, 3))
       and sp.simplify(a2W.subs(E, r - 1)) == 6
       and sp.simplify(b1W.subs(E, r + 1)) == 0)
-check("BUT IT IS CUT BY THE NEXT RUNG: that witness has Q_2 != 0 (its a_1 = -3 "
-      "violates the new forcing a_1(r+1) = 0).  The band3-sectors.md 5.1 surviving "
-      "family is therefore STRICTLY SMALLER than reported there.",
+check("HISTORY (scoped, audit 2026-07-26): the published Q_4, Q_3 witness above was "
+      "CORRECT for its stated Q_4, Q_3 scope; what this memo adds is that it does NOT "
+      "extend through Q_2 with the SPECIFIC choice a_1 = -3 (which violates the new "
+      "Q_2 forcing a_1(r+1) = 0).  The published family is not 'smaller than reported' "
+      "at Q_4, Q_3 -- it simply does not extend one more rung with a_1 = -3.",
       sp.simplify(Qm(XW, DW, 2)) != 0)
 
 # --- THE REFINED WITNESS: the whole positive cascade still fails to kill the branch.
@@ -766,14 +793,36 @@ check("REFINED WITNESS (symbolic r, kappa, scale lam, constant a_0 = c): "
       "a_2 = 3L(E-r)(E-r-1), b_1 = 2kL(E-r-1)^2, a_1 = -3L^2(E-r-1)^2, b_0 = 0 "
       "solves Q_5 = Q_4 = Q_3 = Q_2 = Q_1 = 0  EXACTLY -- the ENTIRE POSITIVE CASCADE",
       all(sp.simplify(Qm(XR, DR, m)) == 0 for m in (6, 5, 4, 3, 2, 1)))
-check("...and it genuinely sits on the surviving branch: b_1(r+1) = 0 while "
-      "a_2(r-1) = a_2(r+2) = 6L != 0, so h h^{[1]} does NOT divide a_2 "
-      "(the clean divisibility is still absent)",
-      sp.simplify(DR[1].subs(E, r + 1)) == 0   # AUDIT FIX: was XR[2]*0 + ... (dead term)
-      and sp.simplify(XR[2].subs(E, r - 1) - 6 * lam) == 0
-      and sp.simplify(XR[2].subs(E, r + 2) - 6 * lam) == 0
+# BRANCH INTERPRETATION GUARD (audit 2026-07-26).  The symbolic equality
+# a_2(r-1) = a_2(r+2) = 6*lam is NOT a nonvanishing test by itself: at kappa = 0 or
+# lambda = 0 the coordinates collapse (kappa = 0 kills b_1 entirely, so it cannot
+# "sit on the surviving branch b_1(r+1) = 0 with a_2(r-1) NEQ 0"; lambda = 0 kills
+# a_2 and a_1 outright and collapses the refined witness to the zero family).
+# So the refined witness represents a point on the intended surviving branch only
+# when kappa != 0 AND lambda != 0.  Test this with the concrete specialization
+# kappa = lambda = 1 (both nonzero) and confirm the branch coordinates are nonzero.
+_XR11 = {k: sp.expand(v.subs({kappa: 1, lam: 1})) if not isinstance(v, sp.Integer) else v
+         for k, v in XR.items()}
+_DR11 = {k: sp.expand(v.subs({kappa: 1, lam: 1})) if not isinstance(v, sp.Integer) else v
+         for k, v in DR.items()}
+check("REFINED WITNESS branch interpretation (guarded by kappa != 0 AND lambda != 0): at the "
+      "concrete specialization kappa = 1, lambda = 1 (both nonzero), the branch coordinates "
+      "b_1(r+1) = 0 and a_2(r-1) = a_2(r+2) = 6 are all COMPUTED and NONZERO, so the "
+      "family really is a point of the intended surviving branch b_1(r+1)=0, a_2(r-1)!=0",
+      sp.simplify(_DR11[1].subs(E, r + 1)) == 0
+      and sp.simplify(_XR11[2].subs(E, r - 1) - 6) == 0
+      and sp.simplify(_XR11[2].subs(E, r + 2) - 6) == 0
+      and sp.simplify(_XR11[2].subs(E, r - 1)) != 0
       and not divides(sp.expand((hD2 * sh(hD2, 1)).subs(r, 0)),
-                      sp.expand(XR[2].subs({r: 0, lam: 1}))))
+                      sp.expand(_XR11[2].subs(r, 0))))
+check("REFINED WITNESS scope CONTROL: the branch interpretation FAILS if kappa = 0 (b_1 "
+      "identically 0, so the 'b_1(r+1) = 0' equation is vacuous rather than a branch "
+      "condition) or lambda = 0 (a_2 and a_1 collapse to 0, so a_2(r-1) = 0).  Only "
+      "kappa != 0 AND lambda != 0 give a point of the intended surviving branch.",
+      sp.simplify(DR[1].subs(kappa, 0)) == 0
+      and sp.simplify(XR[2].subs(lam, 0)) == 0
+      and sp.simplify(XR[1].subs(lam, 0)) == 0
+      and sp.simplify(XR[2].subs(lam, 0).subs(E, r - 1)) == 0)
 check("the structural reason Q_2 vanishes on the refined witness: the middle term "
       "b_1^{[1]}a_1 - a_1^{[1]}b_1 is IDENTICALLY ZERO because b_1 and a_1 are "
       "PROPORTIONAL (both are multiples of (E-r-1)^2)",
@@ -782,10 +831,23 @@ check("SCOPE GUARD: the refined witness is NOT a candidate Weyl pair -- with the
       "negative tail shown it has Q_0 = 0 != 1, so [D,X] != 1.  It is a solution of "
       "the POSITIVE CASCADE ONLY, and nothing here constructs a genuine pair.",
       sp.simplify(Qm(XR, DR, 0)) == 0)
-print("        TARGET B VERDICT: the mission's 'push to Q_2 and Q_1' route is "
-      "REFUTED at arbitrary degree.")
-print("        Q_2 does add a real new condition ((E-r-1) | a_1) but does NOT close "
-      "the branch; Q_1 adds nothing.")
+# TARGET B VERDICT scope (audit 2026-07-26).  Supported statements:
+#   * the two ANALYZED clean Q_2 nodes (r and r+1) force  (E-r-1) | a_1  on the
+#     surviving branch b_1(r+1)=0 with kappa!=0 and a_2(r-1)!=0;
+#   * the explicit refined family (with kappa!=0 AND lambda!=0) shows that Q_2 and
+#     Q_1 do NOT close the branch.
+# UNSUPPORTED (removed): "Q_2 adds exactly one new condition" and "Q_1 adds none".
+# The two extra tail-free Q_2 nodes at r-1 and r+2 (S6 above) are UNCLASSIFIED
+# forcing data on the branch, so a claim that Q_2 adds "exactly one" new condition
+# is not established.  Similarly, "Q_1 adds none" is only demonstrated on the
+# refined family, not shown to hold universally.
+print("        TARGET B VERDICT (supported scope): the mission's 'push to Q_2 and Q_1' "
+      "route is REFUTED by the explicit refined family (kappa!=0, lambda!=0) which "
+      "solves the entire positive cascade Q_5..Q_1 = 0 with a_2(r-1) != 0.")
+print("        Supported: (i) the two analyzed clean Q_2 nodes force (E-r-1) | a_1; ")
+print("        (ii) the explicit refined family shows Q_2 and Q_1 do NOT close the branch.")
+print("        NOT claimed: 'Q_2 adds exactly one condition' or 'Q_1 adds none' as universal "
+      "statements -- the extra tail-free nodes r-1, r+2 are unclassified forcing data.")
 
 
 # ===========================================================================
@@ -898,10 +960,70 @@ def full_sector(kind, d, withQ0=True, rv=0, kv=1):
             eqs += sp.Poly(v, E).all_coeffs()
     return un, [xp(e) for e in eqs if xp(e) != 0]
 
-# msolve PARSER VALIDATION before any load-bearing msolve call (house rule 3):
-# a known UNIT ideal must report [-1]; a COMPLEX-ONLY ideal must NOT report empty;
-# a real-rooted feasible ideal must NOT report empty.
+# Focused serialization and parser regressions are unconditional: they do not need
+# an msolve binary and run before every load-bearing solver call.
 xv, yv = sp.symbols('xv yv')
+_serialized_rational = _serialize_msolve_body([xv / 2 + sp.Rational(1, 3)], [xv])
+check("msolve SERIALIZATION positive regression: rational constant coefficients are "
+      "cleared through the expanded numerator, with no '/' or '**' in the body",
+      _serialized_rational == '3*xv+2'
+      and '/' not in _serialized_rational and '**' not in _serialized_rational)
+_rejected_variable_denominator = False
+try:
+    _serialize_msolve_body([1 / (xv + 1)], [xv])
+except ValueError:
+    _rejected_variable_denominator = True
+check("msolve SERIALIZATION negative regression: a denominator involving an unknown is "
+      "rejected rather than silently discarded",
+      _rejected_variable_denominator)
+
+check("msolve exact-record parser: exact [-1] is EMPTY and canonical complete nonempty "
+      "records [1,N,-1,[]] with positive integer N are recognized",
+      _parse_empty_QQ_record('[-1]') is True
+      and _parse_empty_QQ_record('[1,1,-1,[]]') is False
+      and _parse_empty_QQ_record('[1,27,-1,[]]') is False)
+# Exhaustive mutation regressions -- these run even when msolve is not on PATH.
+# Every unknown/malformed case MUST return None (never PASS as empty or nonempty).
+_parser_unknown_mutations = (
+    # trailing garbage (both verdicts)
+    '[-1]suffix', '[-1]garbage', '[1,22,-1,[]]tail', '[1,2,-1,[]]extra',
+    # prefix / two records concatenated
+    'prefix[-1]', '[-1][-1]', '[-1][1,22,-1,[]]', '[1,22,-1,[]][1,3,-1,[]]',
+    # malformed / truncated records
+    '[-1', '[1,22,-1,', '[1,22,-1,[]', '[1,22,-1[]]',
+    # invalid N (0, leading zero, negative)
+    '[1,0,-1,[]]', '[1,01,-1,[]]', '[1,-3,-1,[]]',
+    # wrong status field
+    '[1,22,0,[]]', '[1,22,1,[]]', '[1,22,-2,[]]',
+    # extra fields / wrong inner list
+    '[1,22,-1,[],7]', '[1,22,-1,[3]]', '[1,22,-1,[1,2]]',
+    # bogus bracketed output
+    '[]', '[]garbage', '[1]', '[1,2]', '[1,-1]', '[[-1]]',
+    # unrelated text / empty / None
+    'hello world', '', None,
+)
+check("msolve char-0 parser mutation regressions (run WITHOUT msolve): trailing garbage, "
+      "second records, malformed/truncated records, invalid N (0/negative), wrong status, "
+      "extra fields, and bogus bracketed output ALL return unknown -- never PASS as empty "
+      "or nonempty; a broken parser cannot slip through by skipping msolve",
+      all(_parse_empty_QQ_record(record) is None for record in _parser_unknown_mutations))
+
+ok_trap1 = ok_trap2 = False
+try:
+    _guard_body("x**2+1")
+except ValueError:
+    ok_trap1 = True
+try:
+    _guard_body("2*x^2/3")
+except ValueError:
+    ok_trap2 = True
+check("msolve TRAP GUARDS unit-tested: '**' body rejected (trap #1) and residual '/' body "
+      "rejected (trap #2); a clean integer body passes",
+      ok_trap1 and ok_trap2 and _guard_body("2*x^2+1") is True)
+
+# Live msolve validation before any load-bearing msolve call (house rule 3): a
+# known UNIT ideal must report [-1]; complex-only and real feasible ideals must
+# return the exact recognized nonempty record.
 if HAVE_MSOLVE:
     v_unit = msolve_empty_QQ([xv - 1, xv - 2], [xv], 'parser-unit', 60)
     v_cplx = msolve_empty_QQ([xv**2 + 1], [xv], 'parser-complex-only', 60)
@@ -912,20 +1034,8 @@ if HAVE_MSOLVE:
           v_cplx is False)
     check("msolve PARSER VALIDATION: real-rooted feasible ideal reports NONEMPTY",
           v_real is False)
-    ok_trap1 = ok_trap2 = False
-    try:
-        _guard_body("x**2+1")
-    except ValueError:
-        ok_trap1 = True
-    try:
-        _guard_body("2*x^2/3")
-    except ValueError:
-        ok_trap2 = True
-    check("msolve TRAP GUARDS unit-tested: '**' body rejected (trap #1) and rational "
-          "body rejected (trap #2); a clean integer body passes",
-          ok_trap1 and ok_trap2 and _guard_body("2*x^2+1") is True)
 else:
-    skip("msolve parser validation + trap guards", "msolve not on PATH")
+    skip("live msolve parser validation", "msolve not on PATH")
 
 for kind in ('diff1', 'diff2'):
     for d in (1, 2, 3):

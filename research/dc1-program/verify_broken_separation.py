@@ -33,8 +33,10 @@
 #    * a GENERIC Q_4 solution does NOT extend to Q_3 (linear inconsistency over
 #      the function field -- Q_3 constrains the a_2 freedom FURTHER);
 #    * tested Gröbner normal forms show ideal membership at the gcd node and
-#      ideal nonmembership at a clean-extra node. This does NOT decide radical
-#      membership, geometric restoration, or alternative proper-factor mechanisms.
+#      ideal nonmembership at a clean-extra node. These ideal tests alone are
+#      inconclusive. Later degree-free work in band3-sectors.md and
+#      verify_band3_sectors.py resolves restoration; this verifier supplies only
+#      the historical/bounded checks, not the current theorem.
 #
 #  TASK 3 -- the multiplicity-extended moment/adjoint criterion:
 #    * the jet divisibility criterion a_3 | P  <=>  P^(j)(nu)=0 for j < m_nu;
@@ -167,17 +169,52 @@ def Gpot(X, D, K=3):                            # closed-form moment potential
     return sp.expand(G)
 
 
+def _parse_msolve_stdout_unit(text):
+    """Parse the exact reduced-GB unit record emitted on this stdout interface."""
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    if lines != ['[1]:']:
+        shown = '\n'.join(lines)
+        raise RuntimeError(f"malformed or non-unit msolve reduced-GB record: {shown[:200]!r}")
+    return True
+
+
+def _rejects_msolve_stdout_unit(text):
+    try:
+        _parse_msolve_stdout_unit(text)
+    except RuntimeError:
+        return True
+    return False
+
+
+def _serialize_msolve_polynomial(expr, unknowns):
+    """Clear coefficient-only denominators and emit one safe msolve polynomial."""
+    num, den = sp.fraction(sp.together(sp.sympify(expr)))
+    if den.free_symbols & set(unknowns):
+        raise ValueError("msolve input has a variable-dependent denominator")
+    text = str(sp.expand(num)).replace('**', '^').replace(' ', '')
+    if '/' in text or '**' in text:
+        raise ValueError("msolve input contains unsafe '/' or '**' serialization")
+    return text
+
+
+def _serialization_rejected(expr, unknowns):
+    try:
+        _serialize_msolve_polynomial(expr, unknowns)
+    except ValueError:
+        return True
+    return False
+
+
 def msolve_unit(eqs, allc, tag, timeout=300):
-    """True iff ideal(eqs) is the unit ideal over QQ (reduced GB = [1])."""
+    """True iff msolve emits its exact stdout reduced-GB unit record."""
     varstr = ", ".join(str(v) for v in allc)
     # msolve's characteristic-zero parser is most reliable on integral
-    # polynomials.  Clear numeric denominators (notably the r=1/2 grid point)
-    # equation-by-equation; multiplying by a nonzero rational preserves the ideal.
-    cleared = [sp.fraction(sp.together(sp.expand(e)))[0] for e in eqs]
-    body = ",\n".join(str(e).replace('**', '^').replace(' ', '') for e in cleared)
+    # polynomials.  Clear only coefficient denominators; a denominator involving
+    # solver unknowns would change the algebraic set and is rejected above.
+    body = ",\n".join(_serialize_msolve_polynomial(e, allc) for e in eqs)
     ms = f"{varstr}\n0\n{body}\n"
-    if '**' in ms:
-        raise ValueError("msolve input must use '^' not '**'")
+    if '/' in ms or '**' in ms:
+        raise ValueError("msolve input contains unsafe '/' or '**' serialization")
     t = time.time()
     with tempfile.TemporaryDirectory(prefix="broken-separation-") as tmp:
         path = os.path.join(tmp, f"{tag}.ms")
@@ -190,17 +227,23 @@ def msolve_unit(eqs, allc, tag, timeout=300):
             return None
     if rr.returncode != 0:
         raise RuntimeError(f"msolve[{tag}] failed with status {rr.returncode}: {rr.stderr.strip()}")
-    out = rr.stdout.strip()
-    if not out:
-        raise RuntimeError(f"msolve[{tag}] produced empty output; stderr: {rr.stderr.strip()}")
+    unit = _parse_msolve_stdout_unit(rr.stdout)
     dt = time.time() - t
-    tail = out.splitlines()[-1]
-    if not tail.rstrip().endswith(']:'):
-        raise RuntimeError(f"msolve[{tag}] malformed output tail: {tail[:200]!r}")
-    unit = tail.rstrip().endswith('[1]:')
+    tail = rr.stdout.strip().splitlines()[-1]
     print(f"        msolve[{tag}]: nvars={len(allc)} neqs={len(eqs)} "
           f"time={dt:.1f}s GB_tail={tail[:24]} UNIT={unit}", flush=True)
     return unit
+
+
+_ser_x = sp.symbols('_ser_x')
+check("msolve serializer clears coefficient denominators but rejects unknown-dependent ones",
+      _serialize_msolve_polynomial((_ser_x + 1) / 2, [_ser_x]) == '_ser_x+1'
+      and _serialization_rejected(1 / (_ser_x + 1), [_ser_x]))
+check("msolve stdout parser accepts only the canonical reduced-GB unit record",
+      _parse_msolve_stdout_unit('[1]:') is True
+      and all(_rejects_msolve_stdout_unit(s) for s in
+              ('[garbage]', '[[nonsense]]', '[1]:garbage', 'garbage[1]:',
+               '[-1]garbage', '[1,23,-1,[garbage]]')))
 
 
 # sector shapes shared by several sections -----------------------------------
@@ -359,7 +402,9 @@ check("DIFF-2: a GENERIC Q_4 solution does NOT extend to Q_3 (Q_3 constrains a_2
 # (3c) At tested specializations, Gröbner reduction proves ideal membership for
 #      the gcd-node evaluation and ideal nonmembership for the clean-extra
 #      evaluation. Ideal nonmembership does not imply radical nonmembership or
-#      geometric non-forcing, so restoration remains unresolved.
+#      geometric non-forcing, so these historical tests alone are inconclusive.
+#      Restoration is resolved by the later degree-free analysis in
+#      band3-sectors.md / verify_band3_sectors.py, not by this verifier.
 def restoration_status(hc, r0, k0):
     hc = sp.expand(hc); a3, b2 = sector_top(hc, sp.Integer(k0))
     a3 = sp.expand(a3.subs(r, r0)); b2 = sp.expand(b2.subs(r, r0))
@@ -376,8 +421,9 @@ for hc, tag in [((E - r) * (E - r - 1), "diff-1"), ((E - r) * (E - r - 2), "diff
         gf, ef = restoration_status(hc, r0, k0)
         check(f"{tag} IDEAL TEST [r={r0},kappa={k0}]: gcd-node evaluation is in the ideal={gf}; "
               f"clean-extra evaluation is not in the ideal={not ef}", gf and (not ef))
-print("   => ideal nonmembership is inconclusive about radical membership and geometric restoration;")
-print("      restoration and alternative proper-factor mechanisms remain open.")
+print("   => these ideal tests alone are inconclusive about radical membership and restoration.")
+print("      Later degree-free work in band3-sectors.md / verify_band3_sectors.py resolves")
+print("      restoration; the tests here remain historical/bounded corroboration only.")
 
 
 # ===========================================================================
@@ -545,14 +591,25 @@ print("        diff-1: (E-r)|a_2 + coupled correction a_2(r-1)+a_2(r+1)=0;")
 print("        diff-2: clean proper-factor (E-r)(E-r-1)|a_2 (no coupling);")
 print("        mult-root (E-r)^2: cube-separated => CLOSED arbitrary degree.")
 print("     TASK 2 (cascade): general Q_3 identity; a_3 double nodes; generic Q_4")
-print("        does NOT extend to Q_3; tested normal forms establish only ideal")
-print("        membership/nonmembership, not radical or geometric restoration status.")
+print("        does NOT extend to Q_3; tested normal forms are inconclusive alone.")
+print("        Later degree-free work in band3-sectors.md / verify_band3_sectors.py")
+print("        supplies the current restoration results; this verifier does not.")
 print("     TASK 3 (adjoint): jet/derivative-node criterion at double nodes;")
 print("        Lemma-P moment slope for the degenerate tops.")
-print("     TASK 4 (bounded): cap d=2 EMPTY on the generic fiber and tested")
-print("        specific (r,kappa) fibers, both classes; no uniform parameter claim")
-print("        (committed); msolve cap d=2,3,4 grid (HEAVY).")
-print("   OPEN (not claimed): diff-1, diff-2 at ARBITRARY degree (bounded only).")
+print("     TASK 4 (bounded corroboration): cap d=2 EMPTY on the generic fiber and")
+print("        tested specific (r,kappa) fibers, both classes; no uniform parameter")
+print("        claim (committed); msolve cap d=2,3,4 grid (HEAVY).")
+print("   CURRENT CROSS-CORPUS STATUS (band3-sectors.md, shifted-cube-completion.md):")
+print("     diff-1: fully CLOSED at arbitrary degree in all three branches --")
+print("        kappa != 0 by the radical-correct certificate (band3-sectors.md);")
+print("        kappa = 0, b_1 != 0 by direct cascade (band3-sectors.md);")
+print("        kappa = 0, b_1 = 0 by the Nonpositive-D Exclusion Theorem")
+print("        (shifted-cube-completion.md). The direct residual/congruence route")
+print("        remains silent at kappa=0,b_1=0, but that theorem closes the branch")
+print("        independently.")
+print("     diff-2: kappa = 0, b_1 = 0 CLOSED by that theorem; kappa = 0, b_1 != 0")
+print("        closed by direct cascade; kappa != 0 branch remains OPEN at arbitrary")
+print("        degree (restoration refuted by an exact (Q4,Q3)-locus point with Q2!=0).")
 
 # ===========================================================================
 print("\n" + "=" * 72)

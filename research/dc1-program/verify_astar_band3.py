@@ -36,7 +36,7 @@ Run:  uv run --with sympy python research/dc1-program/verify_astar_band3.py
       HEAVY=1 uv run --with sympy python research/dc1-program/verify_astar_band3.py
 The final summary distinguishes no-skip success from executed-check success with skips.
 """
-import os, sys, shutil, subprocess, random, tempfile
+import os, sys, shutil, subprocess, random, tempfile, re
 import sympy as sp
 
 HEAVY = os.environ.get("HEAVY", "") not in ("", "0", "false", "False")
@@ -272,29 +272,59 @@ def _run_msolve(eqs, unk, characteristic, args, timeout_s):
             return fh.read()
 
 
+def _strip_msolve_record(text):
+    lines = [ln.strip() for ln in text.splitlines()
+             if ln.strip() and not ln.lstrip().startswith("#")]
+    return "".join(lines).replace(" ", "")
+
+
+def _parse_msolve_gb_unit(text):
+    """Parse one exact reduced-GB record from msolve's -o interface."""
+    record = _strip_msolve_record(text)
+    if record == "[1]":
+        return True
+    raise RuntimeError(f"malformed or non-unit msolve finite-field record: {record[:200]!r}")
+
+
+def _parse_msolve_solve_empty(text):
+    """Parse one exact characteristic-zero solve record; return whether empty."""
+    record = _strip_msolve_record(text)
+    if record == "[-1]":
+        return True
+    if re.fullmatch(r"\[1,[1-9][0-9]*,-1,\[\]\]", record):
+        return False
+    raise RuntimeError(f"malformed msolve characteristic-zero record: {record[:200]!r}")
+
+
+def _rejects(parser, text):
+    try:
+        parser(text)
+    except RuntimeError:
+        return True
+    return False
+
+
 def msolve_unit(eqs, unk, prime):
     """msolve -g 2 over F_prime; None means timeout, malformed output is fatal."""
     txt = _run_msolve(eqs, unk, prime, ["-g", "2"], 300)
-    if txt is None:
-        return None
-    lines = [ln for ln in txt.splitlines() if not ln.lstrip().startswith("#")]
-    parsed = "".join(lines).replace(" ", "")
-    if not parsed.startswith("["):
-        raise RuntimeError(f"malformed msolve finite-field output: {parsed[:200]!r}")
-    return parsed.startswith("[1]:") or parsed == "[1]"
+    return None if txt is None else _parse_msolve_gb_unit(txt)
 
 
 def msolve_empty_QQ(eqs, unk, timeout_s):
     """msolve over QQ; None means timeout, malformed output is fatal."""
     txt = _run_msolve(eqs, unk, 0, [], timeout_s)
-    parsed = txt.strip() if txt is not None else None
-    if parsed is None:
-        return None
-    if parsed.startswith("[-1]"):
-        return True
-    if parsed.startswith("["):
-        return False
-    raise RuntimeError(f"malformed msolve characteristic-zero output: {parsed[:200]!r}")
+    return None if txt is None else _parse_msolve_solve_empty(txt)
+
+
+_BAD_MSOLVE_RECORDS = ('[garbage]', '[[nonsense]]', '[1]:garbage',
+                       'garbage[1]:', '[-1]garbage', '[1,23,-1,[garbage]]')
+check(_parse_msolve_gb_unit('[1]') is True
+      and all(_rejects(_parse_msolve_gb_unit, s) for s in _BAD_MSOLVE_RECORDS),
+      "msolve reduced-GB parser accepts exact [1] and rejects malformed records")
+check(_parse_msolve_solve_empty('[-1]') is True
+      and _parse_msolve_solve_empty('[1,23,-1,[]]') is False
+      and all(_rejects(_parse_msolve_solve_empty, s) for s in _BAD_MSOLVE_RECORDS),
+      "msolve QQ solve parser accepts exact empty/nonempty records and rejects malformed records")
 
 
 # --- kappa2 = 0 branch: an explicit tame witness (nonempty control) ---
@@ -311,6 +341,17 @@ check(all(sp.expand(Qm(Aw, Bw, m) - (1 if m == 0 else 0)) == 0 for m in range(-6
       "kappa2 = 0 tame witness: explicit [D,X]=1 (positive control), a3=1, b2=0")
 check(sp.expand(Bw[2]) == 0 and sp.expand(Aw[3]) == 1,
       "  witness has b2 = kappa2 = 0 (the slice contains this tame family; no converse claimed)")
+# Cross-sync (audit 2026-07-26): the Nonpositive-D Exclusion Theorem of
+# shifted-cube-completion.md closes only the corner kappa_2 = 0 AND b_1 = 0.
+# This tame witness has kappa_2 = 0 but *positive band-one D* -- D = U = x + 2d
+# is band 1 with a nonzero b_1 -- so it falls OUTSIDE that theorem's hypothesis
+# (band D <= 0 AND b_1 = 0) and there is no contradiction. Test this explicitly.
+_band_D_witness = max((abs(k) for k in Dw if sp.expand(Dw[k]) != 0), default=0)
+check(_band_D_witness == 1 and sp.expand(Dw.get(1, 0)) != 0,
+      "kappa_2 = 0 tame witness has band D = 1 with b_1 != 0, so it falls OUTSIDE "
+      "the Nonpositive-D Exclusion Theorem's hypothesis (band D <= 0 AND b_1 = 0); "
+      "that theorem closes only the corner kappa_2 = 0 AND b_1 = 0 and does NOT "
+      "contradict this witness")
 
 # --- kappa2 != 0 branch: EMPTY at cap d=1 (normalize kappa2 = 1) ---
 print("  building cap d=1 kappa2=1 system ...", flush=True)

@@ -52,22 +52,48 @@ HOUSE RULES ENFORCED
 
 Run:
     uv run --with sympy python research/dc1-program/verify_band3_sectors.py
-    HEAVY=1 uv run --with sympy python research/dc1-program/verify_band3_sectors.py
+    uv run --with sympy python research/dc1-program/verify_band3_sectors.py --require-msolve
+    HEAVY=1 uv run --with sympy python research/dc1-program/verify_band3_sectors.py --require-msolve
+
+Without --require-msolve, unavailable or unsuccessful invoked solver legs are explicit
+optional SKIPs.  With it, every solver leg actually invoked must finish successfully and
+return a recognized verdict; HEAVY-gated legs are invoked, and thus required, only when
+HEAVY=1.
 """
 
+import argparse
 import os
 import sys
 import time
 import shutil
 import subprocess
 import tempfile
+import re
 import sympy as sp
 
 E = sp.symbols('E')
 r, kappa, t = sp.symbols('r kappa t')
 
 HEAVY = os.environ.get('HEAVY', '') not in ('', '0', 'false', 'False')
-HAVE_MSOLVE = shutil.which('msolve') is not None
+_parser = argparse.ArgumentParser(
+    description="Verify the exact band-3 sector identities and bounded solver probes.",
+    epilog=("Without --require-msolve, unavailable or unsuccessful invoked msolve legs "
+            "are optional SKIPs. With --require-msolve, every invoked msolve leg must "
+            "finish successfully and return a recognized verdict; HEAVY-gated legs are "
+            "invoked, and therefore required, only when HEAVY=1."),
+)
+_parser.add_argument(
+    '--require-msolve', action='store_true',
+    help=("require msolve to be on PATH and fail closed for every solver leg actually "
+          "invoked (timeout, nonzero exit, missing output, or malformed/unrecognized "
+          "result); HEAVY-only legs are required only when HEAVY=1"),
+)
+_args = _parser.parse_args()
+REQUIRE_MSOLVE = _args.require_msolve
+MSOLVE_PATH = shutil.which('msolve')
+HAVE_MSOLVE = MSOLVE_PATH is not None
+if REQUIRE_MSOLVE and not HAVE_MSOLVE:
+    _parser.error("--require-msolve requested, but msolve is not on PATH")
 T0 = time.time()
 
 CHECKS = []
@@ -84,6 +110,22 @@ def check(name, cond):
 def skip(name, why):
     SKIPS.append((name, why))
     print(f"[SKIP] {name}  ({why})", flush=True)
+
+
+def solver_problem(tag, why):
+    """Record an unavailable solver verdict, failing closed when required."""
+    message = f"msolve[{tag}] {why}"
+    if REQUIRE_MSOLVE:
+        check(message + " (--require-msolve fails closed)", False)
+    else:
+        print(f"        {message}; optional leg will be skipped", flush=True)
+    return None
+
+
+def skip_solver_leg(name, why):
+    """Skip a failed invoked leg only in ordinary optional-solver mode."""
+    if not REQUIRE_MSOLVE:
+        skip(name, why)
 
 
 # ---------------------------------------------------------------- primitives
@@ -182,14 +224,28 @@ def _guard_body(body):
     return True
 
 
+def _serialize_msolve_polynomial(expr, unknowns):
+    """Clear coefficient-only denominators and emit one safe msolve polynomial."""
+    num, den = sp.fraction(sp.together(sp.sympify(expr)))
+    if den.free_symbols & set(unknowns):
+        raise ValueError("msolve input has a variable-dependent denominator")
+    text = str(sp.expand(num)).replace('**', '^').replace(' ', '')
+    if '/' in text or '**' in text:
+        raise ValueError("msolve input contains unsafe '/' or '**' serialization")
+    return text
+
+
+def _serialization_rejected(expr, unknowns):
+    try:
+        _serialize_msolve_polynomial(expr, unknowns)
+    except ValueError:
+        return True
+    return False
+
+
 def _msolve(eqs, unk, characteristic, args, timeout_s, tag):
     vs = ",".join(str(u) for u in unk)
-    cleared = []
-    for e in eqs:
-        num, den = sp.fraction(sp.together(sp.expand(e)))
-        cleared.append(sp.expand(num))                                   # TRAP #2
-    body = ",\n".join(str(sp.expand(e)).replace('**', '^').replace(' ', '')
-                      for e in cleared)
+    body = ",\n".join(_serialize_msolve_polynomial(e, unk) for e in eqs)
     _guard_body(body)
     t0 = time.time()
     with tempfile.TemporaryDirectory(prefix='band3-sectors-') as tmp:
@@ -198,17 +254,15 @@ def _msolve(eqs, unk, characteristic, args, timeout_s, tag):
         with open(fn, 'w', encoding='utf-8') as fh:
             fh.write(f"{vs}\n{characteristic}\n{body}\n")
         try:
-            rr = subprocess.run(['msolve', *args, '-f', fn, '-o', out],
+            rr = subprocess.run([MSOLVE_PATH, *args, '-f', fn, '-o', out],
                                 capture_output=True, text=True, timeout=timeout_s)
         except subprocess.TimeoutExpired:
-            print(f"        msolve[{tag}] TIMEOUT after {timeout_s}s", flush=True)
-            return None
+            return solver_problem(tag, f"timed out after {timeout_s}s")
         if rr.returncode != 0:
-            print(f"        msolve[{tag}] rc={rr.returncode}: {rr.stderr.strip()[:160]}",
-                  flush=True)
-            return None
+            return solver_problem(tag, f"exited with status {rr.returncode}: "
+                                  f"{rr.stderr.strip()[:160]}")
         if not os.path.exists(out):
-            return None
+            return solver_problem(tag, "completed without creating its output file")
         with open(out, encoding='utf-8') as fh:
             txt = fh.read()
     parsed = "".join(l for l in txt.splitlines()
@@ -218,26 +272,46 @@ def _msolve(eqs, unk, characteristic, args, timeout_s, tag):
     return parsed
 
 
-def msolve_empty_QQ(eqs, unk, tag, timeout_s=900):
-    """char-0 msolve prints [-1] exactly when V is EMPTY over C-bar."""
-    parsed = _msolve(eqs, unk, 0, [], timeout_s, tag)
-    if parsed is None:
-        return None
-    if parsed.startswith('[-1]'):
+def _parse_empty_QQ_record(parsed):
+    """Parse only proven canonical char-zero msolve verdict records.
+
+    [-1] is the unit-ideal/EMPTY record.  The NONEMPTY form accepted here is
+    the complete positive-dimensional rational-solver header emitted in the
+    historical and parser-validation runs: [1,<positive decimal>,-1,[]].
+    Any other output is unknown, never a mathematical verdict.
+    """
+    if parsed == '[-1]':
         return True
-    if parsed.startswith('['):
+    if re.fullmatch(r'\[1,[1-9][0-9]*,-1,\[\]\]', parsed or ''):
         return False
     return None
 
 
+def _parse_unit_Fp_record(parsed):
+    """Accept only msolve's documented reduced-GB unit-ideal record."""
+    return True if parsed == '[1]' else None
+
+
+def msolve_empty_QQ(eqs, unk, tag, timeout_s=900):
+    """char-0 msolve prints the complete record [-1] iff V is empty over C-bar."""
+    parsed = _msolve(eqs, unk, 0, [], timeout_s, tag)
+    if parsed is None:
+        return None
+    verdict = _parse_empty_QQ_record(parsed)
+    if verdict is None:
+        return solver_problem(tag, "returned an unrecognized or malformed char-0 result")
+    return verdict
+
+
 def msolve_unit_Fp(eqs, unk, p, tag, timeout_s=600):
-    """reduced GB over F_p equal to [1]  <=>  unit ideal mod p (corroboration only)."""
+    """Reduced GB [1] over F_p is corroboration only, parsed as one complete record."""
     parsed = _msolve(eqs, unk, p, ['-g', '2'], timeout_s, tag)
     if parsed is None:
         return None
-    if not parsed.startswith('['):
-        return None
-    return parsed.startswith('[1]:') or parsed == '[1]'
+    verdict = _parse_unit_Fp_record(parsed)
+    if verdict is None:
+        return solver_problem(tag, "returned an unrecognized or malformed F_p result")
+    return verdict
 
 
 # ===========================================================================
@@ -655,13 +729,26 @@ check("diff-1 kappa=0, c != 0 [degree-free]: F'(r) = 3 a_2(r) + a_2(r+1) + 2 a_2
                             - (3 * A2(r) + A2(r + 1)
                                + 2 * sp.Derivative(A2(r), r)))) == 0)
 Vk0 = sp.expand(hD1_1 * A1(E) - hD1 * A1(E + 1))
+_ck0 = sp.symbols('c_k0', nonzero=True)
+_gk0 = gp('gk0', 2)[0]
+Xk0 = {3: a3D1, 2: sp.expand(hD1 * hD1_1 * _gk0), 1: A1(E)}
+Dk0 = {3: sp.Integer(0), 2: sp.Integer(0), 1: sp.expand(_ck0 * hD1)}
+Q2true = sp.expand(Qm(Xk0, Dk0, 2))
+check("diff-1 kappa=0, c != 0 [degree-free]: direct crossed-product Q_2 satisfies "
+      "Q_2-c V in (h h^{[1]}), V=h^{[1]}a_1-h a_1^{[1]}",
+      divides(sp.expand(hD1 * hD1_1), sp.expand(Q2true - _ck0 * Vk0)))
 check("diff-1 kappa=0, c != 0 [degree-free]: Q_2 gives h h^{[1]} | V := h^{[1]}a_1 - h a_1^{[1]},"
       " and V(r+1) = 2 a_1(r+1), V(r-1) = -2 a_1(r)  =>  h | a_1",
       sp.simplify(sp.expand(ev(Vk0, 1) - 2 * A1(r + 1))) == 0
       and sp.simplify(sp.expand(ev(Vk0, -1) + 2 * A1(r))) == 0)
-print("      NOTE: the sub-branch kappa = 0 AND b_1 = 0 is NOT closed here.  It is")
-print("      INHERITED (h-independent): the corpus's cube-separated kappa = 0 chain")
-print("      'Q_4 => b_1 = c h, Q_3 => h h^{[1]} | a_2' also silently assumes c != 0.")
+print("      NOTE (audit 2026-07-26): the sub-branch kappa = 0 AND b_1 = 0 is NOT closed")
+print("      by this direct residual/congruence route -- it stays silent there.  It is")
+print("      closed INDEPENDENTLY by the Nonpositive-D Exclusion Theorem of")
+print("      shifted-cube-completion.md, so the diff-1 sector is fully closed at")
+print("      arbitrary degree in all three branches:")
+print("        * kappa != 0                : this file (radical-correct certificate)")
+print("        * kappa = 0, b_1 != 0       : this file (direct cascade)")
+print("        * kappa = 0, b_1 = 0        : Nonpositive-D Exclusion Theorem")
 
 
 # ===========================================================================
@@ -841,6 +928,27 @@ check("constant top: Q_4 = (b_1^{[3]} - b_1) + kappa_2 (a_2 - a_2^{[2]})  (exact
       sp.expand(Qm(Xct, Dct2, 4)
                 - ((sh(Dct2[1], 3) - Dct2[1])
                    + sp.Symbol('k2') * (Xct[2] - sh(Xct[2], 2)))) == 0)
+# Weyl-coordinate scaling over C-bar: x->s x, del->s^-1 del, hence E=x del
+# is fixed.  Ladder coefficients scale as a_k->s^k a_k, b_k->s^k b_k;
+# the additional operator normalization X->s^-3 X, D->s^3 D gives net
+# a_k->s^(k-3)a_k and b_k->s^(k+3)b_k.
+_ss = sp.symbols('s', nonzero=True)
+Xscl = {k: sp.expand(_ss**(k - 3) * v) for k, v in Xct.items()}
+Dscl = {k: sp.expand(_ss**(k + 3) * v) for k, v in Dct2.items()}
+check("A*-band3 scaling: [D,X]=1 is preserved rungwise under x->sx, del->s^-1del, "
+      "X->s^-3X, D->s^3D",
+      all(sp.expand(Qm(Xscl, Dscl, m) - _ss**m * Qm(Xct, Dct2, m)) == 0
+          for m in range(-6, 7)))
+check("A*-band3 scaling preserves a_3=1, E-degree caps, and (E)_j negative-band membership",
+      Xscl[3] == 1
+      and all(sp.degree(Xscl[k], E) == sp.degree(Xct[k], E) for k in Xct)
+      and all(sp.degree(Dscl[k], E) == sp.degree(Dct2[k], E) for k in Dct2)
+      and all(divides(fall(j), sp.expand(_ss**(-j - 3) * fall(j) * gp(f'sca{j}', 1)[0]))
+              and divides(fall(j), sp.expand(_ss**(-j + 3) * fall(j) * gp(f'scb{j}', 1)[0]))
+              for j in (1, 2, 3)))
+check("A*-band3 scaling sends kappa_2 to s^5 kappa_2; choosing s^5=kappa_2^-1 "
+      "normalizes nonzero kappa_2 to 1 over C-bar (not generally over Q)",
+      sp.expand(Dscl[2] - _ss**5 * Dct2[2]) == 0)
 # AUDIT FIX (2026-07-25): the former check here evaluated sh(1,-1) == 1, i.e.
 # 1 == 1 -- a tautology that could not fail.  Replaced by the falsifiable
 # content: for a NONCONSTANT h the shifted factor is a genuine nonunit (so the
@@ -927,25 +1035,75 @@ def astar_sector(d, k2, withQ0=True, branch='all'):
 
 
 # ---- msolve parser validation, IN FILE, before any load-bearing call --------
+_malformed_msolve_records = (
+    '[-1]garbage', '[-1]\nSECOND_RECORD', '[totally malformed', '[]garbage',
+    '[garbage]', '[[nonsense]]', '[1,23,-1,[garbage]]',
+    '[1,23,-1,[]]garbage', '[1,23,-1,[]][1]', '[1,0,-1,[]]',
+    '[1,-23,-1,[]]', '[1,23,1,[]]', '[1,23,-1,[],0]',
+    '[1]:', '[1]:123',
+)
+for malformed in _malformed_msolve_records:
+    check(f"strict msolve char-0 parser rejects malformed output {malformed!r}",
+          _parse_empty_QQ_record(malformed.replace(' ', '')) is None)
+    check(f"strict msolve F_p parser rejects malformed output {malformed!r}",
+          _parse_unit_Fp_record(malformed.replace(' ', '')) is None)
+check("strict msolve char-0 parser accepts exact canonical EMPTY record [-1]",
+      _parse_empty_QQ_record('[-1]') is True)
+check("strict msolve char-0 parser accepts canonical NONEMPTY record [1,23,-1,[]]",
+      _parse_empty_QQ_record('[1,23,-1,[]]') is False)
+check("strict msolve char-0 parser accepts historical NONEMPTY record [1,22,-1,[]]",
+      _parse_empty_QQ_record('[1,22,-1,[]]') is False)
+check("strict msolve F_p parser accepts exact canonical unit-ideal record [1]",
+      _parse_unit_Fp_record('[1]') is True)
+_ser_x = sp.Symbol('serialization_x')
+check("msolve serialization accepts rational constant coefficients by clearing"
+      " their common denominator",
+      _serialize_msolve_polynomial(sp.Rational(2, 3) * _ser_x**2 - sp.Rational(5, 7),
+                                   [_ser_x]) == '14*serialization_x^2-15')
+check("msolve serialization rejects a denominator involving an unknown before subprocess",
+      _serialization_rejected(1 / (_ser_x + 1), [_ser_x]))
 if HAVE_MSOLVE:
+    _ver = 'version unavailable'
+    for _args in (['--version'], ['-v']):
+        try:
+            _vr = subprocess.run([MSOLVE_PATH, *_args], capture_output=True, text=True, timeout=10)
+            _txt = (_vr.stdout or _vr.stderr).strip().splitlines()
+            if _txt:
+                _ver = _txt[0][:160]
+                break
+        except (subprocess.TimeoutExpired, OSError):
+            pass
+    print(f"      msolve executable: {MSOLVE_PATH}; identity/version: {_ver}")
     xv, yv = sp.symbols('pv_x pv_y')
     v_unit = msolve_empty_QQ([xv - 1, xv - 2], [xv], 'validate-unit', 60)
     v_feas = msolve_empty_QQ([xv**2 - 2, yv - xv], [xv, yv], 'validate-feasible', 60)
-    check("msolve PARSER VALIDATION: known UNIT ideal (x-1, x-2) reports EMPTY [-1]",
-          v_unit is True)
-    check("msolve PARSER VALIDATION: known FEASIBLE ideal (x^2-2, y-x) reports NONEMPTY",
-          v_feas is False)
+    if v_unit is None:
+        skip_solver_leg("msolve PARSER VALIDATION: known UNIT ideal",
+                        "invoked msolve leg did not return a recognized verdict")
+    else:
+        check("msolve PARSER VALIDATION: known UNIT ideal (x-1, x-2) reports EMPTY [-1]",
+              v_unit is True)
+    if v_feas is None:
+        skip_solver_leg("msolve PARSER VALIDATION: known FEASIBLE ideal",
+                        "invoked msolve leg did not return a recognized verdict")
+    else:
+        check("msolve PARSER VALIDATION: known FEASIBLE ideal (x^2-2, y-x) reports NONEMPTY",
+              v_feas is False)
     # AUDIT FIX (2026-07-25): (x^2-2, y-x) is REAL-rooted, so it cannot distinguish
     # "no REAL roots" from "empty over C-bar" -- precisely the failure mode that
     # would invalidate every "EMPTY over C-bar" verdict below.  Add a
     # complex-only ideal to guard what the validation purports to guard.
     v_cplx = msolve_empty_QQ([xv**2 + 1], [xv], 'validate-complex-only', 60)
-    check("msolve PARSER VALIDATION (complex-only): (x^2+1) has NO REAL roots but is "
-          "NONEMPTY over C-bar -- msolve must NOT report it as the unit ideal",
-          v_cplx is False)
+    if v_cplx is None:
+        skip_solver_leg("msolve PARSER VALIDATION: complex-only feasible ideal",
+                        "invoked msolve leg did not return a recognized verdict")
+    else:
+        check("msolve PARSER VALIDATION (complex-only): (x^2+1) has NO REAL roots but is "
+              "NONEMPTY over C-bar -- msolve must NOT report it as the unit ideal",
+              v_cplx is False)
     _trap1 = False
     try:
-        _msolve([xv**2 - 2], [xv], 0, [], 30, 'trap-guard')
+        _guard_body('pv_x^2-2')
     except ValueError:
         _trap1 = True
     check("control: the trap guards accept a clean integer system (no false alarm)",
@@ -971,7 +1129,8 @@ if HAVE_MSOLVE:
     # real trap-#1 guard is the unit test a few lines up, which rejects a body
     # still carrying '**'.
 else:
-    skip("msolve parser validation + all msolve legs", "msolve not on PATH")
+    skip("msolve parser validation + all load-bearing msolve legs",
+         "NOT RERUN/SKIPPED: msolve not on PATH; use --require-msolve for strict validation")
 
 # ---- the kappa_2 = 0 control: an explicit genuine pair -----------------------
 U = {1: sp.Integer(1), -1: 2 * E}                      # U = x + 2*del
@@ -1012,8 +1171,8 @@ if HAVE_MSOLVE:
     _, _, un1, eqs1 = astar_sector(1, 1)
     r1 = msolve_empty_QQ(eqs1, un1, 'astar d=1 kappa2=1', 240)
     if r1 is None:
-        skip("A*-band3 kappa_2 = 1, cap d = 1: msolve char-0 emptiness over QQ",
-             "msolve did not finish within 240s")
+        skip_solver_leg("A*-band3 kappa_2 = 1, cap d = 1: msolve char-0 emptiness over QQ",
+                        "invoked msolve leg did not return a recognized verdict")
     else:
         check("A*-band3 kappa_2 = 1, cap d = 1: msolve char-0 over QQ reports"
               " [-1] = EMPTY over C-bar   (COMMITTED, default run)", r1 is True)
@@ -1021,7 +1180,8 @@ if HAVE_MSOLVE:
     _, _, un0, eqs0 = astar_sector(1, 0)
     r0 = msolve_empty_QQ(eqs0, un0, 'astar d=1 kappa2=0', 240)
     if r0 is None:
-        skip("A*-band3 CONTROL kappa_2 = 0 at cap d = 1 nonempty", "msolve timeout")
+        skip_solver_leg("A*-band3 CONTROL kappa_2 = 0 at cap d = 1 nonempty",
+                        "invoked msolve leg did not return a recognized verdict")
     else:
         check("A*-band3 CONTROL: the kappa_2 = 0 slice at cap d = 1 is NONEMPTY"
               "  (so the kappa_2 = 1 emptiness is a real separation, not a broken"
@@ -1029,7 +1189,8 @@ if HAVE_MSOLVE:
     # F_p corroboration -- explicitly NOT a QQ proof
     rp = msolve_unit_Fp(eqs1, un1, 1073741827, 'astar d=1 F_p', 240)
     if rp is None:
-        skip("A*-band3 cap d = 1: F_p corroboration", "msolve timeout")
+        skip_solver_leg("A*-band3 cap d = 1: F_p corroboration",
+                        "invoked msolve leg did not return a recognized verdict")
     else:
         check("A*-band3 kappa_2 = 1, cap d = 1: unit ideal mod p = 2^30+3."
               "  CORROBORATION ONLY -- unit mod p does NOT imply unit over QQ"
@@ -1041,8 +1202,8 @@ if HAVE_MSOLVE and HEAVY:
     _, _, unv, eqsv = astar_sector(1, 1, withQ0=False)
     rv = msolve_empty_QQ(eqsv, unv, 'astar d=1 no-Q_0', 1200)
     if rv is None:
-        skip("HEAVY A*-band3 CONTROL: non-vacuity (drop Q_0 = 1) at cap d = 1",
-             "msolve did not finish within 1200s")
+        skip_solver_leg("HEAVY A*-band3 CONTROL: non-vacuity (drop Q_0 = 1) at cap d = 1",
+                        "invoked msolve leg did not return a recognized verdict")
     else:
         check("HEAVY A*-band3 CONTROL: dropping Q_0 = 1 at cap d = 1 leaves a"
               " NONEMPTY variety  =>  the emptiness certificate is not vacuous",
@@ -1052,9 +1213,9 @@ if HAVE_MSOLVE and HEAVY:
             _, _, un, eqs = astar_sector(d, 1, branch=br)
             res = msolve_empty_QQ(eqs, un, f'astar d={d} {brn}', tmo)
             if res is None:
-                skip(f"HEAVY A*-band3 kappa_2 = 1, cap d = {d}, branch {brn}:"
-                     f" msolve char-0 emptiness over QQ",
-                     f"msolve did not finish within {tmo}s")
+                skip_solver_leg(f"HEAVY A*-band3 kappa_2 = 1, cap d = {d}, branch {brn}:"
+                                f" msolve char-0 emptiness over QQ",
+                                "invoked msolve leg did not return a recognized verdict")
             else:
                 check(f"HEAVY A*-band3 kappa_2 = 1, cap d = {d}, branch {brn}:"
                       f" msolve char-0 reports"
@@ -1111,23 +1272,23 @@ if HAVE_MSOLVE:
     un, eqs, slope = astar_slope_system(1, 1)
     res = msolve_empty_QQ(eqs + [1 - t * slope], un + [t], 'slope-forcing d=1', 400)
     if res is None:
-        skip("TASK C, cap d = 1: Rabinowitsch slope-forcing probe",
-             "msolve did not finish within 400s")
+        skip_solver_leg("TASK C, cap d = 1: Rabinowitsch slope-forcing probe",
+                        "invoked msolve leg did not return a recognized verdict")
     else:
-        check("TASK C, cap d = 1 (COMMITTED): the Rabinowitsch system"
-              " (tail, 1 - t G(1)) is NOT the unit ideal  =>  G(1) is NOT forced"
-              " to 0 by the tail alone  =>  the W2-analogue slope route is DEAD"
-              " at cap d = 1", res is False)
-        print("      TASK C VERDICT (cap d = 1, kappa_2 = 1): G(1) is NOT forced to 0")
-        print("      by the tail alone.  No degree-free slope kill is available here;")
-        print("      the constant-top obstruction does NOT reduce to the moment slope.")
+        check("TASK C, formal constant-top A*-band3 sector, kappa_2=1, cap d=1: "
+              "the Rabinowitsch system (tail, 1-tG(1)) is NOT the unit ideal, so "
+              "G(1) is not forced to 0 and this slope route fails in exactly that sector/cap",
+              res is False)
+        print("      TASK C VERDICT (formal constant-top A*-band3, kappa_2=1, cap d=1):")
+        print("      G(1) is NOT forced to 0 by the tail alone. This bounded formal probe")
+        print("      does not support a claim beyond this sector and cap.")
 
 if HAVE_MSOLVE and HEAVY:
     un, eqs, slope = astar_slope_system(2, 1)
     res = msolve_empty_QQ(eqs + [1 - t * slope], un + [t], 'slope-forcing d=2', 3000)
     if res is None:
-        skip("HEAVY TASK C, cap d = 2: Rabinowitsch slope-forcing probe",
-             "msolve did not finish within 3000s")
+        skip_solver_leg("HEAVY TASK C, cap d = 2: Rabinowitsch slope-forcing probe",
+                        "invoked msolve leg did not return a recognized verdict")
     else:
         check(f"HEAVY TASK C, cap d = 2: G(1) is"
               f" {'FORCED to 0' if res else 'NOT forced to 0'} by the tail alone",
@@ -1135,7 +1296,8 @@ if HAVE_MSOLVE and HEAVY:
 elif HAVE_MSOLVE:
     skip("HEAVY TASK C: slope-forcing Rabinowitsch probe at cap d = 2", "set HEAVY=1")
 if not HAVE_MSOLVE:
-    skip("TASK C: slope-forcing Rabinowitsch probe", "msolve not on PATH")
+    skip("TASK C: formal constant-top A*-band3, kappa_2=1, cap d=1 slope probe",
+         "NOT RERUN/SKIPPED: msolve not on PATH")
 
 
 # ===========================================================================
@@ -1148,7 +1310,8 @@ print(f"  skipped         : {len(SKIPS)}")
 for nm, why in SKIPS:
     print(f"     SKIP  {nm}   ({why})")
 print(f"  wall time       : {time.time() - T0:.1f}s   HEAVY={'1' if HEAVY else '0'}"
-      f"   msolve={'yes' if HAVE_MSOLVE else 'no'}")
+      f"   require-msolve={'1' if REQUIRE_MSOLVE else '0'}"
+      f"   msolve={MSOLVE_PATH if HAVE_MSOLVE else 'NOT RERUN/SKIPPED'}")
 if nfail:
     print("\n  *** SOME CHECKS FAILED ***")
     for nm, ok in CHECKS:

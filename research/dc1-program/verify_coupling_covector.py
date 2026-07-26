@@ -13,37 +13,35 @@ of W.  Convention block (quantum band 3, gauge b_3=0):
 
 WHAT THIS FILE ESTABLISHES
 ==========================
-PROVED (degree-free / arbitrary d, machine-checked identities):
-  * S0/S1 upstream re-derivation: engine Q_m=[D,X]_m, Q_0=(T-1)G, slope gate, both-ends
-    Lemma P, and the factorization R(1)=a_2(0)*W.
+PAPER/LEVEL-INCIDENCE PROOFS WITH BOUNDED MACHINE-CHECK SCOPE:
+  * S0/S1 upstream identities: engine Q_m=[D,X]_m and Q_0=(T-1)G are machine-checked on
+    generic degree-2 coefficients; the slope gate, both-ends Lemma P, and the abstract-symbol
+    factorization R(1)=a_2(0)*W are also re-derived in file.
   * S2 STAIRCASE COLLAPSE of the two blocks.  The two-term operators are
        a-block(Q_m) = b_{m+2}(E-2) P(E) - b_{m+2}(E) P(E+m+2),
        b-block(Q_m) = a_{m+3}(E) S(E+m+3) - a_{m+3}(E-3) S(E),
     and at m=-2 the a-block DEGENERATES to a pure multiplier [b_0(E-2)-b_0(E)]P(E), at
-    m=-3 the b-block degenerates to the pure multiplier [a_0(E)-a_0(E-3)]S(E).  The
-    depth-3 filler dependence is therefore a STAIRCASE, not a generic 2x2 coupling.
-  * S3 MEMBERSHIP SILENCE TABLE.  Exactly six (rung,node) pairs are identically 0=0:
-    Q_-1(0), Q_-2(0), Q_-2(1), Q_-3(0), Q_-3(1), Q_-3(2)  -- BOTH the filler part and the
-    residual N_m vanish there.  Degree-free.
-  * S4 THE INTEGER-NODE WINDOW (the fixed-shape recipe).  For every k>=3 and every degree
-    d, the rows { Q_-1(e) }_{e=1..k-1} u { Q_-2(e) }_{e=2..k} u { Q_-3(e) }_{e=3..k}
-    involve ONLY the 2k-2 filler VALUES P(2..k), S(3..k+1); the augmented matrix [M|N] has
-    the d-INDEPENDENT shape (3k-4) x (2k-1) and its entries are the cascade datum evaluated
-    at FIXED INTEGER NODES.  So the coupling across the varying tops (a_2,a_1,a_0) /
-    (b_1,b_0,b_-1) collapses onto ONE fixed integer grid -- no algebraic necklace, no
-    trace forms, no gcd(a_2(E),a_2(E-3)) condition.
-  * S5 ON-SHELL NODE RECURSION.  The positive cascade fixes the b-tops on that grid by a
-    degree-free 3-step recursion anchored at the a_3-roots {0,-2,-4}:
+    m=-3 the b-block degenerates to the pure multiplier [a_0(E)-a_0(E-3)]S(E).  This is a
+    level-incidence argument, machine-confirmed only at d=2,3,4,5.
+  * S3 MEMBERSHIP SILENCE TABLE.  The level-incidence argument gives exactly six silent
+    (rung,node) pairs: Q_-1(0), Q_-2(0), Q_-2(1), Q_-3(0), Q_-3(1), Q_-3(2).  Their filler
+    and residual parts are machine-confirmed to vanish at d=2,3,4,5.
+  * S4 THE INTEGER-NODE WINDOW (the fixed-shape recipe).  The level-incidence argument gives
+    the d-independent shape (3k-4) x (2k-1), with 2k-2 filler values at fixed integer nodes.
+    The shape enumeration is checked for k=3..7; exact cascade row identities are checked at
+    d=2,3 (plus d=4 under HEAVY), k=3,4,5.  These bounded checks are not a degree-free proof.
+  * S5 ON-SHELL NODE RECURSION.  The paper recursion is anchored at the a_3-roots {0,-2,-4}:
        b_1(0) = (2/3) a_2(0),   a_2(-3) = a_2(0)  (a cascade consistency relation),
-       b_1(2) = (2/3)(2 a_2(-1) + a_2(1)),   15 b_1(4) = 48 b_1(1) - 18 a_2(1) + 4 a_2(3),
-    with b_1(1), b_1(3) FREE SEEDS (they drop out of Q_4 at E=-2 and E=0).  The collapse is
-    therefore PARTIAL: the b-tops share the a-grid but are not eliminated by it.
+       b_1(2) = (2/3)(2 a_2(-1) + a_2(1)),   15 b_1(4) = 48 b_1(1) - 18 a_2(1) + 4 a_2(3).
+    Here b_1(1), b_1(3) are only initial values for the displayed value recursion, not free
+    polynomial data: the corrected coefficient-space check has full column rank at each tested
+    d=2,3,4,6, so Q_4=0 uniquely determines the polynomial b_1 once a_2 is fixed.
 
 REFUTED (exact, stated scope):
-  * S7 NO fixed-shape integer-node window minor is a unit multiple of W.  At d=3, for
-    k=3,4,5 (1, 8, 55 maximal minors) every nonzero minor has a NONZERO residue at
-    am1_3=0, at each tested exact rational specialization -- so no single window minor
-    equals u*W.
+  * S7 At d=3, the complete k=3,4 maximal-minor sweeps (1 and 8 minors) find no
+    fixed-shape integer-node window minor that is a unit multiple of W.  Under HEAVY,
+    each k=5 exact rational specialization classifies 52 of the 55 minors the same way;
+    the three minors vanishing there remain symbolically unclassified.
   * S7 The k=3 window does not force W AT ALL: an EXPLICIT EXACT rational point of the
     cascade at which the k=3 window system is solvable (rank M = rank[M|N] = 4) while
     W = -8/9 != 0.  (Radical-correct: a witness point, not a normal form.)
@@ -56,16 +54,22 @@ BOUNDED-FINITE (exact scope stated):
   * S8 combined-rung adjoint over Q(E) (symbolic node): the shifted-rung value matrix on
     the window j=0..3 is 12x12 of rank 11 at exact specializations; its unique covector's
     residual pairing is NOT a W-multiple.
-  * S9 controls: the d=3 W-kill reproduced by RABINOWITSCH (sympy exact QQ + prime);
-    a_2(0) NOT forced (explicit witness); cascade+tail non-vacuous (explicit point).
+  * S9 controls: the d=3 W-kill is reproduced over the finite field mod 65003 by default;
+    the independent exact-QQ Rabinowitsch and full-tail Groebner legs run only with
+    EXACT_CONTROLS=1.  The a_2(0)-free and non-vacuity witnesses are explicit.
 
 OPEN (not claimed): whether ANY k has W in sqrt(I_k); any degree-free W-forcing recipe;
   the arbitrary-degree residual identity; all of band 3 / DC1 / JC2.
 
 Run:  uv run --with sympy python research/dc1-program/verify_coupling_covector.py
-      HEAVY=1 ...  (adds d=4/d=5 window legs and the k=5 minor sweep at more seeds)
+      HEAVY=1 ...  (adds the d=4 window leg and k=5 minor sweep at a second seed)
+      EXACT_CONTROLS=1 ...  (adds potentially hours-long exact-QQ Groebner controls)
+      HEAVY=1 EXACT_CONTROLS=1 ...  (runs every optional leg)
+The default retains the exact k=3 nonforcing witness and complete exact k=3,4 minor sweeps,
+but never silently starts the two potentially hours-long exact-QQ Groebner controls.
 Ends: "ALL CHECKS PASSED" only when nothing was skipped; otherwise an explicit
-      "ALL EXECUTED CHECKS PASSED; OPTIONAL CHECKS SKIPPED" line.
+      "ALL EXECUTED CHECKS PASSED; OPTIONAL CHECKS SKIPPED" line listing each skipped leg.
+      Verdict text labels HEAVY and EXACT_CONTROLS evidence as executed or not run.
 """
 import sympy as sp
 import time, os, random, itertools
@@ -76,6 +80,7 @@ R = sp.Rational
 _T0 = time.time()
 random.seed(20260724)
 HEAVY = os.environ.get("HEAVY") == "1"
+EXACT_CONTROLS = os.environ.get("EXACT_CONTROLS") == "1"
 _NP = 0
 _SKIPS = []
 
@@ -262,7 +267,7 @@ def positive_cascade(d):
 
 
 def greedy_param(conds, Pvars):
-    sol, solved, changed = {}, set(), True
+    sol, solved, pivots, changed = {}, set(), [], True
     while changed:
         changed = False
         best = None
@@ -280,10 +285,12 @@ def greedy_param(conds, Pvars):
                         best = (score, v, lead, rest)
         if best is not None:
             _, v, lead, rest = best
+            pivots = [(pv, sp.cancel(pd.subs(v, sp.cancel(-rest / lead))))
+                      for pv, pd in pivots]
             val = sp.cancel(-rest / lead)
             sol = {k: sp.cancel(x.subs(v, val)) for k, x in sol.items()}
-            sol[v] = val; solved.add(v); changed = True
-    return sol, [v for v in Pvars if v not in solved]
+            sol[v] = val; solved.add(v); pivots.append((v, sp.cancel(lead))); changed = True
+    return sol, [v for v in Pvars if v not in solved], pivots
 
 
 def build_reduced(d):
@@ -293,12 +300,13 @@ def build_reduced(d):
     fv = base + sorted(set(A[-2].free_symbols) - {E}, key=str) + cbm3 + kernels
     posnz = [sp.expand(e) for e in pos if sp.expand(e) != 0]
     fillers = sorted((set(A[-2].free_symbols) | set(B[-3].free_symbols)) - {E}, key=str)
-    sol, free = greedy_param(posnz, [v for v in fv if v not in set(fillers)])
+    sol, free, pivots = greedy_param(posnz, [v for v in fv if v not in set(fillers)])
     R1 = sp.cancel(sp.sympify(q_m(A, B, 0).subs(E, 0)).subs(sol))
     resid = [sp.expand(sp.cancel(c.subs(sol))) for c in posnz]
     tk = {m: [sp.expand(sp.fraction(sp.together(sp.cancel(e.subs(sol))))[0])
               for e in coeffs(q_m(A, B, m)) if sp.expand(e) != 0] for m in (-1, -2, -3, -4, -5)}
-    return dict(A=A, B=B, fillers=fillers, sol=sol, free=free, R1=R1, resid=resid, tk=tk)
+    return dict(A=A, B=B, fillers=fillers, sol=sol, free=free, pivots=pivots,
+                pos=posnz, R1=R1, resid=resid, tk=tk)
 
 
 def datum(rd, pt):
@@ -314,7 +322,7 @@ def datum(rd, pt):
 
 
 # =====================================================================
-print("\n--- S2. THE STAIRCASE COLLAPSE of the two blocks (degree-free) ---", flush=True)
+print("\n--- S2. STAIRCASE: level-incidence proof; machine check d=2,3,4,5 ---", flush=True)
 # =====================================================================
 for dsym in (2, 3, 4, 5):
     Az, Bz = {}, {}
@@ -345,7 +353,7 @@ print("          Q_-1: P at {0,+1}, S at {0,+2};  Q_-2: P at {0}, S at {0,+1};"
       "  Q_-3: P at {0,-1}, S at {0}.", flush=True)
 
 # =====================================================================
-print("\n--- S3. MEMBERSHIP SILENCE TABLE at the integer nodes (degree-free) ---", flush=True)
+print("\n--- S3. SILENCE TABLE: level incidence; machine check d=2,3,4,5 ---", flush=True)
 # =====================================================================
 # Filler membership kills P(0),P(1) and S(0),S(1),S(2); the residuals N_m also carry
 # membership factors.  Enumerate which (rung, node) pairs are identically 0=0.
@@ -437,6 +445,25 @@ for k in range(3, 8):
     check(ok and nrow == 3 * k - 4 and ncol == 2 * k - 2,
           f"k={k}: window rows={3*k-4}, live filler VALUES={2*k-2}, [M|N] shape "
           f"{3*k-4}x{2*k-1} -- INDEPENDENT of the degree d")
+# Quotient evaluations are independent exactly through the interpolation threshold.
+# V has degree <= d and is sampled at k-1 nodes; likewise C.  Thus the product
+# evaluation map onto all 2k-2 value columns is onto exactly when k-1 <= d+1.
+for dmap in (2, 3, 4):
+    for kmap in range(3, dmap + 5):
+        nodes = list(range(2, kmap + 1))
+        EV = sp.Matrix([[sp.Integer(x)**j for j in range(dmap + 1)] for x in nodes])
+        EC = sp.Matrix([[sp.Integer(x)**j for j in range(dmap + 1)]
+                        for x in range(3, kmap + 2)])
+        rank = EV.rank() + EC.rank()
+        onto = rank == 2 * (kmap - 1)
+        check(onto == (kmap <= dmap + 2),
+              f"[d={dmap}, k={kmap}] quotient evaluation rank {rank}/{2*(kmap-1)}: "
+              f"surjective iff k <= d+2")
+check(all((sp.Matrix([[sp.Integer(x)**j for j in range(4)]
+                      for x in range(2, k + 1)]).rank() == k - 1) == (k <= 5)
+          for k in (3, 4, 5, 6)),
+      "d=3 explicit threshold: k=3,4,5 are surjective; k=6 is not")
+
 # (b) exact row identities on the real cascade at several degrees:
 RED = {}
 WDEGS = [2, 3] + ([4] if HEAVY else [])
@@ -469,7 +496,7 @@ print("\n--- S5. ON-SHELL NODE RECURSION: the cascade fixes the b-tops on the SA
 # integer roots {0,-2,-4}: at those three nodes b_1(E+3) DROPS OUT and Q_4=0 becomes a
 # relation on b_1 and a_2 node values; elsewhere it is a 3-step forward recursion.
 for dgen in (2, 3, 4, 6):
-    a2g, _ = poly(f"on{dgen}a2", dgen); b1g, _ = poly(f"on{dgen}b1", dgen)
+    a2g, _ = poly(f"on{dgen}a2", dgen); b1g, _ = poly(f"on{dgen}b1", dgen + 3)
     Ao = {3: a3_w2, 2: a2g, 1: sp.Integer(0), 0: sp.Integer(0), -1: sp.Integer(0),
           -2: sp.Integer(0), -3: sp.Integer(0)}
     Bo = {k: sp.Integer(0) for k in range(-3, 4)}
@@ -478,7 +505,10 @@ for dgen in (2, 3, 4, 6):
     ev = lambda f, x: sp.expand(sp.sympify(f).subs(E, x))
     b1c_syms = sorted(set(b1g.free_symbols) - {E}, key=str)
     # each ANCHOR node x sees b_1 through EXACTLY ONE node value b_1(n(x)):
-    for x, n in [(0, 0), (-3, 0), (-2, -2), (-4, -4), (-1, 2)]:
+    anchors = [(0, 0), (-1, 2), (-2, -2), (-3, 0), (-4, -4), (-5, -2)]
+    check({x for x, _ in anchors} == {0, -1, -2, -3, -4, -5},
+          f"[d={dgen}] Q_4 anchor coverage is the complete six-node set 0,-1,...,-5")
+    for x, n in anchors:
         cvec = [sp.expand(sp.diff(Q4.subs(E, x), s)) for s in b1c_syms]
         lam = cvec[0]
         check(all(sp.expand(cvec[i] - lam * n**i) == 0 for i in range(len(cvec))),
@@ -513,7 +543,7 @@ for dgen in (2, 3, 4, 6):
           f"(filler-column rank {_M.rank()} = {len(b1c_syms)} unknowns, kernel 0) -- so "
           f"b_1(1), b_1(3) are 'free seeds' ONLY for the value-level 3-step recursion")
 print("       => ON-SHELL, the b-tops live on the SAME integer grid as the a-tops:", flush=True)
-print("          anchored at the a_3-roots {0,-2,-4} + free seeds. The collapse is PARTIAL.", flush=True)
+print("          root-anchored value recursion; coefficient rank uniquely fixes polynomial b_1.", flush=True)
 
 # =====================================================================
 print("\n--- S6. d=2 WINDOW-MINOR FACTORIZATION: node-value factors x ONE core (exact) ---",
@@ -580,7 +610,7 @@ check(any(sp.expand(c - am1_2) == 0 for c in commons[4]) and any(
       "(the d=2 look-alike of a W-multiple) -- S7 shows this does NOT persist to d=3")
 
 # =====================================================================
-print("\n--- S7. THE VERDICT at d=3: no window minor is a unit multiple of W; k=3 REFUTED ---",
+print("\n--- S7. THE VERDICT at d=3: complete k=3,4 minor sweeps; partial k=5; k=3 REFUTED ---",
       flush=True)
 # =====================================================================
 rd3 = RED[3]
@@ -602,8 +632,10 @@ for seed in range(NSEED):
     for k in KS:
         MN, cols, _ = window_rows(A, B, N, k)
         nc = len(cols)
-        assert not any(am1_3 in sp.sympify(MN[i, j]).free_symbols
-                       for i in range(MN.rows) for j in range(nc))
+        check(not any(am1_3 in sp.sympify(MN[i, j]).free_symbols
+                      for i in range(MN.rows) for j in range(nc)),
+              f"[seed {seed}] d=3, k={k}: filler matrix M is independent of am1_3 "
+              "(unconditional check, active under python -O)")
         nz = wm = 0
         for sub in itertools.combinations(range(MN.rows), nc + 1):
             Dm = sp.expand(MN[list(sub), :].det())
@@ -612,9 +644,12 @@ for seed in range(NSEED):
             nz += 1
             if sp.expand(Dm.subs(am1_3, 0)) == 0:
                 wm += 1
-        check(nz >= 1 and wm == 0,
-              f"[seed {seed}] d=3, k={k}: of {nz} nonzero maximal window minors, {wm} are "
-              f"divisible by W  => NO window minor is a unit multiple of W")
+        total = sp.binomial(MN.rows, nc + 1)
+        classified = (k < 5 and nz == total) or (k == 5 and nz == 52 and total == 55)
+        check(classified and wm == 0,
+              f"[seed {seed}] d=3, k={k}: {nz}/{total} maximal window minors are nonzero "
+              f"at the specialization and all {nz} have nonzero residue mod W; "
+              f"{total - nz} remain symbolically unclassified")
     if not HEAVY:
         skip("d=3 k=5 window-minor sweep + second seed (HEAVY: ~40s)")
 
@@ -636,6 +671,49 @@ check(sp.expand(MNw.det()) == 0 and rM == ncw and rMN == ncw,
 xsolw = Mw.solve_least_squares(-Nw) if rM == ncw else None
 check(all(sp.expand((Mw * xsolw + Nw)[i]) == 0 for i in range(MNw.rows)),
       "WITNESS: the explicit filler-value solution satisfies EVERY k=3 window row exactly")
+# Interpolate quotient values, rather than treating the four window values as
+# degree-free independent fillers.  At k=3 two values determine degree <=1
+# quotients, hence genuine members of every d=3 quotient space.
+def interpolate_quotient(tags, values):
+    nodes = [t[1] for t in tags]
+    ys = [sp.cancel(values[i] / falling(2 if tags[i][0] == "P" else 3).subs(E, nodes[i]))
+          for i in range(len(tags))]
+    return sp.interpolate(list(zip(nodes, ys)), E)
+
+pidx = [i for i, t in enumerate(colsw) if t[0] == "P"]
+sidx = [i for i, t in enumerate(colsw) if t[0] == "S"]
+Vw = sp.expand(interpolate_quotient([colsw[i] for i in pidx], [xsolw[i] for i in pidx]))
+Cw = sp.expand(interpolate_quotient([colsw[i] for i in sidx], [xsolw[i] for i in sidx]))
+Pw, Sw = sp.expand(falling(2) * Vw), sp.expand(falling(3) * Cw)
+Apoly, Bpoly = dict(Aw3), dict(Bw3)
+Apoly[-2], Bpoly[-3] = Pw, Sw
+check(sp.degree(Vw, E) <= 3 and sp.degree(Cw, E) <= 3,
+      f"WITNESS: solved values interpolate to genuine d=3 quotient polynomials "
+      f"V={Vw}, C={Cw}")
+check(all(sp.expand(q_m(Apoly, Bpoly, m).subs(E, e)) == 0
+          for m, e in window_rows(Aw3, Bw3, Nw3, 3)[2]),
+      "WITNESS: P=(E)_2 V and S=(E)_3 C substituted directly satisfy EVERY window row")
+check(all(sp.simplify(pd.subs(wit_pt)) != 0 for _, pd in rd3["pivots"]),
+      "WITNESS: every greedy_param chart denominator is nonzero")
+check(all(sp.expand(e.subs(rd3["sol"]).subs(wit_pt)) == 0 for e in rd3["pos"]),
+      "WITNESS: witness-derived greedy parameterization satisfies the original cascade equations")
+
+# The same point fails the genuine coefficient tail even though its relaxed
+# k=3 value window is soluble.
+true3 = [e for m in (-1, -2, -3) for e in rd3["tk"][m]]
+Mt = sp.Matrix([[sp.Poly(e, *fill3).coeff_monomial(f) for f in fill3] for e in true3]).subs(wit_pt)
+Nt = sp.Matrix([sp.Poly(e, *fill3).coeff_monomial(1) for e in true3]).subs(wit_pt)
+rt, rat = Mt.rank(), Mt.row_join(Nt).rank()
+check(rt < rat,
+      f"WITNESS: true depth-3 polynomial-tail coefficient ranks are {rt} and {rat}; "
+      "the genuine tail is inconsistent at the relaxed-window witness")
+true5w = [sp.expand(e.subs(wit_pt)) for m in (-1, -2, -3, -4, -5) for e in rd3["tk"][m]]
+if EXACT_CONTROLS:
+    check(sy_unit(true5w, fill3, None),
+          "EXACT_CONTROLS: WITNESS exact QQ Groebner basis of the full Q_-1..Q_-5 "
+          "polynomial tail is [1]")
+else:
+    skip("WITNESS exact-QQ full-tail Groebner basis [1] (EXACT_CONTROLS; potentially hours)")
 check(sp.simplify(Ww3) != 0,
       f"WITNESS: at that point W = {sp.simplify(Ww3)} != 0  =>  the k=3 INTEGER-NODE WINDOW "
       f"DOES NOT FORCE W (explicit witness, radical-correct)")
@@ -708,9 +786,14 @@ tail3_5 = [e for m in (-1, -2, -3, -4, -5) for e in rd3["tk"][m]]
 tail3_3 = [e for m in (-1, -2, -3) for e in rd3["tk"][m]]
 allv3 = [t_rab] + list(free3) + list(fill3)
 check(sy_unit(tail3_5 + [1 - t_rab * am1_3], allv3, 65003),
-      "CONTROL (Rabinowitsch mod 65003): am1_3 in sqrt(cascade+Q_-1..Q_-5) => the tail forces W=0")
-check(sy_unit(tail3_5 + [1 - t_rab * am1_3], allv3, None),
-      "CONTROL (Rabinowitsch over QQ, exact): am1_3 in sqrt(cascade+Q_-1..Q_-5) => W=0 forced")
+      "CONTROL (Rabinowitsch mod 65003): the reduced tail forces W=0 mod 65003; "
+      "this is corroboration only, not a characteristic-zero verdict")
+if EXACT_CONTROLS:
+    check(sy_unit(tail3_5 + [1 - t_rab * am1_3], allv3, None),
+          "EXACT_CONTROLS: Rabinowitsch over QQ: "
+          "am1_3 in sqrt(cascade+Q_-1..Q_-5) => W=0 forced")
+else:
+    skip("Rabinowitsch over exact QQ for the full tail (EXACT_CONTROLS; potentially hours)")
 Mlin = sp.Matrix([[sp.Poly(e, *fill3).coeff_monomial(f) for f in fill3] for e in tail3_3])
 Nlin = sp.Matrix([sp.Poly(e, *fill3).coeff_monomial(1) for e in tail3_3])
 _rw = random.Random(20260724); wit = None
@@ -734,19 +817,27 @@ check(all(sp.expand((Mlin.subs(wit[0]) * xs + Nlin.subs(wit[0]))[i]) == 0
 
 # =====================================================================
 print("\n" + "=" * 74, flush=True)
-print("PROVED (degree-free): engine + Q_0=(T-1)G + slope gate + Lemma P + R(1)=a_2(0)W;", flush=True)
-print("  STAIRCASE COLLAPSE of the two blocks (Q_-2 a-block and Q_-3 b-block are pure", flush=True)
-print("  multipliers); the MEMBERSHIP SILENCE TABLE (six identically-zero rungs); the", flush=True)
-print("  INTEGER-NODE WINDOW -- for every k>=3 and every degree d the tail rows", flush=True)
-print("  Q_-1(1..k-1), Q_-2(2..k), Q_-3(3..k) involve only 2k-2 filler VALUES and [M|N]", flush=True)
-print("  has the d-independent shape (3k-4)x(2k-1) with fixed integer-node entries;", flush=True)
-print("  the ON-SHELL node recursion (b_1(0)=(2/3)a_2(0), a_2(-3)=a_2(0),", flush=True)
-print("  b_1(2)=(2/3)(2a_2(-1)+a_2(1)), 15b_1(4)=48b_1(1)-18a_2(1)+4a_2(3); free seeds).", flush=True)
-print("REFUTED (exact): no fixed-shape window minor is a unit multiple of W at d=3 (k=3,4", flush=True)
-print("  [+5 HEAVY]); and the k=3 window does NOT force W -- EXPLICIT rational witness with", flush=True)
+print("PAPER/LEVEL-INCIDENCE PROOFS; MACHINE CHECKS HAVE BOUNDED SCOPE:", flush=True)
+print("  upstream identities (engine/Q_0 checked at generic d=2; factorization abstract);", flush=True)
+print("  staircase and silence arguments checked at d=2,3,4,5; window shape enumerated", flush=True)
+print("  for k=3..7 and exact rows checked at d=2,3 (plus d=4 under HEAVY), k=3,4,5;", flush=True)
+print("  node recursion checked at d=2,3,4,6.  b_1(1),b_1(3) seed only the displayed", flush=True)
+print("  value recursion; full coefficient rank uniquely determines polynomial b_1.", flush=True)
+print("REFUTED (exact): complete d=3 sweeps find no W-multiple minor at k=3,4;", flush=True)
+if HEAVY:
+    print("  HEAVY classifies 52/55 k=5 minors likewise (3 remain unclassified); and the k=3", flush=True)
+else:
+    print("  k=5 minor classification was NOT RUN in default mode; and the k=3", flush=True)
+print("  window does NOT force W -- EXPLICIT rational witness with", flush=True)
 print("  the window solvable and W=-8/9 != 0.  The combined-rung adjoint over Q(E) at J=3", flush=True)
 print("  is 12x12 of rank 11 and its unique covector is not a W-multiple either.", flush=True)
 print("BOUNDED: d=2 window minors = node values x ONE core (essentially principal).", flush=True)
+if EXACT_CONTROLS:
+    print("CONTROLS EXECUTED: exact-QQ full-tail Groebner witness and exact-QQ", flush=True)
+    print("  Rabinowitsch W-kill (plus the default finite-field control).", flush=True)
+else:
+    print("EXACT_CONTROLS NOT RUN: exact-QQ full-tail Groebner witness and exact-QQ", flush=True)
+    print("  Rabinowitsch W-kill were skipped; the default finite-field control was executed.", flush=True)
 print("OPEN: whether ANY k has W in sqrt(I_k); any degree-free W-forcing recipe; the", flush=True)
 print("  arbitrary-degree residual identity; all of band 3, DC1, JC2.", flush=True)
 print("=" * 74, flush=True)
@@ -756,5 +847,9 @@ if _SKIPS:
         print(f"   SKIPPED: {s}", flush=True)
 else:
     print("\nALL CHECKS PASSED (no skips).", flush=True)
-print(f"(total {time.time() - _T0:.1f}s; {_NP} checks passed; "
-      f"{'HEAVY' if HEAVY else 'default'} mode)", flush=True)
+_mode = "default"
+if HEAVY:
+    _mode += "+HEAVY"
+if EXACT_CONTROLS:
+    _mode += "+EXACT_CONTROLS"
+print(f"(total {time.time() - _T0:.1f}s; {_NP} checks passed; {_mode} mode)", flush=True)

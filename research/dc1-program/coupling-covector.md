@@ -1,4 +1,4 @@
-# The coupling covector at W2: the varying-tops coupling collapses onto a FIXED INTEGER-NODE grid — and the fixed-shape minors still miss `W`
+# The coupling covector on W2 branch B: a fixed integer-node staircase and a failed minor certificate
 
 **INDEPENDENTLY DERIVED — EXACT ALGEBRA / MACHINE-CHECKED IDENTITIES — NOT PEER
 REVIEWED — BAND-SCOPED — MIXED PROVED/BOUNDED/REFUTED**
@@ -18,36 +18,39 @@ a_3 = E(E+2)(E+4)  (roots {0,-2,-4}),   b_2 = E(E+3),   b_3 = 0,
 branch B: a_-3 = 0,  fillers  P := a_-2 = (E)_2 V,   S := b_-3 = (E)_3 C.
 ```
 
-Exact certificate: [`verify_coupling_covector.py`](verify_coupling_covector.py) —
-default run **~46 s / 166 checks** (one optional leg skipped), `HEAVY=1` **~115 s / 175 checks** (no skips); runtimes are environment-dependent. Every load-bearing
-upstream fact (engine, `Q_0=(T−1)G`, slope gate, both-ends Lemma P, `R(1)=a_2(0)·W`) is
-**re-derived in file**. The final status line distinguishes an unskipped run from one with
-skipped optional legs.
+Exact certificate: [`verify_coupling_covector.py`](verify_coupling_covector.py). The default
+retains the essential exact `k=3` nonforcing witness and complete exact `k=3,4` minor sweeps,
+but skips the `HEAVY` `k=5` sweep and the potentially hours-long `EXACT_CONTROLS` exact-`QQ`
+Gröbner legs. Those optional legs are never launched silently. Every load-bearing upstream fact
+(engine, `Q_0=(T−1)G`, slope gate, both-ends Lemma P, `R(1)=a_2(0)·W`) is **re-derived in
+file**. The final status and verdict banners distinguish executed checks from each skipped
+optional evidence tier.
 
 ## 0. Headline
 
-> **THE COUPLING COLLAPSES; THE FIXED-SHAPE MINORS DO NOT CARRY `W`.**
-> The "varying tops" obstruction of [`algebraic-covector.md`](algebraic-covector.md) §5 is
-> **dissolved**: the depth-3 tail, read at **integer nodes**, is a fixed-shape linear system
+> **BRANCH-B BOOKKEEPING COLLAPSES TO A STAIRCASE; THE TESTED FIXED-SHAPE MINORS DO NOT CARRY `W`.**
+> On W2 branch B, the depth-3 tail read at **integer nodes** is a fixed-shape linear system
 > in **finitely many filler VALUES** — `(3k−4) × (2k−1)` for every `k ≥ 3` at **every**
-> degree `d`, with entries the cascade datum at **fixed integer nodes**. No algebraic
-> necklace, no trace forms, no `gcd(a_2(E),a_2(E−3))` condition: the two blocks are a
-> **staircase**, six `(rung,node)` pairs are identically silent, and the cascade puts the
-> `b`-tops on the **same** integer grid by a degree-free 3-step recursion anchored at the
-> `a_3`-roots `{0,−2,−4}`.
-> But the recipe does **not** close: at `d=3` **no** maximal minor of the fixed-shape window
-> (`k=3,4,5`) is divisible by `W`, and an **explicit exact rational witness** shows the
-> `k=3` window is satisfiable with `W = −8/9 ≠ 0`. So the depth-3 W-forcing is **not** a
-> finite-integer-node phenomenon at the tested widths.
+> degree `d`, with entries the cascade datum at **fixed integer nodes**. This gives an
+> explicit branch-B bookkeeping device for coupling the two blocks: a **staircase**, six
+> `(rung,node)` pairs that are identically silent, and a degree-free 3-step value recursion
+> on the same integer grid, anchored at the `a_3`-roots `{0,−2,−4}`. It does not dissolve
+> the global varying-tops obstruction or supply a degree-uniform covector.
+> But the proposed certificate does **not** close: at `d=3` the tested nonzero maximal
+> minors for `k=3,4,5` are not divisible by `W`, and an **explicit exact rational witness**
+> shows the relaxed `k=3` window is satisfiable with `W = −8/9 ≠ 0`. Thus `k=3` does not
+> force `W`; for `k=4,5`, only the proposed single-maximal-minor/unit-multiple-of-`W`
+> certificate is refuted, while radical forcing is untested.
 >
 > **CORRECTED SHARPENING (audit, 2026-07-25; §5 has the full statement).** The earlier
 > reading — "the forcing consumes the *polynomiality* of the fillers" — is **wrong**: the
 > evaluation map onto the window values is **surjective for `k ≤ d+2`**, so at every tested
-> width (`k=3,4,5`, `d=3`) the relaxation is **vacuous** and polynomiality is never probed
-> (the audit realized the `k=3` witness values by honest degree-`≤3` polynomials). The real
-> content: the `3k−4` node equations are **too few** — the true tail is inconsistent at that
-> same point. The first width where polynomiality could matter is **`k = d+3`**, untested,
-> and a width growing with the degree is itself an obstacle to a degree-free recipe.
+> width (`k=3,4,5`, `d=3`) the windows do not probe polynomiality. This fact says nothing by
+> itself about whether a window forces `W`. The audit realized the `k=3` witness values by
+> honest degree-`≤3` polynomials, and at that same point the true tail is inconsistent, so the
+> `k=3` node equations omit necessary ladder content. The first width where polynomiality
+> could matter is **`k = d+3`**, untested, and a width growing with the degree is itself an
+> obstacle to a degree-free recipe.
 
 ## 1. The staircase collapse of the two blocks (PROVED, degree-free)
 
@@ -109,15 +112,15 @@ Consequences.
 - **Excess.** `(3k−4) − (2k−2) = k−2` consistency conditions: the maximal minors of `[M|N]`
   (size `2k−1`) all vanish on the tail locus. These minors are a **fixed finite recipe**:
   fixed number of rows/columns, entries a fixed finite list of node values, at every degree.
-- **The coupling obstruction is gone.** [`algebraic-covector.md`](algebraic-covector.md) §5
-  located the gap in "a single algebraic node cannot annihilate a block because
-  `gcd(a_2(E),a_2(E−3))=1`, so the covector must couple terms and rungs across the varying
-  tops". The window **is** that coupling, in closed form: Cramer across the staircase at
-  integer nodes. Nothing algebraic (no root of the datum) is ever named; the trace-form
-  apparatus is not needed for the pure tail.
-- The relaxation is **legitimate and strictly conservative**: the true fillers are
-  polynomials, so every genuine tail solution gives a solution of the value-relaxed window.
-  Hence *window-forcing ⇒ true forcing*. (The converse is exactly what fails; §5.)
+- **Branch-B bookkeeping is explicit, but the global obstruction remains.** The window
+  couples terms and rungs by Cramer minors across the integer-node staircase. This avoids
+  naming algebraic roots for this particular branch-B relaxation, but the tested minors
+  provide neither the proposed degree-uniform certificate nor a replacement for the omitted
+  polynomial-tail equations. Only the `k=3` witness establishes that a tested window itself
+  is too weak to force `W`; radical forcing at `k=4,5` is untested.
+- The relaxation is **legitimate and conservative**: the true fillers are polynomials, so
+  every genuine tail solution gives a solution of the value-relaxed window. Hence
+  *window-forcing ⇒ true-tail forcing*. No converse is claimed; it fails at `k=3` (§5).
 
 ## 4. On-shell: the cascade puts the b-tops on the same grid (PROVED, degree-free)
 
@@ -125,16 +128,17 @@ Attack angle 2 asked whether the `b`-tops `(b_1,b_0,b_-1)` become expressible th
 `a`-data on-shell. The answer is **partially yes, on the integer grid** (`verify §S5`,
 generic data `d=2,3,4,6`). In `Q_4 = b_2(E+2)a_2 − a_2(E+2)b_2 + b_1(E+3)a_3 − a_3(E+1)b_1`
 the top is the **fixed** `a_3 = E(E+2)(E+4)`, whose integer roots `{0,−2,−4}` meet every
-residue class mod 3. At the five **anchor** nodes the `b_1`-dependence collapses to a
+residue class mod 3. At all six **anchor** nodes the `b_1`-dependence collapses to a
 **single node value**:
 
 | anchor `Q_4(x)=0` | `b_1`-dependence | consequence |
 |---|---|---|
 | `x=0` | `−15 b_1(0)` | `b_1(0) = (2/3) a_2(0)` |
-| `x=−3` | `+3 b_1(0)` | `b_1(0) = (2/3) a_2(−3)` |
-| `x=−2` | `+3 b_1(−2)` | `b_1(−2) = −(2/3) a_2(0)` |
-| `x=−4` | `−3 b_1(−4)` | `b_1(−4)` fixed by `a_2(−4), a_2(−2)` |
 | `x=−1` | `−3 b_1(2)` | `b_1(2) = (2/3)(2 a_2(−1) + a_2(1))` |
+| `x=−2` | `+3 b_1(−2)` | `b_1(−2)` is fixed by `a_2` |
+| `x=−3` | `+3 b_1(0)` | `b_1(0) = (2/3) a_2(−3)` |
+| `x=−4` | `−3 b_1(−4)` | `b_1(−4)` is fixed by `a_2` |
+| `x=−5` | `−15 b_1(−2)` | a second anchor for `b_1(−2)` |
 
 and the two `x=0,−3` anchors together give the **degree-free cascade node relation**
 
@@ -147,15 +151,11 @@ Off the anchors, `Q_4(E)=0` is a **3-step forward recursion**, e.g.
 `b_1 ∈ {0,−2,−4,2}`, so `b_1(1)` and `b_1(3)` are free seeds **of the value-level
 recursion**.
 
-> **Two audit corrections (2026-07-25).**
-> 1. **Count.** There are **six** nodes at which `Q_4` sees exactly one `b_1` value —
->    `x ∈ {0,−1,−2,−3,−4,−5}` (`x=−5` sees `b_1(−2)`), not five. The sixth is redundant for
->    the constrained node-value set `{0,−2,−4,2}`, so nothing downstream changes, but the
->    enumeration (and the verifier's hardcoded anchor list) was incomplete.
-> 2. **"Free seeds" is a VALUE-LEVEL statement only.** On the actual *polynomial* cascade
->    `Q_4=0` is a linear system for the `b_1` coefficients of **full rank** (rank `7` of `7`
->    at `d=3`, kernel `0`; now machine-checked in `§S5`), so `b_1` is **uniquely determined**
->    by `a_2`. The freedom lives in the value-level 3-step recursion, not in the pair.
+> **Polynomial scope.** The six-node table is complete; its `x=−5` equation is a second
+> anchor for `b_1(−2)`. The phrase “free seeds” applies only to the displayed value recursion.
+> On the actual polynomial cascade, `b_1` belongs to the degree-`d+3` coefficient space and
+> `Q_4=0` uniquely determines it after `a_2`: at `d=3` the exact coefficient matrix has rank
+> `7/7` and kernel zero (`verify §S5`).
 
 **Verdict on angle 2: the collapse is real but PARTIAL.** On-shell the `b`-tops live on the
 *same* fixed integer grid as the `a`-tops — which is why the window of §3 is finite and
@@ -171,21 +171,25 @@ At `d=3` the cascade has 9 free coordinates, `R(1) = −(4/9) a_2(0)·am1_3`, so
 (`W` lives only in the residual `N`), so each maximal minor is a polynomial in `am1_3` whose
 `W`-divisibility is decided by its residue at `am1_3=0`.
 
-- **No window minor is a unit multiple of `W`.** At exact rational specializations of the
-  other eight free coordinates, every nonzero maximal minor has a **nonzero** residue at
-  `am1_3=0`, for `k=3` (1 minor), `k=4` (8 minors) and — under `HEAVY`, at two seeds —
-  `k=5` (52 nonzero of 55) (`verify §S7`). So the strict prize form
-  `μ·N = u·W` is **not** realized by any fixed-shape window minor at these widths.
+- **The tested maximal-minor certificate is not a unit multiple of `W`.** At exact rational
+  specializations of the other eight free coordinates, every nonzero maximal minor has a
+  **nonzero** residue at `am1_3=0`, for `k=3` (1 minor), `k=4` (8 minors) and — under
+  `HEAVY`, at two seeds — `k=5` (52 nonzero of 55) (`verify §S7`). Thus the tested minors do
+  not realize the strict prize form `μ·N = u·W`; at `k=5`, the three minors vanishing at the
+  specializations remain untested symbolically.
 - **The `k=3` window does not force `W` at all — explicit witness.** On the `d=3` cascade at
 
   ```text
    a2_0=-4, a2_2=-73426/34959, a2_3=0, a1_3=0, a0_0=2, a0_2=1, am1_2=3, am1_3=2, b0cK0=-4
   ```
 
-  the `k=3` window system is **solvable**: `det[M|N]=0`, `rank M = rank[M|N] = 4` (full), and
-  the verifier exhibits the explicit filler-value solution satisfying every window row —
-  while `W = −8/9 ≠ 0` (`verify §S7`). This is a **witness point**, not a normal form, so it
-  is a radical-correct refutation: `W ∉ sqrt(I_3)`.
+  the `k=3` window system is **solvable**: `det[M|N]=0`, `rank M = rank[M|N] = 4` (full).
+  The solved values are interpolated exactly into genuine quotient polynomials
+  `V,C ∈ QQ[E]`, then `P=(E)_2V` and `S=(E)_3C` are substituted directly into every original
+  window row. All chart denominators are nonzero, and the witness-derived parameterization
+  satisfies the original cascade equations. Yet `W = −8/9 ≠ 0` (`verify §S7`). This exact
+  witness refutes only the **relaxed window**: it is a point, not a normal form, and proves
+  `W ∉ sqrt(I_3)`.
 - **The symbolic-node (`Q(E)`) combined-rung adjoint fails the same way.** Treating
   `[Q_-1;Q_-2;Q_-3]` at shifted arguments `E+j`, `j=0..J`, as **one** operator on the filler
   values gives a `3(J+1) × 2(J+3)` matrix, again `d`-independent in shape. At `J=3` it is
@@ -195,8 +199,9 @@ At `d=3` the cascade has 9 free coordinates, `R(1) = −(4/9) a_2(0)·am1_3`, so
   not claimed as an identity).
 
 **What this means — CORRECTED (audit, 2026-07-25).** The depth-3 tail *does* force `W`
-(reproduced below), but that forcing is **not** captured by the ladder identities at any
-**tested** finite integer window with the fillers relaxed to free values.
+(reproduced below). The relaxed `k=3` window does not capture that forcing. At `k=4,5`, the
+computations reject only the proposed single-maximal-minor/unit-multiple certificate; they do
+not decide whether the full window ideal forces `W` radically.
 
 > **The earlier reading of this section — "the forcing consumes the *polynomiality* of the
 > fillers" — is WRONG, and is contradicted by this file's own data.** The evaluation map
@@ -206,16 +211,17 @@ At `d=3` the cascade has 9 free coordinates, `R(1) = −(4/9) a_2(0)·am1_3`, so
 > polynomials `P=(E)_2 V`, `S=(E)_3 C` with `deg V, deg C ≤ 3` realizing the `k=3` witness
 > values exactly. No test in this memo probes polynomiality at all.
 >
-> **The correct diagnosis:** the chosen `3k-4` node equations are simply **too few**. At the
-> very same point the *true* tail is inconsistent (audit: `Q_-1..Q_-3` has rank `M=8` vs
-> `rank[M|b]=9`; `Q_-1..Q_-5` has Gröbner basis `[1]`, an exact UNSAT certificate) — the
-> window omits the rest of the ladder content.
+> **The diagnosis established at `k=3`:** those four node equations are **too few**. At the
+> very same witness point the *true* tail is inconsistent (audit: `Q_-1..Q_-3` has rank
+> `M=8` vs `rank[M|b]=9`; under `EXACT_CONTROLS`, `Q_-1..Q_-5` has Gröbner basis `[1]`, an
+> exact UNSAT certificate) — the `k=3` window omits necessary ladder content.
 >
-> **The corrected sharpening:** the value-relaxed window is too weak at every width
-> `k ≤ d+2`, where the relaxation is vacuous; the **first width at which polynomiality could
-> matter is `k = d+3`** (i.e. `k=6` at `d=3`), and **that regime is untested**. Note the
-> width would then have to grow with the degree, which is itself the obstacle to a
-> degree-free recipe.
+> **The corrected sharpening:** for every width `k ≤ d+2`, surjectivity makes the
+> value-relaxation equivalent to choosing honest fillers on those sampled values, so such a
+> window does **not probe polynomiality**. This does not imply that the window fails to force
+> `W`; only `k=3` is proved nonforcing. The **first width at which polynomiality could matter
+> is `k = d+3`** (i.e. `k=6` at `d=3`), and **that regime is untested**. Note the width would
+> then have to grow with the degree, which is itself an obstacle to a degree-free recipe.
 
 ## 6. Angle 1: what the consistency minors actually factor into (BOUNDED, `d=2`, exact)
 
@@ -237,8 +243,9 @@ the factorization is **exactly computable** (`verify §S6`):
 ## 7. Controls (per house rules)
 
 - **W-kill reproduced by RABINOWITSCH, not by a normal form:**
-  `am1_3 ∈ sqrt(cascade + Q_-1..Q_-5)` — sympy exact unit Rabinowitsch ideal over `QQ` and
-  mod `65003` (`verify §S9`).
+  `am1_3 ∈ sqrt(cascade + Q_-1..Q_-5)` — the finite-field `mod 65003` control runs by
+  default; the independent exact-`QQ` unit-ideal control is preserved under `EXACT_CONTROLS`
+  because it may take hours (`verify §S9`).
 - **`a_2(0)` not forced:** an explicit cascade+depth-3-tail point with `a_2(0)=4 ≠ 0`,
   `R(1)=0` (the kill is the **factor** `W`).
 - **Non-vacuity:** that same point carries an **explicit filler solution** satisfying every
@@ -274,12 +281,12 @@ the factorization is **exactly computable** (`verify §S6`):
   (`(3k−4)` rows, `2k−2` live filler values, `[M|N]` of shape `(3k−4)×(2k−1)`, entries at
   fixed integer nodes), verified as **exact row identities** on the cascade at `d=2,3`
   (`+4` HEAVY) for `k=3,4,5` (`§S4`).
-- **On-shell node recursion:** the `Q_4` anchors each see exactly one `b_1` node value
-  (**six** such nodes, audit-corrected from five);
+- **On-shell node recursion:** all six `Q_4` anchors each see exactly one `b_1` node value;
   `b_1(0)=(2/3)a_2(0)`, `b_1(0)=(2/3)a_2(−3)`, the node relation `a_2(0)−a_2(−3) =
-  Q_4(0)/10 + Q_4(−3)/2` (hence `a_2(−3)=a_2(0)` on the cascade),
-  `b_1(2)=(2/3)(2a_2(−1)+a_2(1))`, `15 b_1(4)=48 b_1(1)−18a_2(1)+4a_2(3)`, and the free
-  seeds `b_1(1), b_1(3)` — machine scope `d=2,3,4,6`, argument degree-free (`§S5`).
+  Q_4(0)/10 + Q_4(−3)/2` (hence `a_2(−3)=a_2(0)` on the cascade), and
+  `b_1(2)=(2/3)(2a_2(−1)+a_2(1))`, `15 b_1(4)=48b_1(1)−18a_2(1)+4a_2(3)` — machine scope
+  `d=2,3,4,6`, argument degree-free. Here `b_1(1),b_1(3)` are seeds only for the value
+  recursion; polynomial `Q_4=0` determines `b_1`, with coefficient rank `7/7` at `d=3` (`§S5`).
 
 **Bounded-finite (exact scope stated):**
 - `d=2`: the window minors' common-factor structure (one degree-4 core for `k=3,4`, stable up
@@ -288,8 +295,9 @@ the factorization is **exactly computable** (`verify §S6`):
   specialization (`k=3,4`) and, under `HEAVY`, two specializations plus `k=5` (`§S7`).
 - `d=3`: the combined-rung `Q(E)` adjoint at `J=3` is `12×12` of rank 11 at the tested exact
   specialization, unique covector, pairing not a `W`-multiple (`§S8`).
-- Controls: the exact-`QQ` + mod-`p` Rabinowitsch W-kill on `Q_-1..Q_-5`; the `a_2(0)`-free
-  witness; the non-vacuity filler solution (`§S9`).
+- Controls: the default mod-`p` Rabinowitsch W-kill on `Q_-1..Q_-5`, with the independent
+  exact-`QQ` leg under `EXACT_CONTROLS`; the `a_2(0)`-free witness; the non-vacuity filler
+  solution (`§S9`).
 
 **Refuted (exact, in file):**
 - *"A fixed-shape window minor is a unit multiple of `W`."* **False** at `d=3` for
@@ -302,23 +310,24 @@ the factorization is **exactly computable** (`verify §S6`):
   (radical-correct: a point, not a normal form).
 - *The `d=2` extrapolation* — that the `a_-1` top coefficient (the `W`-slot look-alike),
   which divides every `d=2` window minor, keeps dividing at higher `d`. **False at `d=3`.**
-- The *coupling* framing of [`algebraic-covector.md`](algebraic-covector.md) §5 — "the
-  annihilator must couple terms and rungs across the varying tops, and no fixed telescoping
-  is available" — is **sharpened, not sustained as an obstruction**: the coupling is
-  explicitly available as the fixed-shape integer-node Cramer minors (§3). What blocks the
-  prize is not the coupling but the **content** of those minors.
+- The branch-B **value-window coupling** is explicit: fixed-shape integer-node Cramer minors
+  couple its terms and rungs (§3). This does **not** remove the global varying-tops obstruction
+  identified in [`algebraic-covector.md`](algebraic-covector.md) §5, make coupling globally
+  available, or supply a degree-uniform covector. The evidence refutes only the tested minor
+  certificate route, with the `k=3` relaxed window additionally shown not to force `W`.
 
 **Open / not claimed:**
 - Whether **any** `k` has `W ∈ sqrt(I_k)` for the value-relaxed integer-node window. Refuted
   at `k=3`; at `k=4,5` only the strict "single minor `= u·W`" form is refuted, and the ideal
   question is untested (the msolve/Gröbner Rabinowitsch on the window ideal did not terminate
   in budget at `d=3`, `k=3,4`; reported as such, not claimed).
-- **The sharpened residual gap:** since the value-relaxed window is provably too weak at
-  `k=3`, any degree-free recipe must use the **finite-difference relations** among the filler
-  node values (i.e. `deg P, deg S ≤ d`) — but those relations are *degree-dependent*. A
-  degree-free recipe must therefore either (i) find a `k` at which the value-relaxed window
-  already forces `W`, or (ii) use a degree-uniform surrogate for polynomiality (e.g. the
-  `Δ^{n}`-annihilation of a *fixed* number of leading node differences). Neither is obtained.
+- **The sharpened residual gap:** the value-relaxed window is provably nonforcing at `k=3`,
+  while exact quotient interpolation shows only that every window of width `k≤d+2` is unable
+  to test polynomiality. It does not settle radical forcing at `k=4,5`. The first potentially
+  polynomiality-sensitive width is `k=d+3`. Finite-difference relations among filler values
+  are degree-dependent, and no fixed-width or degree-uniform replacement for that interpolation
+  data and the omitted coefficient equations is known. Neither a wider relaxed-window forcing
+  result nor a degree-uniform surrogate is obtained.
 - Everything the parent memos leave open: the arbitrary-degree slope forcing
   ([`slope-forcing-degree-free.md`](slope-forcing-degree-free.md) §6,
   [`residual-identity.md`](residual-identity.md) §6,
@@ -327,16 +336,27 @@ the factorization is **exactly computable** (`verify §S6`):
 ## 9. Verification
 
 ```sh
+# Safe default: exact k=3 nonforcing witness; complete exact k=3,4 minor sweeps;
+# finite-field W-kill control. Does not launch potentially hours-long exact-QQ controls.
 uv run --with sympy python research/dc1-program/verify_coupling_covector.py
-# HEAVY (adds the d=4 window row identities, the k=5 minor sweep and a second seed):
+
+# HEAVY evidence: adds the d=4 window identities and k=5 sweep at two seeds (52/55 only).
 HEAVY=1 uv run --with sympy python research/dc1-program/verify_coupling_covector.py
+
+# Potentially hours-long independent exact-QQ Gröbner controls:
+EXACT_CONTROLS=1 uv run --with sympy python research/dc1-program/verify_coupling_covector.py
+
+# Every optional leg:
+HEAVY=1 EXACT_CONTROLS=1 uv run --with sympy python research/dc1-program/verify_coupling_covector.py
 ```
 
 `S0` engine; `S1` slope gate + Lemma P + factorization; `S2` staircase collapse; `S3`
 membership silence table; `S4` the integer-node window theorem (shape + exact row identities);
-`S5` on-shell node recursion; `S6` `d=2` minor factorization; `S7` the `d=3` verdict + the
-explicit `k=3` witness; `S8` combined-rung `Q(E)` adjoint; `S9` controls. Default run
-**~46 s, 166 checks, one optional leg skipped**; `HEAVY` **~115 s, 175 checks, no skips**
-(runtimes environment-dependent).
-The verifier never folds a skipped optional leg into an unqualified all-passed banner.
-Sampling and specialization legs do not certify the broader conjectures.
+`S5` on-shell node recursion; `S6` `d=2` minor factorization; `S7` the `d=3` verdict,
+quotient-map ranks, honest-polynomial `k=3` witness, and same-point true-tail ranks `8,9`.
+The exact full-tail Gröbner basis `[1]` in `S7` and exact-`QQ` Rabinowitsch control in `S9`
+require `EXACT_CONTROLS=1`; `S8` is the combined-rung `Q(E)` adjoint. Every skipped optional
+leg is listed, and verdict banners say whether `HEAVY` and `EXACT_CONTROLS` evidence was
+executed or not run. Sampling, finite-field, and specialization legs do not certify broader
+conjectures. Established scope remains: `k=3` exact nonforcing; `k=4` single-minor-route
+refutation; `k=5` only 52/55 under `HEAVY`; radical forcing at `k=4,5` untested.

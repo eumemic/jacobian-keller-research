@@ -37,36 +37,47 @@ The one-line summary:
 > `(E)_j | b₋ⱼ` forces `n ≥ j`, so each rung kills its `b₋ⱼ` outright, and the
 > moment unit `Q₀ = 1` has nowhere left to come from.
 >
-> > **THEOREM A (arbitrary degree, arbitrary band `k ≥ 2`, ARBITRARY nonzero top
+> > **NONPOSITIVE-D EXCLUSION THEOREM (arbitrary degree, arbitrary band `k ≥ 2`, ARBITRARY nonzero top
 > > `a_k`).** There is **no** pair with `band X = k ≥ 2`, `band D ≤ 0`,
 > > membership-valid negative tail, and `[D,X] = 1`.
 >
 > The sector `κ = 0 ∧ b₁ = 0` is therefore **EMPTY at arbitrary degree, in every
 > shifted-cube class at once** — cube-separated, 2-separated, diff-1, diff-2,
-> diff-3, `(E−r)²`, and the A\*-band3 constant top with `κ₂ = 0`. The corpus's
-> cube-separated / 2-separated / diff-1 closures are **REPAIRED**, not broken. No
-> new wall.
+> diff-3, `(E−r)²`, and the **A\*-band3 constant-top corner `κ₂ = 0 ∧ b₁ = 0`**
+> (not all `κ₂ = 0`; see §5). The corpus's cube-separated / 2-separated / diff-1
+> closures are **REPAIRED**, not broken. No new wall.
 >
-> **TARGET B: the mission's route into diff-2 is REFUTED, and the published
-> surviving family is smaller than reported.** On the branch `b₁(r+1) = 0`,
-> `Q₂` **does** add a genuinely new degree-free condition — `(E−r−1) | a₁` — which
-> the [`band3-sectors.md`](band3-sectors.md) §5.1 witness (`a₁ = −3`) **violates**.
-> But repairing the witness restores it completely: at symbolic `(r, κ)` and any
-> scale `λ`,
+> **TARGET B: the mission's route into diff-2 is REFUTED with a nonzero-branch
+> witness (`κ ≠ 0`, `λ ≠ 0`).** On the branch `b₁(r+1) = 0`, the two analyzed
+> clean `Q₂` nodes (at `r` and `r+1`) do force a genuine new degree-free
+> condition `(E−r−1) | a₁` (with `κ ≠ 0` and `a₂(r−1) ≠ 0`, i.e. on the intended
+> surviving branch), so the [`band3-sectors.md`](band3-sectors.md) §5.1 witness
+> with `a₁ = −3` does not extend past `Q₃` for that specific `a₁`. The published
+> Q₄, Q₃ witness was correct for its stated Q₄, Q₃ scope; the new content is
+> only that it does not extend one more rung with `a₁ = −3`. Repairing the
+> witness restores it completely: at symbolic `(r, κ)` and any scale `λ`,
 > ```
 > a₂ = 3λ(E−r)(E−r−1),  b₁ = 2κλ(E−r−1)²,  a₁ = −3λ²(E−r−1)²,  b₀ = 0,  a₀ = c
 > ```
-> solves `Q₆ = Q₅ = Q₄ = Q₃ = Q₂ = Q₁ = 0` **exactly**, with `a₂(r−1) = 6λ ≠ 0`.
-> **The entire positive cascade fails to kill the diff-2 branch.** The kill must
-> come from `Q₀ = 1` + membership + the negative tail. This memo localises exactly
-> what is missing: **two scalar covectors** `C₁, C₃` on the tail.
+> solves `Q₆ = Q₅ = Q₄ = Q₃ = Q₂ = Q₁ = 0` **exactly**. Interpreted as a point of
+> the intended surviving branch (`b₁(r+1) = 0` with `a₂(r−1) ≠ 0`) it requires
+> **both** `κ ≠ 0` and `λ ≠ 0`; at `κ = 0` the entire `b₁` vanishes and at `λ = 0`
+> the whole family collapses to zero. With both nonzero (e.g. `κ = λ = 1`)
+> `a₂(r−1) = a₂(r+2) = 6λ ≠ 0` and the refined family shows the entire positive
+> cascade fails to close the diff-2 branch. The kill must come from `Q₀ = 1` +
+> membership + the negative tail. This memo localises exactly what is missing:
+> **two scalar covectors** `C₁, C₃` on the tail.
 
 Exact certificate:
-[`verify_shifted_cube_completion.py`](verify_shifted_cube_completion.py) —
-**100 checks, all passing, ~18 s default run** (1 `HEAVY` skip; see §7 for the
-`HEAVY=1` run of record). Every load-bearing upstream fact (the
-crossed-product ladder engine, `Q₀ = (T−1)G`, `G(0) = 0` under membership,
-`(T^n−1)` kernel, the `Q₅` wall) is **re-derived in file**, not cited.
+[`verify_shifted_cube_completion.py`](verify_shifted_cube_completion.py). Every
+load-bearing fact in the Nonpositive-D Exclusion Theorem (the crossed-product
+ladder engine, `Q₀ = (T−1)G`, `G(0) = 0` under membership, and the
+`(T^n−1)` kernel) is **re-derived in file**, not cited. The shifted-cube gauge
+`b₃=0` and wall shape `b₂=κhh^{[1]}` are frozen corpus inputs, not independently
+proved here; the verifier's `Q₅` computation is only the bounded concrete
+cross-check stated in §6. Historical run counts (`100/100`, `112/112`) predate
+the 2026-07-26 audit edits and are **superseded** unless re-executed on this
+checkout; no new counts are asserted here.
 
 Conventions frozen from the corpus: `A₁[x^{-1}] = ⊕_k x^k C[E]`, `E = x∂`,
 `(x^a f)(x^b g) = x^{a+b} f(E+b) g(E)`, `f^{[n]}(E) = f(E+n)`, `T f = f^{[1]}`,
@@ -165,7 +176,7 @@ sign-flipped variant `k n − j A` fails on the same instances.
    `N − 1 ≥ 1`: the `E^{N−1}` coefficient must **vanish** (the right-hand side `1`
    lives in degree `0` only), i.e. `k n + k A = 0`. **Contradiction.**
 
-> ### THEOREM A (arbitrary degree; arbitrary `k ≥ 2`; **arbitrary** nonzero top `a_k`)
+> ### NONPOSITIVE-D EXCLUSION THEOREM (arbitrary degree; arbitrary `k ≥ 2`; **arbitrary** nonzero top `a_k`)
 > There is no pair `(X, D)` in `A₁[x^{-1}]` with `band X = k ≥ 2`, `band D ≤ 0`,
 > membership-valid negative tail `(E)_j | b₋ⱼ`, and `[D,X] = 1`.
 >
@@ -188,7 +199,7 @@ Both boundary cases are **machine-exhibited**, not argued (verifier `§4`):
   satisfies `[D,X] = 1` **exactly** — verifier computes it — with `band D ≤ 0`,
   `band X = 3`. It is not a counterexample because `(E)_3 = E(E−1)(E−2)` does not
   divide `E/3`, so `D ∉ A₁`. This is precisely the `deg b₋₃ = 1 < 3` escape the
-  key formula predicts, and it certifies that Theorem A's hypothesis set is
+  key formula predicts, and it certifies that Nonpositive-D Exclusion Theorem's hypothesis set is
   **tight**: drop membership and the sector is nonempty *with the moment unit*.
 
 ### 2.2 Bounded cross-checks and non-vacuity
@@ -205,7 +216,7 @@ Verifier `§4`, exact SymPy over `ℚ`, cap `d ∈ {1,2}`, the **full** cascade
 | double root `E²` | unit ideal ⇒ EMPTY | unit ideal ⇒ EMPTY |
 | constant top `h = 1` | unit ideal ⇒ EMPTY | unit ideal ⇒ EMPTY |
 
-These are an **independent cross-check** of Theorem A, not its evidence.
+These are an **independent cross-check** of Nonpositive-D Exclusion Theorem, not its evidence.
 Non-vacuity is by **explicit point**, never by a normal form (house rule): drop
 `Q₀ = 1` and `(a₃ = h h^{[1]}h^{[2]}, b₀ = 5, all else 0)` is a point of the sector
 with every `Q_m = 0` (commutator computed `= 0`); drop membership and §2.1's
@@ -213,7 +224,7 @@ with every `Q_m = 0` (commutator computed `= 0`); drop membership and §2.1's
 
 ---
 
-## 3. What Theorem A repairs
+## 3. What Nonpositive-D Exclusion Theorem repairs
 
 The theorem never mentions `h`. Every class whose `κ = 0 ∧ b₁ = 0` sub-branch was
 open inherits the closure verbatim (verifier `§5`):
@@ -227,7 +238,7 @@ open inherits the closure verbatim (verifier `§5`):
 | A\*-band3 constant top with gauged `κ₂ = 0` and `b₁ = 0` | not previously isolated | **CLOSED** as a special case (`a_k` arbitrary) |
 
 > *(AUDIT SCOPE, 2026-07-25: only the third branch — `κ = 0 ∧ b₁ = 0` — is proved
-> in THIS verifier, by Theorem A. The other two branches (`κ ≠ 0`, and `κ = 0 ∧
+> in THIS verifier, by Nonpositive-D Exclusion Theorem. The other two branches (`κ ≠ 0`, and `κ = 0 ∧
 > b₁ ≠ 0`) are **cited** from [`band3-sectors.md`](band3-sectors.md) §4/§4.1 and are
 > not re-derived here, so the "no side condition" statement is the combination of
 > this arm with that memo, not a self-contained result of this file.)*
@@ -242,46 +253,56 @@ not, and the finding is the opposite — a corpus-wide repair from a single
 
 ---
 
-## 4. TARGET B — diff-2's surviving branch: the positive cascade is exhausted
+## 4. TARGET B — diff-2's surviving branch: the positive cascade does not close it
 
 The mission's first Target-B bullet was: *"on the branch `b₁(r+1) = 0`, what do
-the deeper rungs force?"* The answer is **one new condition, and then nothing**.
+the deeper rungs force?"* The supported answer here is **one new condition from
+the two analyzed clean `Q₂` nodes, plus an explicit refined family showing that
+the cascade `Q₂, Q₁` does not close the branch**.
 
-### 4.1 The new rung (degree-free)
+### 4.1 The new rung (degree-free) — the two analyzed clean `Q₂` nodes
 
 Verifier `§6` re-derives the diff-2 node table with `a₂, a₁, a₀, b₁, b₀` as
-undetermined functions, then finds the two nodes at which `Q₂` is **completely
-tail-free** — `E = r` and `E = r+1`:
+undetermined functions, then finds that the tail-free node set of `Q₂` is
+**exactly `{r−1, r, r+1, r+2}`** (exclusivity machine-tested over offsets
+`−5..5`). The two nodes actually used for the displayed forcing are `r` and
+`r+1`:
 
 ```
 Q₂(r)   = a₁(r)b₁(r+1) − a₁(r+1)b₁(r) − a₂(r)(b₀(r) − b₀(r+2)),
 Q₂(r+1) = a₁(r+1)b₁(r+2) − a₁(r+2)b₁(r+1) − a₂(r+1)(b₀(r+1) − b₀(r+3)).
 ```
 
-On the `Q₄` locus (`a₂(r) = a₂(r+1) = 0`, `b₁(r) = b₁(r+2) = κa₂(r−1)/3`) **and**
-the surviving branch `b₁(r+1) = 0`, both collapse to `∓(κ/3)·a₂(r−1)·a₁(r+1)`.
-With `κ ≠ 0` and `a₂(r−1) ≠ 0` — the defining property of the branch —
+The other two tail-free nodes `r−1` and `r+2` are **unclassified forcing data**
+in this memo — they are not exploited for the displayed forcing and no claim is
+made about what they add.
 
-> **`a₁(r+1) = 0`, i.e. `(E−r−1) | a₁`.**  *(arbitrary degree)*
+On the `Q₄` locus (`a₂(r) = a₂(r+1) = 0`, `b₁(r) = b₁(r+2) = κa₂(r−1)/3`) **and**
+the surviving branch `b₁(r+1) = 0`, the two used nodes collapse to
+`∓(κ/3)·a₂(r−1)·a₁(r+1)`. With `κ ≠ 0` and `a₂(r−1) ≠ 0` — the defining property
+of the intended surviving branch —
+
+> **`a₁(r+1) = 0`, i.e. `(E−r−1) | a₁`.**  *(from the two ANALYZED clean nodes,
+> arbitrary degree)*
 
 A negative control records that the same two nodes say nothing about `a₁(r)` or
 `a₁(r+2)`.
 
-### 4.2 The published witness is cut — and the repaired one is complete
+### 4.2 The published witness, the specific `a₁ = −3` non-extension, and the refined family
 
 [`band3-sectors.md`](band3-sectors.md) §5.1's witness has `a₁ = −3`, so
 `a₁(r+1) = −3 ≠ 0`. The verifier re-derives that witness independently
 (it does solve `Q₅ = Q₄ = Q₃ = 0`) and then **shows `Q₂ ≠ 0` on it**.
 
-> **Corpus correction — SCOPED (audit, 2026-07-25).**
-> [`band3-sectors.md`](band3-sectors.md) §5.1 claims only that its family solves
-> `Q₄ = Q₃ = 0` (which it does, and which stands). What is new here is that the
-> *further* rung `Q₂` forces `(E−r−1) | a₁`, so that family does **not extend past
-> `Q₃`** with its stated `a₁ = −3`; the member that does extend is
-> `a₁ = −3λ²(E−r−1)²`. This refines the published family's reach — it does not
-> contradict the published claim.
+> **HISTORY (scoped, audit 2026-07-26).**
+> The [`band3-sectors.md`](band3-sectors.md) §5.1 witness was **correct for its
+> stated `Q₄, Q₃` scope**. It is not smaller than reported at that scope. What
+> is new here is only that it does not extend one more rung with the specific
+> choice `a₁ = −3`: the two analyzed clean `Q₂` nodes force `(E−r−1) | a₁`, and
+> `a₁ = −3` violates that. The member of the scaled family that does extend has
+> `a₁ = −3λ²(E−r−1)²`.
 
-But the cut is repairable, and the repair is exact:
+The extending witness is exact:
 
 > **REFINED WITNESS (verifier `§6`; symbolic `r`, `κ`, scale `λ`, constant `c`).**
 > ```
@@ -289,12 +310,21 @@ But the cut is repairable, and the repair is exact:
 > a₂ = 3λ(E−r)(E−r−1), b₁ = 2κλ(E−r−1)²,  a₁ = −3λ²(E−r−1)²,  a₀ = c,  b₀ = 0.
 > ```
 > `Q₆ = Q₅ = Q₄ = Q₃ = Q₂ = Q₁ = 0` **exactly**, for every `r`, `κ`, `λ`, `c`.
-> On the branch: `b₁(r+1) = 0`, `a₂(r−1) = a₂(r+2) = 6λ ≠ 0`, and
-> `h h^{[1]} ∤ a₂` — the clean divisibility is still absent.
+> Interpreted as a point of the intended surviving branch (`b₁(r+1) = 0` with
+> `a₂(r−1) ≠ 0`, i.e. `h h^{[1]} ∤ a₂`), this requires **both `κ ≠ 0` and
+> `λ ≠ 0`**: at `κ = 0` the whole `b₁` vanishes (so "the surviving branch
+> `b₁(r+1) = 0`" is vacuous), and at `λ = 0` the family collapses to zero (so
+> `a₂(r−1) = 0`, not the branch's defining `≠ 0`). At the concrete
+> specialization `κ = λ = 1` (both nonzero, machine-checked) `a₂(r−1) = 6 ≠ 0`
+> and the clean divisibility is genuinely absent.
 >
-> The structural reason `Q₂` vanishes: `a₁` and `b₁` become **proportional**
-> (both multiples of `(E−r−1)²`), so the `Q₂` middle term
-> `b₁^{[1]}a₁ − a₁^{[1]}b₁` is identically zero.
+> The symbolic equality `a₂(r−1) = a₂(r+2) = 6λ` is **not by itself a
+> nonvanishing test** — it collapses at `λ = 0`; the branch interpretation needs
+> `λ ≠ 0` (and `κ ≠ 0`, as above) to hold.
+>
+> The structural reason `Q₂` vanishes on the refined family: `a₁` and `b₁`
+> become **proportional** (both multiples of `(E−r−1)²`), so the `Q₂` middle
+> term `b₁^{[1]}a₁ − a₁^{[1]}b₁` is identically zero.
 >
 > **SCOPE GUARD (machine-checked).** This is **not** a candidate Weyl pair. With
 > the zero negative tail shown, `Q₀ = 0 ≠ 1`, so `[D,X] ≠ 1`. It solves the
@@ -302,11 +332,17 @@ But the cut is repairable, and the repair is exact:
 > nothing here was (or needed to be) run through
 > [`sieve_dc1_candidate.py`](sieve_dc1_candidate.py).
 
-> ### TARGET B VERDICT (machine-checked, arbitrary degree)
-> **The "push to `Q₂` and `Q₁`" route is REFUTED.** `Q₂` adds exactly one new
-> degree-free condition and `Q₁` adds none; the branch survives the **entire
-> positive cascade** with an explicit exact family at symbolic `(r, κ)`. Any kill
-> must use `Q₀ = 1`, membership, and the negative tail.
+> ### TARGET B VERDICT (machine-checked; supported scope)
+> **The "push to `Q₂` and `Q₁`" route is REFUTED by the explicit refined family
+> with `κ ≠ 0` and `λ ≠ 0`, which solves the entire positive cascade
+> `Q₅…Q₁ = 0` with `a₂(r−1) ≠ 0`.** Supported statements:
+> (i) the two analyzed clean `Q₂` nodes force `(E−r−1) | a₁`;
+> (ii) the explicit refined family shows that `Q₂` and `Q₁` do **not** close
+> the branch.
+> **NOT claimed** as universal statements: "`Q₂` adds exactly one new
+> condition" (the two extra tail-free nodes `r−1, r+2` are unclassified) or
+> "`Q₁` adds none" (demonstrated on the refined family only, not universally).
+> Any kill must use `Q₀ = 1`, membership, and the negative tail.
 
 ### 4.3 The moment-unit route, localised to two covectors
 
@@ -345,31 +381,43 @@ about `M(0)` is needed: the degree count alone closes it.)*
 ### 4.4 Bounded backstop, both engines, and a much higher cap
 
 Verifier `§7`, `r = 0`, `κ = 1`, integer systems, full cascade `Q_m = δ_{m0}`
-(`m ∈ [−6,6]`) + membership. msolve is **parser-validated in file before any
-load-bearing call** (known unit ideal ⇒ `[-1]`; the **complex-only** ideal
-`(x²+1)` ⇒ nonempty — the check that makes an EMPTY-over-`C̄` verdict meaningful;
-a real-rooted feasible ideal ⇒ nonempty), and both traps are unit-tested.
+(`m ∈ [−6,6]`) + membership. Before any load-bearing call, the verifier
+unconditionally tests denominator-safe serialization: coefficient-only rational
+denominators are cleared through the expanded numerator, denominators involving
+solver unknowns are rejected, and the serialized body contains neither `/` nor
+`**`. It also parses the complete comment-stripped msolve record exactly: only
+`[-1]` is empty, and only `[1,N,-1,[]]` for a positive integer `N` is recognized
+as nonempty; malformed, prefixed, suffixed, concatenated, garbage, and unknown
+records yield no verdict. Live controls then check a known unit ideal, the
+**complex-only** ideal `(x²+1)`, and a real-rooted feasible ideal.
 
 | cap `d` | vars | diff-1 | diff-2 | engine / tier |
 |---|---|---|---|---|
-| `d = 1` | 22 | EMPTY | EMPTY | sympy, committed (0.1 s) |
-| `d = 2` | 33 | EMPTY | EMPTY | sympy, committed (0.5 s) |
-| `d = 3` | 44 | EMPTY | EMPTY | sympy, committed (3.8 s) |
-| `d = 4` | 55 | EMPTY | EMPTY | **both** engines, `HEAVY=1` (msolve 0.4 s; sympy 31.4 / 50.1 s) |
-| `d = 6` | 77 | EMPTY | EMPTY | msolve char-0, `HEAVY=1` (1.8 / 1.7 s) |
-| `d = 8` | 99 | EMPTY | EMPTY | msolve char-0, `HEAVY=1` (5.8 / 5.9 s) |
-| `d = 10` | 121 | EMPTY | EMPTY | msolve char-0, `HEAVY=1` (12.6 / 10.6 s) |
-| `d = 12` | 143 | EMPTY | EMPTY | msolve char-0, `HEAVY=1` (23.6 / 23.9 s) |
+| `d = 1` | 22 | EMPTY | EMPTY | sympy, rerun on this checkout |
+| `d = 2` | 33 | EMPTY | EMPTY | sympy, rerun on this checkout |
+| `d = 3` | 44 | EMPTY | EMPTY | sympy, rerun on this checkout |
+| `d = 4` | 55 | EMPTY | EMPTY | **both** engines, historical `HEAVY=1`; not rerun |
+| `d = 6` | 77 | EMPTY | EMPTY | historical msolve char-0; not rerun |
+| `d = 8` | 99 | EMPTY | EMPTY | historical msolve char-0; not rerun |
+| `d = 10` | 121 | EMPTY | EMPTY | historical msolve char-0; not rerun |
+| `d = 12` | 143 | EMPTY | EMPTY | historical msolve char-0; not rerun |
 
-**This triples the corpus's bounded cap** ([`band3-sectors.md`](band3-sectors.md)
-§5.2 reached `d = 4` under `HEAVY`). `[-1]` is msolve's *empty over `C̄`* verdict,
-and the complex-only parser control above is what licenses reading it that way.
+The `d = 4..12` rows are preserved as historical evidence, not current-run results;
+live msolve and the `HEAVY` tier were unavailable or skipped in this audit. The
+omitted historical timings were environment-specific and are not evidence; the
+record is the exact engine, cap, algebraic verdict, and rerun status.
 
-**Engine finding, recorded for the corpus.** On these rigid sectors msolve is
-**two orders of magnitude faster** than sympy at `d = 4` (0.5 s vs ~50 s) — the
-opposite of the A\*-band3 situation, where sympy stalls and msolve flies
-([`band3-sectors.md`](band3-sectors.md) §6). House rule 6 pays in *both*
-directions; neither engine dominates.
+**Historically this triples the corpus's bounded cap**
+([`band3-sectors.md`](band3-sectors.md) §5.2 reached `d = 4` under `HEAVY`).
+`[-1]` is msolve's *empty over `C̄`* verdict, and the complex-only parser control
+is what licenses that interpretation when the live msolve leg is executed.
+
+**Historical engine finding, recorded for the corpus.** On these rigid sectors
+msolve was **two orders of magnitude faster** than sympy at `d = 4` (0.5 s vs
+~50 s) — the same engine-selection lesson as the A\*-band3 situation, where
+sympy stalls and msolve flies ([`band3-sectors.md`](band3-sectors.md) §6).
+House rule 6 still applies: benchmark the available exact engines rather than
+assuming one universally dominates.
 
 Non-vacuity at the same encoding: dropping `Q₀ = 1` leaves an **explicit point**
 (`a₃, b₂` as given, all else `0`, commutator computed `= 0`). *(Recorded negative
@@ -384,23 +432,34 @@ tier here is an explicit point and not a Gröbner verdict.)*
 | class | status before | **status now** |
 |---|---|---|
 | cube-separated / 2-separated `h` (incl. diff-3, `(E−r)²`) | "closed", with an unnoticed `c ≠ 0` assumption in the `κ = 0` chain | **closed, arbitrary degree, gap REPAIRED** |
-| **diff-1** `(E−r)(E−r−1)` | closed for `κ ≠ 0`, and `κ = 0 ∧ b₁ ≠ 0` | **CLOSED at arbitrary degree** (this arm supplies the third branch by Theorem A; the other two are cited from `band3-sectors.md`) |
-| **diff-2** `(E−r)(E−r−2)` | `κ = 0` sub-branch open; `κ ≠ 0` branch open, restoration refuted | `κ = 0` **CLOSED**; `κ ≠ 0` branch **still open**, now reduced to the two covectors `C₁, C₃`; positive cascade **exhausted** (refined witness); bounded-empty `d ≤ 4` both engines |
-| `κ = 0 ∧ b₁ = 0` sub-branch (all classes) | named open gap | **CLOSED at arbitrary degree by THEOREM A** |
-| A\*-band3 constant top, `κ₂ = 0`, `b₁ = 0` | not isolated | **CLOSED** (special case of THEOREM A) |
-| general band `k ≥ 2`, `band D ≤ 0` | not previously stated | **CLOSED at arbitrary degree by THEOREM A** |
+| **diff-1** `(E−r)(E−r−1)` | closed for `κ ≠ 0`, and `κ = 0 ∧ b₁ ≠ 0` | **CLOSED at arbitrary degree** (this arm supplies the third branch `κ = 0 ∧ b₁ = 0` by Nonpositive-D Exclusion Theorem; the other two are cited from `band3-sectors.md`) |
+| **diff-2** `(E−r)(E−r−2)` | `κ = 0` sub-branch open; `κ ≠ 0` branch open, restoration refuted | `κ = 0 ∧ b₁ = 0` **CLOSED by Nonpositive-D Exclusion Theorem**; `κ = 0 ∧ b₁ ≠ 0` **closed** by direct cascade; `κ ≠ 0` branch **still open**, now reduced to the two covectors `C₁, C₃`; positive cascade **exhausted** on the refined family (with `κ ≠ 0`, `λ ≠ 0`); bounded-empty `d ≤ 4` both engines |
+| `κ = 0 ∧ b₁ = 0` sub-branch (all classes) | named open gap | **CLOSED at arbitrary degree by NONPOSITIVE-D EXCLUSION THEOREM** |
+| A\*-band3 constant-top corner `κ₂ = 0 ∧ b₁ = 0` (NOT all `κ₂ = 0`) | not isolated | **CLOSED** (special case of NONPOSITIVE-D EXCLUSION THEOREM; the existing `κ₂ = 0` tame witness in `astar-band3.md` §6 has positive band-one `D` with `b₁ ≠ 0`, so no contradiction with Nonpositive-D Exclusion Theorem) |
+| A\*-band3 general `κ₂ ≠ 0` at arbitrary degree | open | **UNCHANGED — still open** |
+| general band `k ≥ 2`, `band D ≤ 0` | not previously stated | **CLOSED at arbitrary degree by NONPOSITIVE-D EXCLUSION THEOREM** |
 
 **No Weyl pair and no counterexample is constructed; DC1/JC2 untouched.**
+
+### 5.1 A\*-band3 `κ₂ = 0`: only the corner `b₁ = 0` is closed by Nonpositive-D Exclusion Theorem
+
+Nonpositive-D Exclusion Theorem closes only the sub-branch `κ = 0 ∧ b₁ = 0` (equivalently, at the
+constant-top A\*-band3, `κ₂ = 0 ∧ b₁ = 0`). It does **not** close all
+`κ₂ = 0`. The existing `κ₂ = 0` tame witness recorded in
+[`astar-band3.md`](astar-band3.md) §6 (`U = x + 2∂`, `X = U³ − ∂`, `D = U`) has
+`κ₂ = b₂ = 0` but **positive band-one `D` with `b₁ ≠ 0`** (its `D` is `U`, of
+band 1), so it falls outside Nonpositive-D Exclusion Theorem's `band D ≤ 0 ∧ b₁ = 0` hypothesis and
+there is **no contradiction** between the tame witness and Nonpositive-D Exclusion Theorem.
 
 ---
 
 ## 6. Honest ledger
 
-> **New (found while repairing the checks, 2026-07-25):** the `Q₂` tail-free node
-> set is **exactly `{r−1, r, r+1, r+2}`**, not the two nodes `{r, r+1}` used above
-> (exclusivity now machine-tested over offsets `−5..5`). The two extra tail-free
-> equations at `r−1` and `r+2` are **unused forcing data** and are the first place
-> to look for the open diff-2 residual.
+> **Note (audit 2026-07-26):** the `Q₂` tail-free node set is **exactly
+> `{r−1, r, r+1, r+2}`**, of which only `{r, r+1}` are used for the displayed
+> forcing (exclusivity now machine-tested over offsets `−5..5`). The two extra
+> tail-free equations at `r−1` and `r+2` are **unclassified** in this memo — they
+> are not exploited and no claim is made about what they add.
 
 **Proved (arbitrary degree; degree-free proof objects in the verifier — abstract
 `sympy.Function` coefficients with no cap, plus a symbolic-degree series
@@ -416,51 +475,65 @@ derivation):**
    (`§2`), each instance-validated with negative controls. As a by-product the
    same formula **upgrades `(T^n−1)P = 0 ⇒ P constant` from the bounded `deg ≤ 3`
    probe of `§0` to a degree-free fact** (take `φ = P`, `a = 1`, `k = n`, `j = 0`:
-   `[E^{p−1}](P^{[n]} − P) = lc(P)·n·p ≠ 0` for `p ≥ 1`), so no step of Theorem A
+   `[E^{p−1}](P^{[n]} − P) = lc(P)·n·p ≠ 0` for `p ≥ 1`), so no step of Nonpositive-D Exclusion Theorem
    rests on a capped kernel computation.
-4. **THEOREM A**: `band X = k ≥ 2`, `band D ≤ 0`, membership, `[D,X] = 1` is
+4. **NONPOSITIVE-D EXCLUSION THEOREM**: `band X = k ≥ 2`, `band D ≤ 0`, membership, `[D,X] = 1` is
    impossible (`§3`). Hence the `κ = 0 ∧ b₁ = 0` sector is empty in every
-   shifted-cube class and for the constant top (`§5`).
+   shifted-cube class and, as a special case, in the A\*-band3 constant-top
+   corner `κ₂ = 0 ∧ b₁ = 0` (§5). The existing `κ₂ = 0` tame witness has
+   positive band-one `D` (`b₁ ≠ 0`), so Nonpositive-D Exclusion Theorem does not touch it.
 5. **diff-1 closure at arbitrary degree with no side condition** (§3 above + the
    corpus's `κ ≠ 0` and `κ = 0, b₁ ≠ 0` results).
-6. **diff-2, new rung**: on the surviving branch `b₁(r+1) = 0`, `Q₂` forces
-   `(E−r−1) | a₁` (`§6`, degree-free).
+6. **diff-2, new rung**: on the surviving branch `b₁(r+1) = 0` with `κ ≠ 0` and
+   `a₂(r−1) ≠ 0`, the two analyzed clean `Q₂` nodes (at `r` and `r+1`) force
+   `(E−r−1) | a₁` (`§6`, degree-free). No universal "exactly one condition"
+   claim: the two extra tail-free nodes are unclassified.
 7. **diff-2 `G`-split**: `G − R` is `h^{[-1]}`-divisible term-by-term, and
    `h^{[-1]} | G ⟺ C₁ = C₃ = 0`; given that, diff-2 closes at arbitrary degree
    (`§7`, degree-free).
 
-**Refuted (machine-checked, explicit exact witnesses):**
-- **The mission's Target-B route.** The deeper rungs `Q₂, Q₁` do **not** close the
-  diff-2 surviving branch: an explicit family at symbolic `(r, κ, λ, c)` solves the
-  **entire positive cascade** `Q₆ … Q₁ = 0` with `a₂(r−1) ≠ 0`. *(Audit phrasing
-  note: on this witness `Q₆` and `Q₁` are **vacuous** rather than solved — `Q₆`'s
-  only pair dies on the gauge `b₃ = 0`, and `Q₁`'s four pairs die term-by-term on
-  `b₀ = 0`, constant `a₀` and the zero tail. The real content is `Q₅…Q₂`.)*
-- **[`band3-sectors.md`](band3-sectors.md) §5.1's surviving family as published.**
-  Its `a₁ = −3` violates the new `Q₂` forcing, so that witness does not extend past
-  `Q₃`; the family is strictly smaller than stated (the corrected member is
-  `a₁ = −3λ²(E−r−1)²`).
+**Refuted (machine-checked, explicit exact witnesses; nonzero-branch scope):**
+- **The mission's Target-B route (with `κ ≠ 0` and `λ ≠ 0`).** The deeper rungs
+  `Q₂, Q₁` do **not** close the diff-2 surviving branch: an explicit family at
+  symbolic `(r, κ, λ, c)`, interpreted as a point of the intended surviving
+  branch under both `κ ≠ 0` and `λ ≠ 0` (concrete specialization `κ = λ = 1`
+  machine-checked), solves the **entire positive cascade** `Q₆ … Q₁ = 0` with
+  `a₂(r−1) ≠ 0`. *(Audit phrasing note: on this witness `Q₆` and `Q₁` are
+  **vacuous** rather than solved — `Q₆`'s only pair dies on the gauge `b₃ = 0`,
+  and `Q₁`'s four pairs die term-by-term on `b₀ = 0`, constant `a₀` and the
+  zero tail. The real content is `Q₅…Q₂`.)*
+- **The specific `a₁ = −3` extension of [`band3-sectors.md`](band3-sectors.md)
+  §5.1's witness.** The published §5.1 family is correct at its stated `Q₄, Q₃`
+  scope. What is new here is that it does not extend past `Q₃` with the
+  specific `a₁ = −3` (which violates the new `Q₂` forcing `a₁(r+1) = 0`); the
+  member that does extend is `a₁ = −3λ²(E−r−1)²`. This is a non-extension of a
+  specific choice, not a shrinkage of the §5.1 family at its published scope.
 
 **Bounded / finite evidence (exact scope stated):**
-- **Instance sweep of Theorem A's conclusion** at `k = 3`: over 105 combinations
+- **Instance sweep of Nonpositive-D Exclusion Theorem's conclusion** at `k = 3`: over 105 combinations
   `(j ∈ {1,2,3}) × (deg of the b₋ⱼ cofactor ∈ 0..4) × (deg a₃ ∈ 0..6)` with
   membership imposed, the rung's `E^{N−1}` coefficient matches the key formula and
   is nonzero, so the rung is never `0` and never `1`. Paired with the negative
   control that **without** membership the rung *can* equal `1`.
 - `κ = 0 ∧ b₁ = 0` full-cascade + `Q₀ = 1` + membership emptiness at cap `d ≤ 2`
-  for six tops (exact SymPy over `ℚ`, unit ideal), as a cross-check of Theorem A.
-- diff-1 / diff-2 full sector at `r = 0, κ = 1`: `d ≤ 3` committed (SymPy);
-  `d = 4` under `HEAVY=1` in **both** engines (msolve char-0 `[-1]`, and SymPy
-  unit ideal).
+  for six tops (exact SymPy over `ℚ`, unit ideal), as a cross-check of Nonpositive-D Exclusion Theorem.
+- diff-1 / diff-2 full sector at `r = 0, κ = 1`: `d ≤ 3` rerun on this checkout
+  (SymPy); the `d = 4` **both-engine** result (msolve char-0 `[-1]`, SymPy unit
+  ideal) is historical `HEAVY=1` evidence and was not rerun in this audit.
+- **The `§1` `Q₅` computation with `h = (E−1)(E−4)` and `b₂` degree cap 5 is a
+  BOUNDED CONCRETE CROSS-CHECK only** — it does not establish an
+  arbitrary-`h`/degree necessity proof or classify the whole solution space of
+  `Q₅`; the verifier's check label is relabelled accordingly.
 - Non-vacuity everywhere by **explicit points**, not normal forms.
 
 **Open / NOT claimed:**
 1. **diff-2 at arbitrary degree with `κ ≠ 0`, branch `b₁(r+1) = 0`** — reduced to
    the two tail covectors `C₁ = C₃ = 0` (§4.3). Deriving those from `Q₋₁, Q₋₂`
    (or refuting them) is now the whole of the residual.
-2. A\*-band3 `κ₂ ≠ 0` at arbitrary degree; composite tame-word escape.
-3. Imbalanced coprime walls; general-`k` negative tail with `band D > 0`; **W2**.
-4. Theorem A's rung collapse is machine-derived at `k = 3, 4, 5`; the `k`-uniform
+2. A\*-band3 general `κ₂ ≠ 0` at arbitrary degree; composite tame-word escape.
+3. Imbalanced coprime walls; general-`k` negative tail with `band D > 0`; **W2**;
+   radical forcing at coupling widths `k = 4, 5`.
+4. Nonpositive-D Exclusion Theorem's rung collapse is machine-derived at `k = 3, 4, 5`; the `k`-uniform
    statement is the written argument (the `s = 0` term dies because `b₀` is
    constant, for every `k`), not a symbolic-`k` machine identity.
 
@@ -475,16 +548,17 @@ uv run --with sympy python research/dc1-program/verify_shifted_cube_completion.p
 HEAVY=1 uv run --with sympy python research/dc1-program/verify_shifted_cube_completion.py
 ```
 
-Default run of record: **100 checks executed, 100 passed, 0 failed, 1 skipped,
-wall time 18.0 s** (`HEAVY=0`, `msolve=yes`).
-`HEAVY=1` run of record: **112 checks executed, 112 passed, 0 failed, 0 skipped,
-wall time 350.1 s** — `ALL CHECKS PASSED`.
+Historical run counts (default `100/100`, `HEAVY=1` `112/112`) predate the
+2026-07-26 audit edits and are **superseded** unless reproduced on this
+checkout; no new run-count claim is asserted here.
 
 `§0` engine; `§1` the `band D ≤ 0` collapse (degree-free, `k = 3,4,5`); `§2` the
-trace functional at symbolic degree + key formula; `§3` THEOREM A; `§4` controls
+trace functional at symbolic degree + key formula; `§3` NONPOSITIVE-D EXCLUSION THEOREM; `§4` controls
 (band 1 survives; membership load-bearing; bounded cross-checks; explicit-point
 non-vacuity); `§5` what it repairs; `§6` diff-2's new rung, the cut witness and the
 refined witness; `§7` the two covectors + bounded emptiness (both engines).
-Runtime is environment-dependent. The final banner distinguishes *all checks
-passed* from *all executed checks passed; optional checks skipped*, and lists every
-skip with its reason.
+Runtime is environment-dependent. The msolve evidence uses denominator-guarded
+polynomial serialization and exact whole-record verdict parsing, so unknown solver
+output cannot become PASS. The final banner distinguishes *all checks passed* from
+*all executed checks passed; optional checks skipped*, and lists every skip with
+its reason.
